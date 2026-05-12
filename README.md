@@ -1,0 +1,116 @@
+# FinQuest AI
+
+A gamified financial literacy simulation app built with Flutter. Users face real-world financial scenarios, make decisions, earn XP, and learn from an AI mentor — all in a clean, fast, reward-driven interface.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Flutter 3.41.9 / Dart 3.11.5 |
+| State Management | Riverpod 2.x (NotifierProvider) |
+| Architecture | Feature-first, event-driven |
+| Event Contract | Global immutable GameEvent system |
+| Target | Web (Edge), Mobile-ready |
+
+---
+
+## Architecture
+
+```
+lib/
+├── core/
+│   ├── events/          # Global GameEvent contract (immutable)
+│   └── routing/         # AppRouter
+├── shared/
+│   └── widgets/         # Reusable components
+├── features/
+│   ├── onboarding/      # ✅ Implemented
+│   ├── dashboard/       # ✅ Implemented
+│   ├── scenarios/       # ✅ Implemented
+│   ├── ai_mentor/       # 🔜 Next
+│   ├── achievements/    # 🔜 Planned
+│   └── profile/         # 🔜 Planned
+└── main.dart
+```
+
+Every interaction follows a strict pipeline:
+
+```
+User Action → UI Event → State Update → Gamification Engine → Animation Trigger → UI Update
+```
+
+---
+
+## Features
+
+### ✅ Onboarding
+- 5-step gamified introduction flow
+- XP reveal animation on first launch
+- Decision-making intro (first taste of the scenario system)
+- Level-up screen with animated progression
+- Mentor introduction
+
+### ✅ Dashboard
+- XP hero card with animated progress bar
+- Level indicator + streak counter
+- Active challenges section
+- Portfolio simulation with sparkline chart
+- Learning progress by category
+- Achievements showcase
+- AI Mentor card (static preview)
+- XP float animation on earn
+- Reward toast on unlock
+
+### ✅ Scenario Decision System
+- Scenario list with category filter (Investing / Savings / Budgeting)
+- Risk level indicator (Low / Medium / High) with bar visual
+- Financial event card with full scenario description
+- Multiple choice decision (A/B options, locks on tap)
+- Feedback screen: result banner, XP summary, mentor explanation
+- Correct decision bonus (+50 XP)
+- Streak tracking with pulse animation
+- Reward toast every 3 correct decisions
+- AnimatedSwitcher phase transitions (list → decision → feedback)
+
+---
+
+## Gamification System
+
+All game logic flows through a deterministic event contract:
+
+| Event | Trigger | Effect |
+|---|---|---|
+| `DECISION_MADE` | User taps an option | Records selection, increments total decisions |
+| `DECISION_CORRECT` | Correct option chosen | Increments correct count, sets isCorrect |
+| `DECISION_WRONG` | Wrong option chosen | Sets isCorrect false |
+| `XP_GAINED` | Any decision | Adds XP, shows float indicator |
+| `STREAK_UPDATED` | After each decision | Updates streak, triggers pulse |
+| `REWARD_UNLOCKED` | Every 3 correct answers | Shows reward toast |
+
+---
+
+## Shared Widget Library
+
+| Widget | Description |
+|---|---|
+| `XPFloatIndicator` | Floats up 40px when XP is earned |
+| `RewardToast` | Slides in from bottom on reward unlock |
+| `XPProgressBar` | Animated fill bar |
+| `RiskIndicator` | 3-bar visual (compact + large variants) |
+| `AchievementBadge` | Badge with locked/unlocked state |
+| `StreakCounter` | Flame icon + count |
+| `LevelIndicator` | Current level display |
+| `MentorChatBubble` | AI mentor message bubble |
+
+---
+
+## Running the App
+
+```bash
+flutter pub get
+flutter run -d edge
+```
+
+Requires Flutter 3.x and Chrome/Edge browser for web target.
