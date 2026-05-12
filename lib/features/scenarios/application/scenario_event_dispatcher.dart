@@ -1,0 +1,43 @@
+import '../../../core/events/game_event.dart';
+import 'scenario_notifier.dart';
+
+class ScenarioEventDispatcher {
+  final ScenarioNotifier _notifier;
+
+  const ScenarioEventDispatcher(this._notifier);
+
+  void _dispatch(GameEvent event) => _notifier.applyEvent(event);
+
+  void onDecisionMade(String scenarioId, String optionId, bool isCorrect, int xpAmount) {
+    _dispatch(GameEvent.decisionMade(optionId: optionId));
+
+    if (isCorrect) {
+      _dispatch(GameEvent.decisionCorrect(optionId: optionId));
+    } else {
+      _dispatch(GameEvent.decisionWrong(optionId: optionId));
+    }
+
+    _dispatch(GameEvent.xpGained(amount: xpAmount));
+
+    final newStreak = isCorrect ? _notifier.currentState.currentStreak + 1 : 0;
+    _dispatch(GameEvent.streakUpdated(streak: newStreak));
+
+    // Every 3 correct decisions unlocks a reward toast
+    final newCorrectCount = _notifier.currentState.correctCount;
+    if (isCorrect && newCorrectCount % 3 == 0) {
+      _dispatch(GameEvent.rewardUnlocked(rewardId: 'streak_reward'));
+    }
+
+    _notifier.markCompleted(scenarioId);
+    _notifier.advanceToFeedback();
+  }
+
+  void onNextScenario() => _notifier.nextScenario();
+  void onBackToList() => _notifier.backToList();
+  void onScenarioSelected(String id) => _notifier.loadScenario(id);
+  void onCategorySelected(String? category) => _notifier.setCategory(category);
+
+  void onXpFloatDismissed() => _notifier.dismissXpFloat();
+  void onRewardToastDismissed() => _notifier.dismissRewardToast();
+  void onStreakPulseDismissed() => _notifier.dismissStreakPulse();
+}
