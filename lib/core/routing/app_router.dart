@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/scenarios/presentation/scenario_flow.dart';
+import '../../features/achievements/presentation/achievements_screen.dart';
 
 class AppRoutes {
   static const String onboarding = '/onboarding';
   static const String dashboard = '/dashboard';
   static const String scenarios = '/scenarios';
+  static const String achievements = '/achievements';
 
   AppRoutes._();
 }
@@ -31,6 +33,11 @@ class AppRouter {
         return _buildRoute(
           settings: settings,
           builder: (_) => const ScenarioFlow(),
+        );
+      case AppRoutes.achievements:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => const AchievementsScreen(),
         );
       default:
         return _buildRoute(

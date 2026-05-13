@@ -1,16 +1,29 @@
 import '../../../core/events/game_event.dart';
+import '../../achievements/application/achievements_notifier.dart';
 import '../../gamification/application/gamification_overlay_notifier.dart';
 import 'scenario_notifier.dart';
 
 class ScenarioEventDispatcher {
   final ScenarioNotifier _notifier;
   final GamificationOverlayNotifier _overlayNotifier;
+  final AchievementsNotifier _achievementsNotifier;
 
-  const ScenarioEventDispatcher(this._notifier, this._overlayNotifier);
+  const ScenarioEventDispatcher(
+    this._notifier,
+    this._overlayNotifier,
+    this._achievementsNotifier,
+  );
 
   void _dispatch(GameEvent event) {
     _notifier.applyEvent(event);
     _overlayNotifier.applyEvent(event);
+    _achievementsNotifier.applyEvent(event);
+
+    final unlocked = _achievementsNotifier.currentState.lastUnlocked;
+    if (unlocked != null) {
+      _overlayNotifier.triggerAchievementUnlock(unlocked.title);
+      _achievementsNotifier.clearLastUnlocked();
+    }
   }
 
   void onDecisionMade(String scenarioId, String optionId, bool isCorrect, int xpAmount) {
@@ -27,7 +40,6 @@ class ScenarioEventDispatcher {
     final newStreak = isCorrect ? _notifier.currentState.currentStreak + 1 : 0;
     _dispatch(GameEvent.streakUpdated(streak: newStreak));
 
-    // Every 3 correct decisions unlocks a reward toast
     final newCorrectCount = _notifier.currentState.correctCount;
     if (isCorrect && newCorrectCount % 3 == 0) {
       _dispatch(GameEvent.rewardUnlocked(rewardId: 'streak_reward'));

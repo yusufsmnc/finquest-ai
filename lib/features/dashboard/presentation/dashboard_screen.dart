@@ -86,19 +86,37 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Navigator.of(context).pushNamed(AppRoutes.scenarios),
-        backgroundColor: const Color(0xFF2563EB),
-        icon: const Icon(Icons.psychology_alt_rounded, color: Colors.white, size: 20),
-        label: const Text(
-          'Scenarios',
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          FloatingActionButton.small(
+            heroTag: 'fab_achievements',
+            onPressed: () =>
+                Navigator.of(context).pushNamed(AppRoutes.achievements),
+            backgroundColor: const Color(0xFF7C3AED),
+            child: const Icon(Icons.emoji_events_rounded,
+                color: Colors.white, size: 18),
           ),
-        ),
+          const SizedBox(height: 10),
+          FloatingActionButton.extended(
+            heroTag: 'fab_scenarios',
+            onPressed: () =>
+                Navigator.of(context).pushNamed(AppRoutes.scenarios),
+            backgroundColor: const Color(0xFF2563EB),
+            icon: const Icon(Icons.psychology_alt_rounded,
+                color: Colors.white, size: 20),
+            label: const Text(
+              'Scenarios',
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
       ),
       body: FadeTransition(
         opacity: _fadeIn,

@@ -1,16 +1,29 @@
 import '../../../core/events/game_event.dart';
+import '../../achievements/application/achievements_notifier.dart';
 import '../../gamification/application/gamification_overlay_notifier.dart';
 import 'dashboard_notifier.dart';
 
 class DashboardEventDispatcher {
   final DashboardNotifier _notifier;
   final GamificationOverlayNotifier _overlayNotifier;
+  final AchievementsNotifier _achievementsNotifier;
 
-  const DashboardEventDispatcher(this._notifier, this._overlayNotifier);
+  const DashboardEventDispatcher(
+    this._notifier,
+    this._overlayNotifier,
+    this._achievementsNotifier,
+  );
 
   void _dispatch(GameEvent event) {
     _notifier.applyEvent(event);
     _overlayNotifier.applyEvent(event);
+    _achievementsNotifier.applyEvent(event);
+
+    final unlocked = _achievementsNotifier.currentState.lastUnlocked;
+    if (unlocked != null) {
+      _overlayNotifier.triggerAchievementUnlock(unlocked.title);
+      _achievementsNotifier.clearLastUnlocked();
+    }
   }
 
   void onScenarioCompleted({required bool isCorrect}) {

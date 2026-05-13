@@ -30,8 +30,8 @@ lib/
 │   ├── dashboard/       # ✅ Implemented
 │   ├── scenarios/       # ✅ Implemented
 │   ├── gamification/    # ✅ Implemented
+│   ├── achievements/    # ✅ Implemented
 │   ├── ai_mentor/       # 🔜 Next
-│   ├── achievements/    # 🔜 Planned
 │   └── profile/         # 🔜 Planned
 └── main.dart
 ```
@@ -75,6 +75,19 @@ User Action → UI Event → State Update → Gamification Engine → Animation 
 - Reward toast every 3 correct decisions
 - AnimatedSwitcher phase transitions (list → decision → feedback)
 
+### ✅ Achievements System
+- 14 collectible achievements across 4 categories (Streak / XP / Decisions / Level)
+- Rarity system: Common · Rare · Epic · Legendary with distinct color palettes
+- 2-column grid with rarity-styled cards (locked/unlocked states, progress bars)
+- Achievement detail modal — progress section, reward preview, unlock date
+- Category filter bar (animated chips)
+- Gradient stats header with per-category breakdown
+- Fully event-driven unlock detection (XP_GAINED, STREAK_UPDATED, DECISION_CORRECT, LEVEL_UP)
+- Triple-dispatch pipeline: feature notifier → overlay notifier → achievements notifier
+- Auto-triggers `AchievementUnlockOverlay` on new unlock via global overlay system
+- Progress bars update incrementally on locked achievements
+- Navigable from Dashboard via trophy FAB
+
 ### ✅ Gamification Overlay System
 - **Level Up Modal** — full-screen celebration with 12 confetti dots, fires every 200 XP
 - **Streak Feedback Overlay** — scale-bounce animation on 2+ day streaks
@@ -115,6 +128,10 @@ All game logic flows through a deterministic event contract:
 | `StreakCounter` | Flame icon + count |
 | `LevelIndicator` | Current level display |
 | `MentorChatBubble` | AI mentor message bubble |
+| `AchievementCard` | Rarity-styled card with locked/unlocked states |
+| `AchievementDetailModal` | Bottom sheet with progress, reward preview, unlock date |
+| `AchievementsStatsHeader` | Gradient header with completion % and category breakdown |
+| `AchievementsFilterBar` | Animated category filter chips |
 
 ---
 
