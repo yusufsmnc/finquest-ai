@@ -91,6 +91,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           FloatingActionButton.small(
+            heroTag: 'fab_profile',
+            onPressed: () =>
+                Navigator.of(context).pushNamed(AppRoutes.profile),
+            backgroundColor: const Color(0xFF0F172A),
+            child: const Icon(Icons.person_rounded,
+                color: Colors.white, size: 18),
+          ),
+          const SizedBox(height: 8),
+          FloatingActionButton.small(
             heroTag: 'fab_achievements',
             onPressed: () =>
                 Navigator.of(context).pushNamed(AppRoutes.achievements),

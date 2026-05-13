@@ -31,8 +31,8 @@ lib/
 │   ├── scenarios/       # ✅ Implemented
 │   ├── gamification/    # ✅ Implemented
 │   ├── achievements/    # ✅ Implemented
-│   ├── ai_mentor/       # 🔜 Next
-│   └── profile/         # 🔜 Planned
+│   ├── profile/         # ✅ Implemented
+│   └── ai_mentor/       # 🔜 Next
 └── main.dart
 ```
 
@@ -74,6 +74,20 @@ User Action → UI Event → State Update → Gamification Engine → Animation 
 - Streak tracking with pulse animation
 - Reward toast every 3 correct decisions
 - AnimatedSwitcher phase transitions (list → decision → feedback)
+
+### ✅ Profile System
+- Gamification identity card — dark gradient, avatar bubble, tier badge (Novice → Elite Investor), 3 key stats
+- Editable display name (inline tap-to-edit field on the identity card)
+- Avatar picker modal — 8 color+icon identity options (Investor, Saver, Strategist, etc.)
+- XP Progress section — level badge, progress bar, total XP from global overlay tracker
+- Streak card — current streak, best streak, 7-flame visual indicator
+- Accuracy card — correct decision rate with color-coded progress bar
+- Achievements showcase — top 4 unlocked bubbles + "View All" shortcut to achievements screen
+- Learning Progress — 4 category bars (Budgeting, Investing, Savings, Risk Management)
+- Activity Timeline — unlocked achievements as timestamped vertical timeline ("Just now / Xm ago")
+- Purely read-only from existing providers — no new events, no new dispatchers
+- `ProfileNotifier` tracks `bestStreak` reactively via `ref.listen` on dashboard streak
+- Accessible from Dashboard via person FAB (black)
 
 ### ✅ Achievements System
 - 14 collectible achievements across 4 categories (Streak / XP / Decisions / Level)
