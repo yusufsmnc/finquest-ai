@@ -3,6 +3,7 @@ import '../../features/dashboard/presentation/dashboard_screen.dart';
 import '../../features/scenarios/presentation/scenario_flow.dart';
 import '../../features/achievements/presentation/achievements_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
+import '../../features/ai_mentor/presentation/ai_mentor_screen.dart';
 
 class AppRoutes {
   static const String onboarding = '/onboarding';
@@ -10,6 +11,7 @@ class AppRoutes {
   static const String scenarios = '/scenarios';
   static const String achievements = '/achievements';
   static const String profile = '/profile';
+  static const String aiMentor = '/ai_mentor';
 
   AppRoutes._();
 }
@@ -45,6 +47,11 @@ class AppRouter {
         return _buildRoute(
           settings: settings,
           builder: (_) => const ProfileScreen(),
+        );
+      case AppRoutes.aiMentor:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => const AiMentorScreen(),
         );
       default:
         return _buildRoute(

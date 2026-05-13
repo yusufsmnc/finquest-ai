@@ -1,5 +1,6 @@
 import '../../../core/events/game_event.dart';
 import '../../achievements/application/achievements_notifier.dart';
+import '../../ai_mentor/application/ai_mentor_notifier.dart';
 import '../../gamification/application/gamification_overlay_notifier.dart';
 import 'scenario_notifier.dart';
 
@@ -7,17 +8,20 @@ class ScenarioEventDispatcher {
   final ScenarioNotifier _notifier;
   final GamificationOverlayNotifier _overlayNotifier;
   final AchievementsNotifier _achievementsNotifier;
+  final AiMentorNotifier _mentorNotifier;
 
   const ScenarioEventDispatcher(
     this._notifier,
     this._overlayNotifier,
     this._achievementsNotifier,
+    this._mentorNotifier,
   );
 
   void _dispatch(GameEvent event) {
     _notifier.applyEvent(event);
     _overlayNotifier.applyEvent(event);
     _achievementsNotifier.applyEvent(event);
+    _mentorNotifier.applyEvent(event);
 
     final unlocked = _achievementsNotifier.currentState.lastUnlocked;
     if (unlocked != null) {
@@ -26,7 +30,8 @@ class ScenarioEventDispatcher {
     }
   }
 
-  void onDecisionMade(String scenarioId, String optionId, bool isCorrect, int xpAmount) {
+  void onDecisionMade(
+      String scenarioId, String optionId, bool isCorrect, int xpAmount) {
     _dispatch(GameEvent.decisionMade(optionId: optionId));
 
     if (isCorrect) {
@@ -37,7 +42,8 @@ class ScenarioEventDispatcher {
 
     _dispatch(GameEvent.xpGained(amount: xpAmount));
 
-    final newStreak = isCorrect ? _notifier.currentState.currentStreak + 1 : 0;
+    final newStreak =
+        isCorrect ? _notifier.currentState.currentStreak + 1 : 0;
     _dispatch(GameEvent.streakUpdated(streak: newStreak));
 
     final newCorrectCount = _notifier.currentState.correctCount;
@@ -49,10 +55,22 @@ class ScenarioEventDispatcher {
     _notifier.advanceToFeedback();
   }
 
+  void onScenarioSelected(String id) {
+    _notifier.loadScenario(id);
+    final category = _notifier.currentState.activeScenario?.category;
+    if (category != null) {
+      _mentorNotifier.setCategoryGuidance(category);
+    }
+  }
+
   void onNextScenario() => _notifier.nextScenario();
   void onBackToList() => _notifier.backToList();
-  void onScenarioSelected(String id) => _notifier.loadScenario(id);
-  void onCategorySelected(String? category) => _notifier.setCategory(category);
+  void onCategorySelected(String? category) {
+    _notifier.setCategory(category);
+    if (category != null) {
+      _mentorNotifier.setCategoryGuidance(category);
+    }
+  }
 
   void onXpFloatDismissed() => _notifier.dismissXpFloat();
   void onRewardToastDismissed() => _notifier.dismissRewardToast();

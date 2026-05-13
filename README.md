@@ -32,7 +32,7 @@ lib/
 │   ├── gamification/    # ✅ Implemented
 │   ├── achievements/    # ✅ Implemented
 │   ├── profile/         # ✅ Implemented
-│   └── ai_mentor/       # 🔜 Next
+│   └── ai_mentor/       # ✅ Implemented
 └── main.dart
 ```
 
@@ -60,7 +60,7 @@ User Action → UI Event → State Update → Gamification Engine → Animation 
 - Portfolio simulation with sparkline chart
 - Learning progress by category
 - Achievements showcase
-- AI Mentor card (static preview)
+- AI Mentor card (reactive — shows live mentor mood + current message, navigates to AI Mentor screen)
 - XP float animation on earn
 - Reward toast on unlock
 
@@ -97,10 +97,23 @@ User Action → UI Event → State Update → Gamification Engine → Animation 
 - Category filter bar (animated chips)
 - Gradient stats header with per-category breakdown
 - Fully event-driven unlock detection (XP_GAINED, STREAK_UPDATED, DECISION_CORRECT, LEVEL_UP)
-- Triple-dispatch pipeline: feature notifier → overlay notifier → achievements notifier
+- Quad-dispatch pipeline: feature notifier → overlay notifier → achievements notifier → ai mentor notifier
 - Auto-triggers `AchievementUnlockOverlay` on new unlock via global overlay system
 - Progress bars update incrementally on locked achievements
 - Navigable from Dashboard via trophy FAB
+
+### ✅ AI Mentor System
+- Full mentor screen: mood app bar, hero gradient card, category insights carousel (4 horizontal cards), recent insights history, next-steps action panel
+- `MentorMood` system: 6 moods (calm / happy / encouraging / excited / proud / thinking) — each with gradient palette and icon
+- `MentorContext` system: 12 contexts (correct, wrong, levelUp, streak, achievement, 4 categories, nextStep, idle, onboarding)
+- Pre-seeded message repository — 80+ contextual messages, deterministic rotation via `messageSelectIndex` (no randomness)
+- `AiMentorNotifier` reacts to game events: `xpGained` (level detect), `decisionCorrect`, `decisionWrong`, `streakUpdated` (≥3), `rewardUnlocked`, `levelUp`
+- Category guidance: scenario selection sets targeted category tips via `setCategoryGuidance()`
+- `MentorNotificationPrompt` — slide-up notification overlay, 3.5s auto-dismiss, manual X dismiss
+- `AiMentorOverlayWrapper` — global wrapper in `main.dart`, shows notifications on any screen below the gamification layer
+- `MentorGuidancePanel` — animated panel injected into scenario flow for real-time guidance
+- Dashboard mentor card upgraded: live mood avatar, live message via `AnimatedSwitcher`, direct navigation to mentor screen
+- Render-only: NO AI computation, NO backend, NO fake LLM — all messages are externally provided data
 
 ### ✅ Gamification Overlay System
 - **Level Up Modal** — full-screen celebration with 12 confetti dots, fires every 200 XP

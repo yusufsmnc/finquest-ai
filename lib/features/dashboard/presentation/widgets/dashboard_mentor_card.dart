@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../dashboard_providers.dart';
+import '../../../../core/routing/app_router.dart';
 import '../../../../shared/widgets/card_container.dart';
+import '../../../ai_mentor/ai_mentor_providers.dart';
+import '../../../ai_mentor/domain/mentor_message.dart';
+import '../../../ai_mentor/presentation/widgets/mentor_avatar.dart';
 
 class DashboardMentorCard extends ConsumerWidget {
   const DashboardMentorCard({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final insight =
-        ref.watch(dashboardNotifierProvider.select((s) => s.mentorInsight));
+    final mood = ref.watch(aiMentorProvider.select((s) => s.currentMood));
+    final message = ref.watch(aiMentorProvider.select((s) => s.currentMessage));
+    final text = message?.text ??
+        'Ready to guide your financial journey. Tap to explore insights.';
 
     return CardContainer(
       child: Column(
@@ -17,23 +22,7 @@ class DashboardMentorCard extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF7C3AED), Color(0xFF0EA5E9)],
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.psychology_rounded,
-                  color: Colors.white,
-                  size: 22,
-                ),
-              ),
+              MentorAvatar(mood: mood, size: 42, animate: false),
               const SizedBox(width: 12),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,9 +36,9 @@ class DashboardMentorCard extends ConsumerWidget {
                       color: Color(0xFF0F172A),
                     ),
                   ),
-                  const Text(
-                    'Daily insight',
-                    style: TextStyle(
+                  Text(
+                    mood.label,
+                    style: const TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 11,
                       color: Color(0xFF94A3B8),
@@ -58,23 +47,7 @@ class DashboardMentorCard extends ConsumerWidget {
                 ],
               ),
               const Spacer(),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF7C3AED).withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Text(
-                  'AI',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF7C3AED),
-                  ),
-                ),
-              ),
+              MentorMoodChip(mood: mood),
             ],
           ),
           const SizedBox(height: 14),
@@ -98,14 +71,18 @@ class DashboardMentorCard extends ConsumerWidget {
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text(
-                    insight,
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xFF334155),
-                      height: 1.6,
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 350),
+                    child: Text(
+                      text,
+                      key: ValueKey(text),
+                      style: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xFF334155),
+                        height: 1.6,
+                      ),
                     ),
                   ),
                 ),
@@ -116,13 +93,13 @@ class DashboardMentorCard extends ConsumerWidget {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
-              onPressed: null,
-              icon: const Icon(Icons.chat_bubble_outline_rounded, size: 15),
-              label: const Text('Ask Your Mentor — Coming Soon'),
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(AppRoutes.aiMentor),
+              icon: const Icon(Icons.psychology_rounded, size: 15),
+              label: const Text('Open AI Mentor'),
               style: OutlinedButton.styleFrom(
                 foregroundColor: const Color(0xFF7C3AED),
-                side:
-                    const BorderSide(color: Color(0xFF7C3AED), width: 1),
+                side: const BorderSide(color: Color(0xFF7C3AED), width: 1),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -132,8 +109,6 @@ class DashboardMentorCard extends ConsumerWidget {
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                 ),
-                disabledForegroundColor:
-                    const Color(0xFF7C3AED).withValues(alpha: 0.4),
               ),
             ),
           ),

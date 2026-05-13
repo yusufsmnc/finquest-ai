@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'features/onboarding/application/onboarding_notifier.dart';
 import 'features/onboarding/presentation/onboarding_navigator.dart';
 import 'features/gamification/presentation/gamification_overlay_manager.dart';
+import 'features/ai_mentor/presentation/ai_mentor_overlay_wrapper.dart';
 import 'core/routing/app_router.dart';
 
 void main() async {
@@ -47,7 +48,9 @@ class FinQuestApp extends StatelessWidget {
       home: skipOnboarding ? null : const OnboardingNavigator(),
       onGenerateRoute: AppRouter.generateRoute,
       builder: (context, child) => GamificationOverlayManager(
-        child: child ?? const SizedBox.shrink(),
+        child: AiMentorOverlayWrapper(
+          child: child ?? const SizedBox.shrink(),
+        ),
       ),
     );
   }
