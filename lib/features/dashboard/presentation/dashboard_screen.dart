@@ -9,6 +9,7 @@ import 'widgets/dashboard_portfolio_card.dart';
 import 'widgets/dashboard_learning_section.dart';
 import 'widgets/dashboard_achievements_section.dart';
 import 'widgets/dashboard_mentor_card.dart';
+import 'widgets/market_events_feed_section.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -152,6 +153,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 12)),
               const SliverToBoxAdapter(child: DashboardChallengesSection()),
+              SliverToBoxAdapter(
+                child: _SectionHeader(
+                  title: 'Market Events',
+                  trailing: 'LIVE',
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 12)),
+              const SliverToBoxAdapter(child: MarketEventsFeedSection()),
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 sliver: SliverList(

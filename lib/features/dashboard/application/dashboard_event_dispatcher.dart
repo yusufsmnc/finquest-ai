@@ -2,6 +2,7 @@ import '../../../core/events/game_event.dart';
 import '../../achievements/application/achievements_notifier.dart';
 import '../../ai_mentor/application/ai_mentor_notifier.dart';
 import '../../gamification/application/gamification_overlay_notifier.dart';
+import '../../market_events/application/market_events_notifier.dart';
 import 'dashboard_notifier.dart';
 
 class DashboardEventDispatcher {
@@ -9,12 +10,14 @@ class DashboardEventDispatcher {
   final GamificationOverlayNotifier _overlayNotifier;
   final AchievementsNotifier _achievementsNotifier;
   final AiMentorNotifier _mentorNotifier;
+  final MarketEventsNotifier _marketEventsNotifier;
 
   const DashboardEventDispatcher(
     this._notifier,
     this._overlayNotifier,
     this._achievementsNotifier,
     this._mentorNotifier,
+    this._marketEventsNotifier,
   );
 
   void _dispatch(GameEvent event) {
@@ -22,6 +25,7 @@ class DashboardEventDispatcher {
     _overlayNotifier.applyEvent(event);
     _achievementsNotifier.applyEvent(event);
     _mentorNotifier.applyEvent(event);
+    _marketEventsNotifier.applyEvent(event);
 
     final unlocked = _achievementsNotifier.currentState.lastUnlocked;
     if (unlocked != null) {

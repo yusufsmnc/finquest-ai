@@ -8,23 +8,50 @@ import 'screens/scenario_feedback_screen.dart';
 import 'widgets/scenario_xp_float_overlay.dart';
 import 'widgets/scenario_reward_toast_overlay.dart';
 
-class ScenarioFlow extends ConsumerWidget {
+class ScenarioFlow extends ConsumerStatefulWidget {
   const ScenarioFlow({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ScenarioFlow> createState() => _ScenarioFlowState();
+}
+
+class _ScenarioFlowState extends ConsumerState<ScenarioFlow> {
+  bool _categoryApplied = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_categoryApplied) {
+      final args = ModalRoute.of(context)?.settings.arguments;
+      if (args is String) {
+        _categoryApplied = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            ref.read(scenarioDispatcherProvider).onCategorySelected(args);
+          }
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final phase = ref.watch(scenarioNotifierProvider.select((s) => s.phase));
     final notifier = ref.read(scenarioNotifierProvider.notifier);
 
-    ref.listen(scenarioNotifierProvider.select((s) => s.showXpFloat), (_, show) {
+    ref.listen(scenarioNotifierProvider.select((s) => s.showXpFloat),
+        (_, show) {
       if (show) {
-        Future.delayed(const Duration(milliseconds: 800), () => notifier.dismissXpFloat());
+        Future.delayed(
+            const Duration(milliseconds: 800), () => notifier.dismissXpFloat());
       }
     });
 
-    ref.listen(scenarioNotifierProvider.select((s) => s.streakPulse), (_, pulse) {
+    ref.listen(scenarioNotifierProvider.select((s) => s.streakPulse),
+        (_, pulse) {
       if (pulse) {
-        Future.delayed(const Duration(milliseconds: 600), () => notifier.dismissStreakPulse());
+        Future.delayed(const Duration(milliseconds: 600),
+            () => notifier.dismissStreakPulse());
       }
     });
 

@@ -5,6 +5,7 @@ import 'domain/scenario_state.dart';
 import '../gamification/gamification_providers.dart';
 import '../achievements/achievements_providers.dart';
 import '../ai_mentor/ai_mentor_providers.dart';
+import '../market_events/market_events_providers.dart';
 
 final scenarioNotifierProvider =
     NotifierProvider<ScenarioNotifier, ScenarioState>(
@@ -16,6 +17,7 @@ final scenarioDispatcherProvider = Provider<ScenarioEventDispatcher>((ref) {
   final overlayNotifier = ref.read(gamificationOverlayProvider.notifier);
   final achievementsNotifier = ref.read(achievementsNotifierProvider.notifier);
   final mentorNotifier = ref.read(aiMentorProvider.notifier);
+  final marketEventsNotifier = ref.read(marketEventsProvider.notifier);
   return ScenarioEventDispatcher(
-      notifier, overlayNotifier, achievementsNotifier, mentorNotifier);
+      notifier, overlayNotifier, achievementsNotifier, mentorNotifier, marketEventsNotifier);
 });

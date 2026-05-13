@@ -32,7 +32,8 @@ lib/
 │   ├── gamification/    # ✅ Implemented
 │   ├── achievements/    # ✅ Implemented
 │   ├── profile/         # ✅ Implemented
-│   └── ai_mentor/       # ✅ Implemented
+│   ├── ai_mentor/       # ✅ Implemented
+│   └── market_events/   # ✅ Implemented
 └── main.dart
 ```
 
@@ -97,7 +98,7 @@ User Action → UI Event → State Update → Gamification Engine → Animation 
 - Category filter bar (animated chips)
 - Gradient stats header with per-category breakdown
 - Fully event-driven unlock detection (XP_GAINED, STREAK_UPDATED, DECISION_CORRECT, LEVEL_UP)
-- Quad-dispatch pipeline: feature notifier → overlay notifier → achievements notifier → ai mentor notifier
+- Penta-dispatch pipeline: feature notifier → overlay → achievements → ai mentor → market events notifier
 - Auto-triggers `AchievementUnlockOverlay` on new unlock via global overlay system
 - Progress bars update incrementally on locked achievements
 - Navigable from Dashboard via trophy FAB
@@ -114,6 +115,19 @@ User Action → UI Event → State Update → Gamification Engine → Animation 
 - `MentorGuidancePanel` — animated panel injected into scenario flow for real-time guidance
 - Dashboard mentor card upgraded: live mood avatar, live message via `AnimatedSwitcher`, direct navigation to mentor screen
 - Render-only: NO AI computation, NO backend, NO fake LLM — all messages are externally provided data
+
+### ✅ Market Events System
+- 12 seeded real-world financial events across 4 categories (Investing / Budgeting / Savings / Risk Management)
+- 3-tier impact system: Low (green) · Medium (amber) · High (red) with color-coded left accent border on cards
+- Dashboard "Market Events" feed — horizontal scroll of up to 4 active event cards, disappears when all resolved
+- `MarketEventCard` — impact badge, category chip, headline, scale press animation, "Act Now" button
+- `MarketEventDetailModal` — full description, "Why This Matters" analysis section, "Practice This Scenario" CTA
+- `MarketEventsScreen` — full screen with active events list + resolved events section
+- "Act Now" flow: sets active event → pre-filters scenario screen to matching category via route arguments
+- `ScenarioFlow` upgraded to `ConsumerStatefulWidget` — reads route arguments in `didChangeDependencies`, applies category filter once via `_categoryApplied` guard
+- After making a scenario decision, the linked market event auto-resolves (resolved state = greyed card + "Decision made" label)
+- `MarketEventsRepository`: 12 events with rich descriptions, seeded fresh per session via `DateTime.now()` subtraction
+- Penta-dispatch: `MarketEventsNotifier.applyEvent` receives `DECISION_MADE` event to auto-resolve the active event
 
 ### ✅ Gamification Overlay System
 - **Level Up Modal** — full-screen celebration with 12 confetti dots, fires every 200 XP

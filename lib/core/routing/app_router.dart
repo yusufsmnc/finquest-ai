@@ -4,6 +4,7 @@ import '../../features/scenarios/presentation/scenario_flow.dart';
 import '../../features/achievements/presentation/achievements_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/ai_mentor/presentation/ai_mentor_screen.dart';
+import '../../features/market_events/presentation/market_events_screen.dart';
 
 class AppRoutes {
   static const String onboarding = '/onboarding';
@@ -12,6 +13,7 @@ class AppRoutes {
   static const String achievements = '/achievements';
   static const String profile = '/profile';
   static const String aiMentor = '/ai_mentor';
+  static const String marketEvents = '/market_events';
 
   AppRoutes._();
 }
@@ -52,6 +54,11 @@ class AppRouter {
         return _buildRoute(
           settings: settings,
           builder: (_) => const AiMentorScreen(),
+        );
+      case AppRoutes.marketEvents:
+        return _buildRoute(
+          settings: settings,
+          builder: (_) => const MarketEventsScreen(),
         );
       default:
         return _buildRoute(
