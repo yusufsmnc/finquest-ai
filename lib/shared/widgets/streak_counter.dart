@@ -76,7 +76,7 @@ class _StreakCounterState extends State<StreakCounter>
             color: const Color(0xFFFFF7ED),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: const Color(0xFFF59E0B).withOpacity(0.3),
+              color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
               width: 1.5,
             ),
           ),

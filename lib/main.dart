@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'features/onboarding/application/onboarding_notifier.dart';
 import 'features/onboarding/presentation/onboarding_navigator.dart';
+import 'features/gamification/presentation/gamification_overlay_manager.dart';
 import 'core/routing/app_router.dart';
 
 void main() async {
@@ -42,10 +43,12 @@ class FinQuestApp extends StatelessWidget {
       title: 'FinQuest AI',
       debugShowCheckedModeBanner: false,
       theme: _buildTheme(),
-      // Skip onboarding if already completed in a prior session.
       initialRoute: skipOnboarding ? AppRouter.dashboard : null,
       home: skipOnboarding ? null : const OnboardingNavigator(),
       onGenerateRoute: AppRouter.generateRoute,
+      builder: (context, child) => GamificationOverlayManager(
+        child: child ?? const SizedBox.shrink(),
+      ),
     );
   }
 

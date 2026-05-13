@@ -92,12 +92,12 @@ class _OnboardingXpRevealScreenState
                           color: const Color(0xFFFFF7ED),
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: const Color(0xFFF59E0B).withOpacity(0.3),
+                            color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
                             width: 2,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFF59E0B).withOpacity(0.2),
+                              color: const Color(0xFFF59E0B).withValues(alpha: 0.2),
                               blurRadius: 24,
                               offset: const Offset(0, 8),
                             ),
@@ -272,9 +272,9 @@ class _EarnItem extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.06),
+        color: color.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: color.withOpacity(0.15)),
+        border: Border.all(color: color.withValues(alpha: 0.15)),
       ),
       child: Column(
         children: [

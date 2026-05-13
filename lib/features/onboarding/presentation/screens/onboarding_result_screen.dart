@@ -207,7 +207,7 @@ class _ResultHeader extends StatelessWidget {
           width: 72,
           height: 72,
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: color, size: 38),
@@ -304,7 +304,7 @@ class _XpEarnedCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(
                   horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFF16A34A).withOpacity(0.06),
+                color: const Color(0xFF16A34A).withValues(alpha: 0.06),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: const Row(

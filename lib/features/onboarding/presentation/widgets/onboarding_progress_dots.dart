@@ -37,7 +37,7 @@ class OnboardingProgressDots extends StatelessWidget {
               boxShadow: isActive
                   ? [
                       BoxShadow(
-                        color: const Color(0xFF2563EB).withOpacity(0.4),
+                        color: const Color(0xFF2563EB).withValues(alpha: 0.4),
                         blurRadius: 6,
                         offset: const Offset(0, 2),
                       ),

@@ -78,7 +78,7 @@ class _OnboardingMentorIntroState extends State<OnboardingMentorIntro>
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF2563EB).withOpacity(0.35),
+                    color: const Color(0xFF2563EB).withValues(alpha: 0.35),
                     blurRadius: 24,
                     offset: const Offset(0, 8),
                   ),

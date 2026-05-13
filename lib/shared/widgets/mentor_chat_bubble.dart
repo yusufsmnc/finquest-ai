@@ -85,12 +85,12 @@ class _MentorChatBubbleState extends State<MentorChatBubble>
               color: bgColor,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: accentColor.withOpacity(0.25),
+                color: accentColor.withValues(alpha: 0.25),
                 width: 1.5,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: accentColor.withOpacity(0.08),
+                  color: accentColor.withValues(alpha: 0.08),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -105,7 +105,7 @@ class _MentorChatBubbleState extends State<MentorChatBubble>
                   height: 40,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [accentColor, accentColor.withOpacity(0.7)],
+                      colors: [accentColor, accentColor.withValues(alpha: 0.7)],
                     ),
                     shape: BoxShape.circle,
                   ),

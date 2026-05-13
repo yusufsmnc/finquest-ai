@@ -29,6 +29,7 @@ lib/
 │   ├── onboarding/      # ✅ Implemented
 │   ├── dashboard/       # ✅ Implemented
 │   ├── scenarios/       # ✅ Implemented
+│   ├── gamification/    # ✅ Implemented
 │   ├── ai_mentor/       # 🔜 Next
 │   ├── achievements/    # 🔜 Planned
 │   └── profile/         # 🔜 Planned
@@ -74,6 +75,15 @@ User Action → UI Event → State Update → Gamification Engine → Animation 
 - Reward toast every 3 correct decisions
 - AnimatedSwitcher phase transitions (list → decision → feedback)
 
+### ✅ Gamification Overlay System
+- **Level Up Modal** — full-screen celebration with 12 confetti dots, fires every 200 XP
+- **Streak Feedback Overlay** — scale-bounce animation on 2+ day streaks
+- **XP Lost Overlay** — red shake banner slides in from top
+- **Achievement Unlock Overlay** — slides in from bottom, gold badge, 2.5s auto-dismiss
+- **Gamification Toast Queue** — sequential toast system, auto-advances every 2s
+- **Global Overlay Manager** — wraps entire app, overlays appear on any screen
+- All overlays are purely event-driven via the GameEvent contract
+
 ---
 
 ## Gamification System
@@ -85,9 +95,11 @@ All game logic flows through a deterministic event contract:
 | `DECISION_MADE` | User taps an option | Records selection, increments total decisions |
 | `DECISION_CORRECT` | Correct option chosen | Increments correct count, sets isCorrect |
 | `DECISION_WRONG` | Wrong option chosen | Sets isCorrect false |
-| `XP_GAINED` | Any decision | Adds XP, shows float indicator |
-| `STREAK_UPDATED` | After each decision | Updates streak, triggers pulse |
-| `REWARD_UNLOCKED` | Every 3 correct answers | Shows reward toast |
+| `XP_GAINED` | Any decision | Adds XP, shows float indicator, detects level-up |
+| `XP_LOST` | Penalty (future) | Shows red shake banner |
+| `LEVEL_UP` | Every 200 XP | Full-screen level-up modal with confetti |
+| `STREAK_UPDATED` | After each decision | Updates streak, triggers bounce animation |
+| `REWARD_UNLOCKED` | Every 3 correct answers | Shows toast in global queue |
 
 ---
 

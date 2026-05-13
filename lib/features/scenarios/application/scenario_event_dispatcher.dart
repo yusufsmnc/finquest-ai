@@ -1,12 +1,17 @@
 import '../../../core/events/game_event.dart';
+import '../../gamification/application/gamification_overlay_notifier.dart';
 import 'scenario_notifier.dart';
 
 class ScenarioEventDispatcher {
   final ScenarioNotifier _notifier;
+  final GamificationOverlayNotifier _overlayNotifier;
 
-  const ScenarioEventDispatcher(this._notifier);
+  const ScenarioEventDispatcher(this._notifier, this._overlayNotifier);
 
-  void _dispatch(GameEvent event) => _notifier.applyEvent(event);
+  void _dispatch(GameEvent event) {
+    _notifier.applyEvent(event);
+    _overlayNotifier.applyEvent(event);
+  }
 
   void onDecisionMade(String scenarioId, String optionId, bool isCorrect, int xpAmount) {
     _dispatch(GameEvent.decisionMade(optionId: optionId));

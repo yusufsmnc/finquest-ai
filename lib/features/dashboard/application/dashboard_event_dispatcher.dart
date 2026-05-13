@@ -1,12 +1,17 @@
 import '../../../core/events/game_event.dart';
+import '../../gamification/application/gamification_overlay_notifier.dart';
 import 'dashboard_notifier.dart';
 
 class DashboardEventDispatcher {
   final DashboardNotifier _notifier;
+  final GamificationOverlayNotifier _overlayNotifier;
 
-  const DashboardEventDispatcher(this._notifier);
+  const DashboardEventDispatcher(this._notifier, this._overlayNotifier);
 
-  void _dispatch(GameEvent event) => _notifier.applyEvent(event);
+  void _dispatch(GameEvent event) {
+    _notifier.applyEvent(event);
+    _overlayNotifier.applyEvent(event);
+  }
 
   void onScenarioCompleted({required bool isCorrect}) {
     _dispatch(GameEvent.decisionMade(optionId: isCorrect ? 'correct' : 'wrong'));

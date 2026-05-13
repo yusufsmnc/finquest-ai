@@ -142,7 +142,7 @@ class _XPProgressBarState extends State<XPProgressBar>
                           boxShadow: [
                             BoxShadow(
                               color:
-                                  const Color(0xFFF59E0B).withOpacity(0.4),
+                                  const Color(0xFFF59E0B).withValues(alpha: 0.4),
                               blurRadius: 6,
                               offset: const Offset(0, 2),
                             ),

@@ -483,7 +483,7 @@ class _UnlockedRewardRow extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: const Color(0xFF2563EB).withOpacity(0.08),
+                color: const Color(0xFF2563EB).withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(_icon, color: const Color(0xFF2563EB), size: 20),
@@ -618,7 +618,7 @@ class _ConfettiPainter extends CustomPainter {
               : 1.0;
 
       final paint = Paint()
-        ..color = p.color.withOpacity(opacity.clamp(0.0, 1.0))
+        ..color = p.color.withValues(alpha: opacity.clamp(0.0, 1.0))
         ..style = PaintingStyle.fill;
 
       canvas.save();

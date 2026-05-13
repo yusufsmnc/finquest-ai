@@ -131,7 +131,7 @@ class _AchievementBadgeState extends State<AchievementBadge>
                     shape: BoxShape.circle,
                     gradient: RadialGradient(
                       colors: [
-                        const Color(0xFFF59E0B).withOpacity(0.15),
+                        const Color(0xFFF59E0B).withValues(alpha: 0.15),
                         Colors.transparent,
                       ],
                     ),
@@ -153,7 +153,7 @@ class _AchievementBadgeState extends State<AchievementBadge>
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFFF59E0B).withOpacity(0.5),
+                        color: const Color(0xFFF59E0B).withValues(alpha: 0.5),
                         blurRadius: 20,
                         offset: const Offset(0, 6),
                       ),

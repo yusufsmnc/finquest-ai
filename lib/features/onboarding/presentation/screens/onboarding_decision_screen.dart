@@ -137,7 +137,7 @@ class _OnboardingDecisionScreenState
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 10),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF2563EB).withOpacity(0.06),
+                          color: const Color(0xFF2563EB).withValues(alpha: 0.06),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Row(
@@ -174,7 +174,7 @@ class _OnboardingDecisionScreenState
                 child: IgnorePointer(
                   child: Container(
                     color: const Color(0xFFDC2626)
-                        .withOpacity(_redFlash.value.clamp(0.0, 1.0)),
+                        .withValues(alpha: _redFlash.value.clamp(0.0, 1.0)),
                   ),
                 ),
               );
@@ -216,7 +216,7 @@ class _ScenarioCard extends StatelessWidget {
           border: Border.all(color: const Color(0xFFE2E8F0)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 16,
               offset: const Offset(0, 4),
             ),
@@ -299,9 +299,9 @@ class _RiskBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.25)),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -415,7 +415,7 @@ class _OptionButtonState extends State<_OptionButton>
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
+                  color: Colors.black.withValues(alpha: 0.04),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
