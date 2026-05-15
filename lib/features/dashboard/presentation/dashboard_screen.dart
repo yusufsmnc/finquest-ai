@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../dashboard_providers.dart';
-import '../../../core/routing/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import 'widgets/dashboard_xp_hero_card.dart';
 import 'widgets/dashboard_stats_row.dart';
@@ -88,47 +87,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          FloatingActionButton.small(
-            heroTag: 'fab_profile',
-            onPressed: () =>
-                Navigator.of(context).pushNamed(AppRoutes.profile),
-            backgroundColor: AppColors.surfaceHigh,
-            child: const Icon(Icons.person_rounded,
-                color: AppColors.textPrimary, size: 18),
-          ),
-          const SizedBox(height: 8),
-          FloatingActionButton.small(
-            heroTag: 'fab_achievements',
-            onPressed: () =>
-                Navigator.of(context).pushNamed(AppRoutes.achievements),
-            backgroundColor: AppColors.purple,
-            child: const Icon(Icons.emoji_events_rounded,
-                color: Colors.white, size: 18),
-          ),
-          const SizedBox(height: 10),
-          FloatingActionButton.extended(
-            heroTag: 'fab_scenarios',
-            onPressed: () =>
-                Navigator.of(context).pushNamed(AppRoutes.scenarios),
-            backgroundColor: AppColors.primary,
-            icon: const Icon(Icons.psychology_alt_rounded,
-                color: Colors.white, size: 20),
-            label: const Text(
-              'Scenarios',
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
-      ),
       body: FadeTransition(
         opacity: _fadeIn,
         child: SlideTransition(

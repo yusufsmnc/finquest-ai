@@ -91,15 +91,17 @@ class _ProfileAppBar extends StatelessWidget {
       elevation: 0,
       scrolledUnderElevation: 0,
       pinned: true,
-      leading: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => Navigator.of(context).pop(),
-        child: const Icon(
-          Icons.arrow_back_rounded,
-          color: AppColors.textPrimary,
-          size: 22,
-        ),
-      ),
+      leading: Navigator.of(context).canPop()
+          ? GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => Navigator.of(context).pop(),
+              child: const Icon(
+                Icons.arrow_back_rounded,
+                color: AppColors.textPrimary,
+                size: 22,
+              ),
+            )
+          : null,
       title: const Text(
         'Profile',
         style: TextStyle(

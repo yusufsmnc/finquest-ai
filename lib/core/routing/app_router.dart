@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../features/dashboard/presentation/dashboard_screen.dart';
+import '../navigation/main_shell.dart';
 import '../../features/scenarios/presentation/scenario_flow.dart';
 import '../../features/achievements/presentation/achievements_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
@@ -33,7 +33,7 @@ class AppRouter {
       case AppRoutes.dashboard:
         return _buildRoute(
           settings: settings,
-          builder: (_) => const DashboardScreen(),
+          builder: (_) => const MainShell(),
         );
       case AppRoutes.scenarios:
         return _buildRoute(
