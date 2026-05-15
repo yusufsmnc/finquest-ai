@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../core/theme/app_colors.dart';
 
 /// AnimatedButton — provides press-scale feedback on every tap.
 /// Scale: 1.0 → 0.97 → 1.0 (80ms press + 80ms release).
@@ -82,7 +83,7 @@ class _AnimatedButtonState extends State<AnimatedButton>
               padding: widget.padding,
               decoration: widget.decoration ??
                   BoxDecoration(
-                    color: const Color(0xFF2563EB),
+                    color: AppColors.primary,
                     borderRadius: BorderRadius.circular(14),
                   ),
               child: widget.child,
@@ -114,15 +115,15 @@ class PrimaryButton extends StatelessWidget {
       onTap: isLoading ? null : onTap,
       decoration: BoxDecoration(
         color: onTap == null
-            ? const Color(0xFF2563EB).withValues(alpha: 0.5)
-            : const Color(0xFF2563EB),
+            ? AppColors.primary.withValues(alpha: 0.5)
+            : AppColors.primary,
         borderRadius: BorderRadius.circular(14),
         boxShadow: onTap == null
             ? null
             : [
                 BoxShadow(
-                  color: const Color(0xFF2563EB).withValues(alpha: 0.3),
-                  blurRadius: 12,
+                  color: AppColors.primaryGlow(0.35),
+                  blurRadius: 14,
                   offset: const Offset(0, 4),
                 ),
               ],
@@ -170,7 +171,7 @@ class SecondaryButton extends StatelessWidget {
       onTap: onTap,
       decoration: BoxDecoration(
         color: Colors.transparent,
-        border: Border.all(color: const Color(0xFF2563EB), width: 1.5),
+        border: Border.all(color: AppColors.primary, width: 1.5),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Center(
@@ -180,7 +181,7 @@ class SecondaryButton extends StatelessWidget {
             fontFamily: 'Poppins',
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF2563EB),
+            color: AppColors.primary,
             letterSpacing: 0.2,
           ),
         ),

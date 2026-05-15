@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_colors.dart';
 
 /// OnboardingMentorIntro — displays the mentor avatar + intro text on S1.
 class OnboardingMentorIntro extends StatefulWidget {
@@ -65,7 +66,6 @@ class _OnboardingMentorIntroState extends State<OnboardingMentorIntro>
         position: _slide,
         child: Column(
           children: [
-            // Mentor avatar
             Container(
               width: 88,
               height: 88,
@@ -74,12 +74,12 @@ class _OnboardingMentorIntroState extends State<OnboardingMentorIntro>
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color(0xFF2563EB), Color(0xFF0EA5E9)],
+                  colors: [AppColors.primary, AppColors.cyan],
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF2563EB).withValues(alpha: 0.35),
-                    blurRadius: 24,
+                    color: AppColors.primaryGlow(0.4),
+                    blurRadius: 28,
                     offset: const Offset(0, 8),
                   ),
                 ],
@@ -98,7 +98,7 @@ class _OnboardingMentorIntroState extends State<OnboardingMentorIntro>
                 fontFamily: 'Poppins',
                 fontSize: 28,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF0F172A),
+                color: AppColors.textPrimary,
                 height: 1.2,
               ),
             ),
@@ -110,7 +110,7 @@ class _OnboardingMentorIntroState extends State<OnboardingMentorIntro>
                 fontFamily: 'Inter',
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
-                color: Color(0xFF64748B),
+                color: AppColors.textSecondary,
                 height: 1.6,
               ),
             ),

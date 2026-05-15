@@ -9,10 +9,10 @@ import '../../../../shared/widgets/mentor_chat_bubble.dart';
 import '../../../../shared/widgets/xp_progress_bar.dart';
 import '../../../../shared/widgets/xp_float_indicator.dart';
 import '../../../../shared/widgets/streak_counter.dart';
+import '../../../../core/theme/app_colors.dart';
 
 /// S4 — Result Screen.
 /// Shows mentor feedback, XP earned, and streak.
-/// XPFloatIndicator plays on mount (XP_GAINED already fired).
 class OnboardingResultScreen extends ConsumerStatefulWidget {
   const OnboardingResultScreen({super.key});
 
@@ -28,7 +28,6 @@ class _OnboardingResultScreenState
   late Animation<double> _opacity;
   late Animation<Offset> _slide;
   bool _xpFloatShown = false;
-  // XPProgressBar: spec requires animate from 0 → xpProgress (600ms, easeOutCubic), delay 400ms
   double _xpBarProgress = 0.0;
 
   @override
@@ -59,12 +58,14 @@ class _OnboardingResultScreenState
     final reduced = MediaQuery.of(context).disableAnimations;
     if (reduced) {
       _revealController.value = 1;
-      setState(() => _xpBarProgress = ref.read(onboardingNotifierProvider).xpProgress);
+      setState(() =>
+          _xpBarProgress = ref.read(onboardingNotifierProvider).xpProgress);
     } else {
       _revealController.forward();
       Future.delayed(const Duration(milliseconds: 400), () {
         if (mounted) {
-          setState(() => _xpBarProgress = ref.read(onboardingNotifierProvider).xpProgress);
+          setState(() =>
+              _xpBarProgress = ref.read(onboardingNotifierProvider).xpProgress);
         }
       });
     }
@@ -85,11 +86,17 @@ class _OnboardingResultScreenState
 
   @override
   Widget build(BuildContext context) {
-    final isCorrect = ref.watch(onboardingNotifierProvider.select((s) => s.isCorrect)) ?? false;
-    final xpEarned = ref.watch(onboardingNotifierProvider.select((s) => s.xpEarned));
-    final currentStreak = ref.watch(onboardingNotifierProvider.select((s) => s.currentStreak));
-    final showXpFloat = ref.watch(onboardingNotifierProvider.select((s) => s.showXpFloat));
-    final streakPulse = ref.watch(onboardingNotifierProvider.select((s) => s.streakPulse));
+    final isCorrect = ref.watch(
+            onboardingNotifierProvider.select((s) => s.isCorrect)) ??
+        false;
+    final xpEarned = ref
+        .watch(onboardingNotifierProvider.select((s) => s.xpEarned));
+    final currentStreak = ref
+        .watch(onboardingNotifierProvider.select((s) => s.currentStreak));
+    final showXpFloat = ref
+        .watch(onboardingNotifierProvider.select((s) => s.showXpFloat));
+    final streakPulse = ref
+        .watch(onboardingNotifierProvider.select((s) => s.streakPulse));
     final dispatcher = ref.read(onboardingDispatcherProvider);
 
     final mentorMessage = isCorrect
@@ -101,7 +108,7 @@ class _OnboardingResultScreenState
       child: Stack(
         children: [
           Scaffold(
-            backgroundColor: const Color(0xFFF8FAFC),
+            backgroundColor: AppColors.background,
             body: SafeArea(
               child: FadeTransition(
                 opacity: _opacity,
@@ -114,24 +121,19 @@ class _OnboardingResultScreenState
                         const SizedBox(height: 24),
                         const OnboardingProgressDots(currentStep: 4),
                         const SizedBox(height: 32),
-                        // Result header
                         _ResultHeader(isCorrect: isCorrect),
                         const SizedBox(height: 24),
-                        // Mentor feedback
                         MentorChatBubble(
                           message: mentorMessage,
                           isCorrect: isCorrect,
                         ),
                         const SizedBox(height: 24),
-                        // XP Card — progress starts at 0 and animates to xpProgress
-                        // after 400ms delay (spec: easeOutCubic 600ms fill animation)
                         _XpEarnedCard(
                           xpEarned: xpEarned,
                           isCorrect: isCorrect,
                           progress: _xpBarProgress,
                         ),
                         const SizedBox(height: 16),
-                        // Streak row
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -140,7 +142,7 @@ class _OnboardingResultScreenState
                               style: TextStyle(
                                 fontFamily: 'Inter',
                                 fontSize: 14,
-                                color: Color(0xFF64748B),
+                                color: AppColors.textSecondary,
                               ),
                             ),
                             StreakCounter(
@@ -154,9 +156,7 @@ class _OnboardingResultScreenState
                           label: isCorrect
                               ? 'See Your Reward!'
                               : 'See What You Learned',
-                          onTap: () {
-                            dispatcher.onResultContinued();
-                          },
+                          onTap: () => dispatcher.onResultContinued(),
                         ),
                         const SizedBox(height: 32),
                       ],
@@ -166,7 +166,6 @@ class _OnboardingResultScreenState
               ),
             ),
           ),
-          // XP Float Overlay
           if (_xpFloatShown)
             Positioned(
               left: 0,
@@ -192,10 +191,8 @@ class _ResultHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color =
-        isCorrect ? const Color(0xFF16A34A) : const Color(0xFF0EA5E9);
-    final icon =
-        isCorrect ? Icons.check_circle_rounded : Icons.info_rounded;
+    final color = isCorrect ? AppColors.success : AppColors.cyan;
+    final icon = isCorrect ? Icons.check_circle_rounded : Icons.info_rounded;
     final headline = isCorrect ? 'Great Choice!' : 'Good Try!';
     final subline = isCorrect
         ? 'You made the smart financial decision.'
@@ -209,6 +206,13 @@ class _ResultHeader extends StatelessWidget {
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.1),
             shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: color.withValues(alpha: 0.2),
+                blurRadius: 20,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Icon(icon, color: color, size: 38),
         ),
@@ -229,7 +233,7 @@ class _ResultHeader extends StatelessWidget {
           style: const TextStyle(
             fontFamily: 'Inter',
             fontSize: 14,
-            color: Color(0xFF64748B),
+            color: AppColors.textSecondary,
           ),
         ),
       ],
@@ -262,21 +266,21 @@ class _XpEarnedCard extends StatelessWidget {
                   fontFamily: 'Poppins',
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF0F172A),
+                  color: AppColors.textPrimary,
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF7ED),
+                  color: AppColors.xpGold.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const Icon(Icons.bolt_rounded,
-                        color: Color(0xFFF59E0B), size: 16),
+                        color: AppColors.xpGold, size: 16),
                     const SizedBox(width: 4),
                     Text(
                       '+$xpEarned XP',
@@ -284,7 +288,7 @@ class _XpEarnedCard extends StatelessWidget {
                         fontFamily: 'Poppins',
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFFD97706),
+                        color: AppColors.xpGold,
                       ),
                     ),
                   ],
@@ -301,17 +305,18 @@ class _XpEarnedCard extends StatelessWidget {
           if (isCorrect) ...[
             const SizedBox(height: 12),
             Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFF16A34A).withValues(alpha: 0.06),
+                color: AppColors.success.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                    color: AppColors.success.withValues(alpha: 0.2)),
               ),
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(Icons.stars_rounded,
-                      color: Color(0xFF16A34A), size: 14),
+                      color: AppColors.success, size: 14),
                   SizedBox(width: 6),
                   Text(
                     'Bonus: Correct Answer +50 XP',
@@ -319,7 +324,7 @@ class _XpEarnedCard extends StatelessWidget {
                       fontFamily: 'Inter',
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF16A34A),
+                      color: AppColors.success,
                     ),
                   ),
                 ],

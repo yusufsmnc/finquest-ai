@@ -4,10 +4,10 @@ import '../../onboarding_providers.dart';
 import '../../data/onboarding_constants.dart';
 import '../../application/onboarding_animation_handler.dart';
 import '../widgets/onboarding_progress_dots.dart';
+import '../../../../core/theme/app_colors.dart';
 
 /// S3 — Decision Screen.
 /// Shows the tutorial scenario (CR-001) and the two decision options.
-/// Decision tap → dispatcher.onDecisionMade() → state update → navigate to S4.
 class OnboardingDecisionScreen extends ConsumerStatefulWidget {
   const OnboardingDecisionScreen({super.key});
 
@@ -31,20 +31,14 @@ class _OnboardingDecisionScreenState
   @override
   void initState() {
     super.initState();
-    _shakeController =
-        OnboardingAnimationHandler.createShakeController(this);
-    _shakeAnim =
-        OnboardingAnimationHandler.buildShakeAnimation(_shakeController);
+    _shakeController = OnboardingAnimationHandler.createShakeController(this);
+    _shakeAnim = OnboardingAnimationHandler.buildShakeAnimation(_shakeController);
 
-    _correctController =
-        OnboardingAnimationHandler.createCorrectController(this);
-    _correctScale =
-        OnboardingAnimationHandler.buildCorrectScaleAnimation(_correctController);
+    _correctController = OnboardingAnimationHandler.createCorrectController(this);
+    _correctScale = OnboardingAnimationHandler.buildCorrectScaleAnimation(_correctController);
 
-    _redFlashController =
-        OnboardingAnimationHandler.createRedFlashController(this);
-    _redFlash =
-        OnboardingAnimationHandler.buildRedFlashAnimation(_redFlashController);
+    _redFlashController = OnboardingAnimationHandler.createRedFlashController(this);
+    _redFlash = OnboardingAnimationHandler.buildRedFlashAnimation(_redFlashController);
   }
 
   @override
@@ -61,8 +55,6 @@ class _OnboardingDecisionScreenState
     setState(() => _tappedOptionId = optionId);
     final isCorrect = optionId == OnboardingConstants.optionAId;
 
-    // Play feedback animation first, then dispatch.
-    // dispatcher.onDecisionMade() advances the step — navigation is state-driven.
     if (isCorrect) {
       await OnboardingAnimationHandler.playCorrect(context, _correctController);
     } else {
@@ -83,7 +75,7 @@ class _OnboardingDecisionScreenState
       child: Stack(
         children: [
           Scaffold(
-            backgroundColor: const Color(0xFFF8FAFC),
+            backgroundColor: AppColors.background,
             body: SafeArea(
               child: AnimatedBuilder(
                 animation: _shakeAnim,
@@ -100,19 +92,16 @@ class _OnboardingDecisionScreenState
                       const SizedBox(height: 24),
                       const OnboardingProgressDots(currentStep: 3),
                       const SizedBox(height: 24),
-                      // Scenario card
                       _ScenarioCard(
                         isCorrectSelected: state.isCorrect,
                         tappedOptionId: _tappedOptionId,
                         correctScale: _correctScale,
                       ),
                       const SizedBox(height: 24),
-                      // Options
                       _OptionButton(
                         optionId: OnboardingConstants.optionAId,
                         label: OnboardingConstants.optionAText,
-                        isSelected:
-                            _tappedOptionId == OnboardingConstants.optionAId,
+                        isSelected: _tappedOptionId == OnboardingConstants.optionAId,
                         isDisabled: state.decisionMade,
                         isCorrect: true,
                         onTap: state.decisionMade
@@ -123,8 +112,7 @@ class _OnboardingDecisionScreenState
                       _OptionButton(
                         optionId: OnboardingConstants.optionBId,
                         label: OnboardingConstants.optionBText,
-                        isSelected:
-                            _tappedOptionId == OnboardingConstants.optionBId,
+                        isSelected: _tappedOptionId == OnboardingConstants.optionBId,
                         isDisabled: state.decisionMade,
                         isCorrect: false,
                         onTap: state.decisionMade
@@ -132,27 +120,27 @@ class _OnboardingDecisionScreenState
                             : () => _onOptionTapped(OnboardingConstants.optionBId),
                       ),
                       const Spacer(),
-                      // Hint
                       Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 10),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF2563EB).withValues(alpha: 0.06),
+                          color: AppColors.primary.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                              color: AppColors.primary.withValues(alpha: 0.15)),
                         ),
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(Icons.lightbulb_outline_rounded,
-                                size: 14,
-                                color: Color(0xFF2563EB)),
+                                size: 14, color: AppColors.primary),
                             SizedBox(width: 6),
                             Text(
                               'There are no wrong answers — only learning opportunities',
                               style: TextStyle(
                                 fontFamily: 'Inter',
                                 fontSize: 12,
-                                color: Color(0xFF2563EB),
+                                color: AppColors.primary,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -173,7 +161,7 @@ class _OnboardingDecisionScreenState
               return Positioned.fill(
                 child: IgnorePointer(
                   child: Container(
-                    color: const Color(0xFFDC2626)
+                    color: AppColors.error
                         .withValues(alpha: _redFlash.value.clamp(0.0, 1.0)),
                   ),
                 ),
@@ -211,29 +199,34 @@ class _ScenarioCard extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFE2E8F0)),
+          border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 16,
+              color: AppColors.primary.withValues(alpha: 0.06),
+              blurRadius: 20,
               offset: const Offset(0, 4),
+            ),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 3),
             ),
           ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header row
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF7ED),
+                    color: AppColors.xpGold.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                        color: AppColors.xpGold.withValues(alpha: 0.2)),
                   ),
                   child: const Text(
                     '⚡ Tutorial',
@@ -241,7 +234,7 @@ class _ScenarioCard extends StatelessWidget {
                       fontFamily: 'Inter',
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFFD97706),
+                      color: AppColors.xpGold,
                     ),
                   ),
                 ),
@@ -256,7 +249,7 @@ class _ScenarioCard extends StatelessWidget {
                 fontFamily: 'Poppins',
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF0F172A),
+                color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
@@ -266,7 +259,7 @@ class _ScenarioCard extends StatelessWidget {
                 fontFamily: 'Inter',
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
-                color: Color(0xFF64748B),
+                color: AppColors.textSecondary,
                 height: 1.6,
               ),
             ),
@@ -284,16 +277,16 @@ class _RiskBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color color;
+    final Color color;
     switch (level.toLowerCase()) {
       case 'low':
-        color = const Color(0xFF16A34A);
+        color = AppColors.success;
         break;
       case 'high':
-        color = const Color(0xFFDC2626);
+        color = AppColors.error;
         break;
       default:
-        color = const Color(0xFFF59E0B);
+        color = AppColors.xpGold;
     }
 
     return Container(
@@ -369,17 +362,15 @@ class _OptionButtonState extends State<_OptionButton>
   }
 
   Color get _borderColor {
-    if (!widget.isSelected) return const Color(0xFFE2E8F0);
-    return widget.isCorrect
-        ? const Color(0xFF16A34A)
-        : const Color(0xFFDC2626);
+    if (!widget.isSelected) return AppColors.border;
+    return widget.isCorrect ? AppColors.success : AppColors.error;
   }
 
   Color get _bgColor {
-    if (!widget.isSelected) return Colors.white;
+    if (!widget.isSelected) return AppColors.surface;
     return widget.isCorrect
-        ? const Color(0xFFF0FDF4)
-        : const Color(0xFFFEF2F2);
+        ? AppColors.success.withValues(alpha: 0.08)
+        : AppColors.error.withValues(alpha: 0.08);
   }
 
   @override
@@ -392,15 +383,13 @@ class _OptionButtonState extends State<_OptionButton>
         behavior: HitTestBehavior.opaque,
         onTapDown: widget.isDisabled ? null : (_) => _pressController.forward(),
         onTapUp: widget.isDisabled ? null : (_) => _pressController.reverse(),
-        onTapCancel: widget.isDisabled ? null : () => _pressController.reverse(),
+        onTapCancel:
+            widget.isDisabled ? null : () => _pressController.reverse(),
         onTap: widget.isDisabled ? null : widget.onTap,
         child: AnimatedBuilder(
           animation: _pressScale,
           builder: (context, child) {
-            return Transform.scale(
-              scale: _pressScale.value,
-              child: child,
-            );
+            return Transform.scale(scale: _pressScale.value, child: child);
           },
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
@@ -413,27 +402,32 @@ class _OptionButtonState extends State<_OptionButton>
                 color: _borderColor,
                 width: widget.isSelected ? 2 : 1.5,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+              boxShadow: widget.isSelected
+                  ? [
+                      BoxShadow(
+                        color: _borderColor.withValues(alpha: 0.2),
+                        blurRadius: 12,
+                        offset: const Offset(0, 3),
+                      ),
+                    ]
+                  : [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.2),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
             ),
             child: Row(
               children: [
-                // Option letter badge
                 Container(
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: widget.isSelected
-                        ? (widget.isCorrect
-                            ? const Color(0xFF16A34A)
-                            : const Color(0xFFDC2626))
-                        : const Color(0xFFF1F5F9),
+                        ? (widget.isCorrect ? AppColors.success : AppColors.error)
+                        : AppColors.surfaceHigh,
                   ),
                   child: Center(
                     child: widget.isSelected
@@ -450,7 +444,7 @@ class _OptionButtonState extends State<_OptionButton>
                               fontFamily: 'Poppins',
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
-                              color: Color(0xFF64748B),
+                              color: AppColors.textSecondary,
                             ),
                           ),
                   ),
@@ -464,10 +458,8 @@ class _OptionButtonState extends State<_OptionButton>
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: widget.isSelected
-                          ? (widget.isCorrect
-                              ? const Color(0xFF16A34A)
-                              : const Color(0xFFDC2626))
-                          : const Color(0xFF0F172A),
+                          ? (widget.isCorrect ? AppColors.success : AppColors.error)
+                          : AppColors.textPrimary,
                       height: 1.4,
                     ),
                   ),

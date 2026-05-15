@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_colors.dart';
 
 /// MentorChatBubble — renders AI mentor feedback messages.
 /// Appears with a subtle fade+slide-in animation.
@@ -65,13 +66,7 @@ class _MentorChatBubbleState extends State<MentorChatBubble>
 
   @override
   Widget build(BuildContext context) {
-    final accentColor = widget.isCorrect
-        ? const Color(0xFF16A34A)
-        : const Color(0xFF0EA5E9);
-
-    final bgColor = widget.isCorrect
-        ? const Color(0xFFF0FDF4)
-        : const Color(0xFFF0F9FF);
+    final accentColor = widget.isCorrect ? AppColors.success : AppColors.cyan;
 
     return FadeTransition(
       opacity: _opacity,
@@ -82,7 +77,7 @@ class _MentorChatBubbleState extends State<MentorChatBubble>
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: bgColor,
+              color: accentColor.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: accentColor.withValues(alpha: 0.25),
@@ -90,16 +85,20 @@ class _MentorChatBubbleState extends State<MentorChatBubble>
               ),
               boxShadow: [
                 BoxShadow(
-                  color: accentColor.withValues(alpha: 0.08),
-                  blurRadius: 12,
+                  color: accentColor.withValues(alpha: 0.1),
+                  blurRadius: 14,
                   offset: const Offset(0, 4),
+                ),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.25),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Mentor avatar
                 Container(
                   width: 40,
                   height: 40,
@@ -148,7 +147,7 @@ class _MentorChatBubbleState extends State<MentorChatBubble>
                           fontFamily: 'Inter',
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
-                          color: Color(0xFF0F172A),
+                          color: AppColors.textPrimary,
                           height: 1.5,
                         ),
                       ),

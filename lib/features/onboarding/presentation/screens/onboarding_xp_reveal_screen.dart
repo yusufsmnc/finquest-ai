@@ -6,6 +6,7 @@ import '../../../../shared/widgets/animated_button.dart';
 import '../../../../shared/widgets/card_container.dart';
 import '../../../../shared/widgets/xp_progress_bar.dart';
 import '../../../../shared/widgets/level_indicator.dart';
+import '../../../../core/theme/app_colors.dart';
 
 /// S2 — XP Reveal Screen.
 /// Introduces the XP & leveling system with an animated reveal.
@@ -71,7 +72,7 @@ class _OnboardingXpRevealScreenState
     return PopScope(
       canPop: false,
       child: Scaffold(
-        backgroundColor: const Color(0xFFF8FAFC),
+        backgroundColor: AppColors.background,
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -84,28 +85,27 @@ class _OnboardingXpRevealScreenState
                   opacity: _fadeIn,
                   child: Column(
                     children: [
-                      // XP system icon
                       Container(
                         width: 96,
                         height: 96,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFFF7ED),
+                          color: AppColors.xpGold.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
+                            color: AppColors.xpGold.withValues(alpha: 0.3),
                             width: 2,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFF59E0B).withValues(alpha: 0.2),
-                              blurRadius: 24,
+                              color: AppColors.xpGold.withValues(alpha: 0.25),
+                              blurRadius: 28,
                               offset: const Offset(0, 8),
                             ),
                           ],
                         ),
                         child: const Icon(
                           Icons.bolt_rounded,
-                          color: Color(0xFFF59E0B),
+                          color: AppColors.xpGold,
                           size: 52,
                         ),
                       ),
@@ -117,7 +117,7 @@ class _OnboardingXpRevealScreenState
                           fontFamily: 'Poppins',
                           fontSize: 26,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF0F172A),
+                          color: AppColors.textPrimary,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -129,7 +129,7 @@ class _OnboardingXpRevealScreenState
                           fontFamily: 'Inter',
                           fontSize: 15,
                           fontWeight: FontWeight.w400,
-                          color: Color(0xFF64748B),
+                          color: AppColors.textSecondary,
                           height: 1.6,
                         ),
                       ),
@@ -137,17 +137,13 @@ class _OnboardingXpRevealScreenState
                   ),
                 ),
                 const SizedBox(height: 40),
-                // XP preview card
                 AnimatedBuilder(
                   animation: _progressAnim,
                   builder: (context, _) {
-                    return _XpPreviewCard(
-                      progress: _progressAnim.value,
-                    );
+                    return _XpPreviewCard(progress: _progressAnim.value);
                   },
                 ),
                 const SizedBox(height: 32),
-                // XP earn previews
                 FadeTransition(
                   opacity: _fadeIn,
                   child: const _XpEarnPreview(),
@@ -183,10 +179,9 @@ class _XpPreviewCard extends StatelessWidget {
             children: [
               const LevelIndicator(level: 1),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF7ED),
+                  color: AppColors.xpGold.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -195,7 +190,7 @@ class _XpPreviewCard extends StatelessWidget {
                     fontFamily: 'Poppins',
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFFD97706),
+                    color: AppColors.xpGold,
                   ),
                 ),
               ),
@@ -215,7 +210,7 @@ class _XpPreviewCard extends StatelessWidget {
               style: TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 11,
-                color: Color(0xFF64748B),
+                color: AppColors.textSecondary,
               ),
             ),
           ),
@@ -230,12 +225,12 @@ class _XpEarnPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: const [
+    return const Row(
+      children: [
         Expanded(
           child: _EarnItem(
             icon: Icons.check_circle_rounded,
-            color: Color(0xFF16A34A),
+            color: AppColors.success,
             label: 'Correct Decision',
             xp: '+50 XP',
           ),
@@ -244,7 +239,7 @@ class _XpEarnPreview extends StatelessWidget {
         Expanded(
           child: _EarnItem(
             icon: Icons.info_rounded,
-            color: Color(0xFF0EA5E9),
+            color: AppColors.cyan,
             label: 'Participation',
             xp: '+10 XP',
           ),
@@ -272,9 +267,9 @@ class _EarnItem extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.06),
+        color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: color.withValues(alpha: 0.15)),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
@@ -296,7 +291,7 @@ class _EarnItem extends StatelessWidget {
             style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 11,
-              color: Color(0xFF64748B),
+              color: AppColors.textSecondary,
             ),
           ),
         ],

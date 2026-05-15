@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_colors.dart';
 
 /// OnboardingProgressDots — shows which of the 5 steps is active.
-/// Filled dots = completed or current. Empty dots = upcoming.
 class OnboardingProgressDots extends StatelessWidget {
   final int currentStep;
   final int totalSteps;
@@ -32,12 +32,12 @@ class OnboardingProgressDots extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(4),
               color: isCompleted || isActive
-                  ? const Color(0xFF2563EB)
-                  : const Color(0xFFE2E8F0),
+                  ? AppColors.primary
+                  : AppColors.border,
               boxShadow: isActive
                   ? [
                       BoxShadow(
-                        color: const Color(0xFF2563EB).withValues(alpha: 0.4),
+                        color: AppColors.primaryGlow(0.4),
                         blurRadius: 6,
                         offset: const Offset(0, 2),
                       ),

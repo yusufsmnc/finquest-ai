@@ -5,6 +5,7 @@ import '../widgets/onboarding_progress_dots.dart';
 import '../widgets/onboarding_mentor_intro.dart';
 import '../../../../shared/widgets/animated_button.dart';
 import '../../../../shared/widgets/card_container.dart';
+import '../../../../core/theme/app_colors.dart';
 
 /// S1 — Welcome Screen.
 /// Entry point of onboarding. Introduces the app and the AI mentor.
@@ -18,29 +19,23 @@ class OnboardingWelcomeScreen extends ConsumerWidget {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        backgroundColor: const Color(0xFFF8FAFC),
+        backgroundColor: AppColors.background,
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               children: [
                 const SizedBox(height: 24),
-                // Progress dots — step 1
                 const OnboardingProgressDots(currentStep: 1),
                 const Spacer(),
-                // Feature pills
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
                   alignment: WrapAlignment.center,
                   children: const [
                     _FeaturePill(icon: Icons.bolt_rounded, label: 'Earn XP'),
-                    _FeaturePill(
-                        icon: Icons.emoji_events_rounded,
-                        label: 'Level Up'),
-                    _FeaturePill(
-                        icon: Icons.psychology_rounded,
-                        label: 'AI Mentor'),
+                    _FeaturePill(icon: Icons.emoji_events_rounded, label: 'Level Up'),
+                    _FeaturePill(icon: Icons.psychology_rounded, label: 'AI Mentor'),
                   ],
                 ),
                 const SizedBox(height: 40),
@@ -51,10 +46,8 @@ class OnboardingWelcomeScreen extends ConsumerWidget {
                       'real-world scenarios — guided by your personal AI mentor.',
                 ),
                 const Spacer(),
-                // Benefits row
-                _BenefitsRow(),
+                const _BenefitsRow(),
                 const SizedBox(height: 32),
-                // CTA
                 PrimaryButton(
                   label: 'Get Started',
                   onTap: () => dispatcher.onWelcomeContinued(),
@@ -70,7 +63,7 @@ class OnboardingWelcomeScreen extends ConsumerWidget {
                         fontFamily: 'Inter',
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFF2563EB),
+                        color: AppColors.primary,
                       ),
                     ),
                   ),
@@ -96,16 +89,14 @@ class _FeaturePill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        color: const Color(0xFF2563EB).withValues(alpha: 0.08),
+        color: AppColors.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: const Color(0xFF2563EB).withValues(alpha: 0.15),
-        ),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: const Color(0xFF2563EB)),
+          Icon(icon, size: 14, color: AppColors.primary),
           const SizedBox(width: 6),
           Text(
             label,
@@ -113,7 +104,7 @@ class _FeaturePill extends StatelessWidget {
               fontFamily: 'Inter',
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF2563EB),
+              color: AppColors.primary,
             ),
           ),
         ],
@@ -123,29 +114,19 @@ class _FeaturePill extends StatelessWidget {
 }
 
 class _BenefitsRow extends StatelessWidget {
+  const _BenefitsRow();
+
   @override
   Widget build(BuildContext context) {
     return CardContainer(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: const [
-          _BenefitItem(
-            value: '50+',
-            label: 'Scenarios',
-            icon: Icons.movie_filter_rounded,
-          ),
+          _BenefitItem(value: '50+', label: 'Scenarios', icon: Icons.movie_filter_rounded),
           _Divider(),
-          _BenefitItem(
-            value: 'AI',
-            label: 'Mentor',
-            icon: Icons.psychology_rounded,
-          ),
+          _BenefitItem(value: 'AI', label: 'Mentor', icon: Icons.psychology_rounded),
           _Divider(),
-          _BenefitItem(
-            value: '10K+',
-            label: 'Learners',
-            icon: Icons.people_rounded,
-          ),
+          _BenefitItem(value: '10K+', label: 'Learners', icon: Icons.people_rounded),
         ],
       ),
     );
@@ -167,7 +148,7 @@ class _BenefitItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Icon(icon, color: const Color(0xFF2563EB), size: 22),
+        Icon(icon, color: AppColors.primary, size: 22),
         const SizedBox(height: 4),
         Text(
           value,
@@ -175,7 +156,7 @@ class _BenefitItem extends StatelessWidget {
             fontFamily: 'Poppins',
             fontSize: 18,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF0F172A),
+            color: AppColors.textPrimary,
           ),
         ),
         Text(
@@ -184,7 +165,7 @@ class _BenefitItem extends StatelessWidget {
             fontFamily: 'Inter',
             fontSize: 11,
             fontWeight: FontWeight.w400,
-            color: Color(0xFF64748B),
+            color: AppColors.textSecondary,
           ),
         ),
       ],
@@ -200,7 +181,7 @@ class _Divider extends StatelessWidget {
     return Container(
       width: 1,
       height: 40,
-      color: const Color(0xFFE2E8F0),
+      color: AppColors.border,
     );
   }
 }
