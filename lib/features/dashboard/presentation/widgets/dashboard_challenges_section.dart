@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../dashboard_providers.dart';
 import '../../domain/dashboard_state.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class DashboardChallengesSection extends ConsumerWidget {
   const DashboardChallengesSection({super.key});
@@ -12,7 +13,7 @@ class DashboardChallengesSection extends ConsumerWidget {
         ref.watch(dashboardNotifierProvider.select((s) => s.challenges));
 
     return SizedBox(
-      height: 148,
+      height: 152,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -74,14 +75,20 @@ class _ChallengeCardState extends State<_ChallengeCard>
           width: 200,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
+            border: Border.all(
+              color: c.isComplete
+                  ? AppColors.success.withValues(alpha: 0.3)
+                  : c.color.withValues(alpha: 0.2),
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 10,
-                offset: const Offset(0, 3),
+                color: c.isComplete
+                    ? AppColors.successGlow(0.1)
+                    : c.color.withValues(alpha: 0.12),
+                blurRadius: 16,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
@@ -94,8 +101,11 @@ class _ChallengeCardState extends State<_ChallengeCard>
                     width: 36,
                     height: 36,
                     decoration: BoxDecoration(
-                      color: c.color.withValues(alpha: 0.1),
+                      color: c.color.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: c.color.withValues(alpha: 0.2),
+                      ),
                     ),
                     child: Icon(c.icon, color: c.color, size: 18),
                   ),
@@ -105,8 +115,11 @@ class _ChallengeCardState extends State<_ChallengeCard>
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF16A34A).withValues(alpha: 0.1),
+                        color: AppColors.success.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: AppColors.success.withValues(alpha: 0.3),
+                        ),
                       ),
                       child: const Text(
                         'Done',
@@ -114,7 +127,7 @@ class _ChallengeCardState extends State<_ChallengeCard>
                           fontFamily: 'Inter',
                           fontSize: 10,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF16A34A),
+                          color: AppColors.success,
                         ),
                       ),
                     )
@@ -137,7 +150,7 @@ class _ChallengeCardState extends State<_ChallengeCard>
                   fontFamily: 'Poppins',
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF0F172A),
+                  color: AppColors.textPrimary,
                 ),
               ),
               const SizedBox(height: 2),
@@ -146,12 +159,11 @@ class _ChallengeCardState extends State<_ChallengeCard>
                 style: const TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 11,
-                  color: Color(0xFF94A3B8),
+                  color: AppColors.textSecondary,
                 ),
               ),
               const Spacer(),
-              _ChallengeProgressBar(
-                  progress: c.progressFraction, color: c.color),
+              _GlowProgressBar(progress: c.progressFraction, color: c.color),
               const SizedBox(height: 4),
               Text(
                 '${c.progress} / ${c.target}',
@@ -159,7 +171,7 @@ class _ChallengeCardState extends State<_ChallengeCard>
                   fontFamily: 'Inter',
                   fontSize: 10,
                   fontWeight: FontWeight.w500,
-                  color: Color(0xFF94A3B8),
+                  color: AppColors.textMuted,
                 ),
               ),
             ],
@@ -170,11 +182,11 @@ class _ChallengeCardState extends State<_ChallengeCard>
   }
 }
 
-class _ChallengeProgressBar extends StatelessWidget {
+class _GlowProgressBar extends StatelessWidget {
   final double progress;
   final Color color;
 
-  const _ChallengeProgressBar({required this.progress, required this.color});
+  const _GlowProgressBar({required this.progress, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -182,15 +194,21 @@ class _ChallengeProgressBar extends StatelessWidget {
       borderRadius: BorderRadius.circular(4),
       child: Stack(
         children: [
-          Container(
-            height: 5,
-            color: const Color(0xFFE2E8F0),
-          ),
+          Container(height: 5, color: AppColors.surfaceUp),
           FractionallySizedBox(
             widthFactor: progress,
             child: Container(
               height: 5,
-              color: color,
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(4),
+                boxShadow: [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.5),
+                    blurRadius: 4,
+                  ),
+                ],
+              ),
             ),
           ),
         ],

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../scenario_providers.dart';
 import '../../domain/scenario_model.dart';
 import '../widgets/scenario_risk_indicator.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class ScenarioDecisionScreen extends ConsumerWidget {
   const ScenarioDecisionScreen({super.key});
@@ -16,13 +17,13 @@ class ScenarioDecisionScreen extends ConsumerWidget {
     if (scenario == null) return const SizedBox.shrink();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF8FAFC),
+        backgroundColor: AppColors.background,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: Color(0xFF0F172A)),
+          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
           onPressed: () => dispatcher.onBackToList(),
         ),
         title: Text(
@@ -31,7 +32,7 @@ class ScenarioDecisionScreen extends ConsumerWidget {
             fontFamily: 'Inter',
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF64748B),
+            color: AppColors.textSecondary,
           ),
         ),
         centerTitle: false,
@@ -51,7 +52,7 @@ class ScenarioDecisionScreen extends ConsumerWidget {
                 fontFamily: 'Poppins',
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF0F172A),
+                color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: 12),
@@ -86,14 +87,19 @@ class _ScenarioEventCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
+            color: Colors.black.withValues(alpha: 0.3),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+          BoxShadow(
+            color: AppColors.primaryGlow(0.08),
+            blurRadius: 24,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -106,12 +112,12 @@ class _ScenarioEventCard extends StatelessWidget {
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF2563EB).withValues(alpha: 0.08),
+                  color: AppColors.primary.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Icon(
                   Icons.event_note_rounded,
-                  color: Color(0xFF2563EB),
+                  color: AppColors.primary,
                   size: 18,
                 ),
               ),
@@ -122,7 +128,7 @@ class _ScenarioEventCard extends StatelessWidget {
                   fontFamily: 'Inter',
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF64748B),
+                  color: AppColors.textSecondary,
                 ),
               ),
             ],
@@ -134,7 +140,7 @@ class _ScenarioEventCard extends StatelessWidget {
               fontFamily: 'Poppins',
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF0F172A),
+              color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 10),
@@ -143,7 +149,7 @@ class _ScenarioEventCard extends StatelessWidget {
             style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 14,
-              color: Color(0xFF475569),
+              color: AppColors.textSecondary,
               height: 1.6,
             ),
           ),
@@ -178,22 +184,49 @@ class _OptionCard extends StatelessWidget {
     Color bgColor;
     Color labelBg;
     Color labelFg;
+    List<BoxShadow> shadows;
 
     if (!isLocked) {
-      borderColor = const Color(0xFFE2E8F0);
-      bgColor = Colors.white;
-      labelBg = const Color(0xFFF1F5F9);
-      labelFg = const Color(0xFF64748B);
+      borderColor = AppColors.border;
+      bgColor = AppColors.surface;
+      labelBg = AppColors.surfaceUp;
+      labelFg = AppColors.textSecondary;
+      shadows = [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.25),
+          blurRadius: 8,
+          offset: const Offset(0, 2),
+        ),
+      ];
     } else if (isSelected) {
-      borderColor = const Color(0xFF2563EB);
-      bgColor = const Color(0xFF2563EB).withValues(alpha: 0.04);
-      labelBg = const Color(0xFF2563EB);
+      borderColor = AppColors.primary;
+      bgColor = AppColors.primary.withValues(alpha: 0.08);
+      labelBg = AppColors.primary;
       labelFg = Colors.white;
+      shadows = [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.3),
+          blurRadius: 8,
+          offset: const Offset(0, 2),
+        ),
+        BoxShadow(
+          color: AppColors.primaryGlow(0.2),
+          blurRadius: 16,
+          offset: const Offset(0, 4),
+        ),
+      ];
     } else {
-      borderColor = const Color(0xFFE2E8F0);
-      bgColor = Colors.white;
-      labelBg = const Color(0xFFF1F5F9);
-      labelFg = const Color(0xFFCBD5E1);
+      borderColor = AppColors.border;
+      bgColor = AppColors.surface;
+      labelBg = AppColors.surfaceUp;
+      labelFg = AppColors.textMuted;
+      shadows = [
+        BoxShadow(
+          color: Colors.black.withValues(alpha: 0.15),
+          blurRadius: 8,
+          offset: const Offset(0, 2),
+        ),
+      ];
     }
 
     return Padding(
@@ -211,13 +244,7 @@ class _OptionCard extends StatelessWidget {
               color: bgColor,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: borderColor, width: isSelected ? 1.5 : 1),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: isLocked ? 0.02 : 0.04),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
+              boxShadow: shadows,
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -253,8 +280,8 @@ class _OptionCard extends StatelessWidget {
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: isLocked && !isSelected
-                            ? const Color(0xFFCBD5E1)
-                            : const Color(0xFF0F172A),
+                            ? AppColors.textMuted
+                            : AppColors.textPrimary,
                         height: 1.5,
                       ),
                     ),

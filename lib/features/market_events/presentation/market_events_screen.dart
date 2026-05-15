@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/routing/app_router.dart';
+import '../../../core/theme/app_colors.dart';
 import '../market_events_providers.dart';
 import '../domain/market_event.dart';
 import 'widgets/market_event_card.dart';
@@ -61,14 +62,14 @@ class _MarketEventsScreenState extends ConsumerState<MarketEventsScreen>
     final resolvedEvents = marketState.resolvedEvents;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background,
       body: FadeTransition(
         opacity: _fadeIn,
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
             SliverAppBar(
-              backgroundColor: const Color(0xFFF8FAFC),
+              backgroundColor: AppColors.background,
               elevation: 0,
               scrolledUnderElevation: 0,
               pinned: true,
@@ -77,7 +78,7 @@ class _MarketEventsScreenState extends ConsumerState<MarketEventsScreen>
                 onTap: () => Navigator.of(context).pop(),
                 child: const Icon(
                   Icons.arrow_back_rounded,
-                  color: Color(0xFF0F172A),
+                  color: AppColors.textPrimary,
                   size: 22,
                 ),
               ),
@@ -89,7 +90,7 @@ class _MarketEventsScreenState extends ConsumerState<MarketEventsScreen>
                       fontFamily: 'Poppins',
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF0F172A),
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -98,8 +99,11 @@ class _MarketEventsScreenState extends ConsumerState<MarketEventsScreen>
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFDC2626).withValues(alpha: 0.1),
+                        color: AppColors.error.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: AppColors.error.withValues(alpha: 0.25),
+                        ),
                       ),
                       child: Text(
                         '${activeEvents.length} LIVE',
@@ -107,7 +111,7 @@ class _MarketEventsScreenState extends ConsumerState<MarketEventsScreen>
                           fontFamily: 'Inter',
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFFDC2626),
+                          color: AppColors.error,
                         ),
                       ),
                     ),
@@ -124,7 +128,7 @@ class _MarketEventsScreenState extends ConsumerState<MarketEventsScreen>
                       fontFamily: 'Poppins',
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF0F172A),
+                      color: AppColors.textPrimary,
                     ),
                   ),
                 ),
@@ -165,7 +169,7 @@ class _MarketEventsScreenState extends ConsumerState<MarketEventsScreen>
                       fontFamily: 'Poppins',
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF94A3B8),
+                      color: AppColors.textMuted,
                     ),
                   ),
                 ),
@@ -202,7 +206,7 @@ class _MarketEventsScreenState extends ConsumerState<MarketEventsScreen>
                     style: TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 14,
-                      color: Color(0xFF94A3B8),
+                      color: AppColors.textSecondary,
                     ),
                   ),
                 ),

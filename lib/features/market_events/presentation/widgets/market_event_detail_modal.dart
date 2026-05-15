@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../domain/market_event.dart';
 
 class MarketEventDetailModal extends StatelessWidget {
@@ -37,9 +38,17 @@ class MarketEventDetailModal extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.only(top: 80),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceUp,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.5),
+            blurRadius: 40,
+            offset: const Offset(0, -8),
+          ),
+        ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -49,7 +58,7 @@ class MarketEventDetailModal extends StatelessWidget {
             width: 36,
             height: 4,
             decoration: BoxDecoration(
-              color: const Color(0xFFE2E8F0),
+              color: AppColors.border,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -65,7 +74,7 @@ class MarketEventDetailModal extends StatelessWidget {
                         width: 48,
                         height: 48,
                         decoration: BoxDecoration(
-                          color: impact.color.withValues(alpha: 0.1),
+                          color: impact.color.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: Icon(impact.icon,
@@ -82,7 +91,7 @@ class MarketEventDetailModal extends StatelessWidget {
                                 fontFamily: 'Poppins',
                                 fontSize: 17,
                                 fontWeight: FontWeight.w700,
-                                color: Color(0xFF0F172A),
+                                color: AppColors.textPrimary,
                               ),
                             ),
                             const SizedBox(height: 2),
@@ -93,7 +102,7 @@ class MarketEventDetailModal extends StatelessWidget {
                                       horizontal: 7, vertical: 2),
                                   decoration: BoxDecoration(
                                     color: impact.color
-                                        .withValues(alpha: 0.1),
+                                        .withValues(alpha: 0.12),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
@@ -111,8 +120,9 @@ class MarketEventDetailModal extends StatelessWidget {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 7, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFFF1F5F9),
+                                    color: AppColors.surfaceHigh,
                                     borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(color: AppColors.border),
                                   ),
                                   child: Text(
                                     event.category,
@@ -120,7 +130,7 @@ class MarketEventDetailModal extends StatelessWidget {
                                       fontFamily: 'Inter',
                                       fontSize: 10,
                                       fontWeight: FontWeight.w500,
-                                      color: Color(0xFF64748B),
+                                      color: AppColors.textSecondary,
                                     ),
                                   ),
                                 ),
@@ -136,10 +146,10 @@ class MarketEventDetailModal extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: impact.color.withValues(alpha: 0.05),
+                      color: impact.color.withValues(alpha: 0.06),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                          color: impact.color.withValues(alpha: 0.15)),
+                          color: impact.color.withValues(alpha: 0.2)),
                     ),
                     child: Text(
                       event.headline,
@@ -159,7 +169,7 @@ class MarketEventDetailModal extends StatelessWidget {
                       fontFamily: 'Poppins',
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF0F172A),
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -168,7 +178,7 @@ class MarketEventDetailModal extends StatelessWidget {
                     style: const TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 13,
-                      color: Color(0xFF475569),
+                      color: AppColors.textSecondary,
                       height: 1.7,
                     ),
                   ),
@@ -209,14 +219,17 @@ class MarketEventDetailModal extends StatelessWidget {
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF1F5F9),
+                        color: AppColors.success.withValues(alpha: 0.08),
                         borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: AppColors.success.withValues(alpha: 0.25),
+                        ),
                       ),
                       child: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.check_circle_rounded,
-                              color: Color(0xFF059669), size: 18),
+                              color: AppColors.success, size: 18),
                           SizedBox(width: 8),
                           Text(
                             'You\'ve tackled this event',
@@ -224,7 +237,7 @@ class MarketEventDetailModal extends StatelessWidget {
                               fontFamily: 'Inter',
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF059669),
+                              color: AppColors.success,
                             ),
                           ),
                         ],
@@ -248,9 +261,9 @@ class _AnalysisSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -258,7 +271,7 @@ class _AnalysisSection extends StatelessWidget {
           const Row(
             children: [
               Icon(Icons.psychology_rounded,
-                  color: Color(0xFF7C3AED), size: 16),
+                  color: AppColors.purple, size: 16),
               SizedBox(width: 6),
               Text(
                 'Why This Matters',
@@ -266,7 +279,7 @@ class _AnalysisSection extends StatelessWidget {
                   fontFamily: 'Poppins',
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF0F172A),
+                  color: AppColors.textPrimary,
                 ),
               ),
             ],
@@ -290,7 +303,7 @@ class _AnalysisSection extends StatelessWidget {
             padding: EdgeInsets.only(top: 6),
             child: CircleAvatar(
               radius: 2.5,
-              backgroundColor: Color(0xFF7C3AED),
+              backgroundColor: AppColors.purple,
             ),
           ),
           const SizedBox(width: 8),
@@ -300,7 +313,7 @@ class _AnalysisSection extends StatelessWidget {
               style: const TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 12,
-                color: Color(0xFF475569),
+                color: AppColors.textSecondary,
                 height: 1.6,
               ),
             ),

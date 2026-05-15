@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../dashboard_providers.dart';
 import '../../../../shared/widgets/xp_float_indicator.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class DashboardXpHeroCard extends ConsumerWidget {
   const DashboardXpHeroCard({super.key});
@@ -26,14 +27,21 @@ class DashboardXpHeroCard extends ConsumerWidget {
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF1D4ED8), Color(0xFF0EA5E9)],
+              colors: [Color(0xFF1E1B4B), Color(0xFF0F172A), Color(0xFF0A1628)],
+              stops: [0.0, 0.5, 1.0],
             ),
             borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF2563EB).withValues(alpha: 0.35),
-                blurRadius: 24,
+                color: AppColors.primary.withValues(alpha: 0.25),
+                blurRadius: 32,
                 offset: const Offset(0, 8),
+              ),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.5),
+                blurRadius: 16,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
@@ -46,14 +54,14 @@ class DashboardXpHeroCard extends ConsumerWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Your Level',
+                      Text(
+                        'YOUR LEVEL',
                         style: TextStyle(
                           fontFamily: 'Inter',
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white70,
-                          letterSpacing: 0.5,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primaryLight.withValues(alpha: 0.8),
+                          letterSpacing: 1.2,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -61,9 +69,9 @@ class DashboardXpHeroCard extends ConsumerWidget {
                         'Level $level',
                         style: const TextStyle(
                           fontFamily: 'Poppins',
-                          fontSize: 32,
+                          fontSize: 36,
                           fontWeight: FontWeight.w800,
-                          color: Colors.white,
+                          color: AppColors.textPrimary,
                           height: 1.1,
                         ),
                       ),
@@ -72,16 +80,16 @@ class DashboardXpHeroCard extends ConsumerWidget {
                   _LevelBadge(level: level),
                 ],
               ),
-              const SizedBox(height: 20),
-              _WhiteXpBar(progress: progress, currentXP: xp, maxXP: xpMax),
+              const SizedBox(height: 24),
+              _GlowXpBar(progress: progress, currentXP: xp, maxXP: xpMax),
               const SizedBox(height: 10),
               Text(
                 '$remaining XP to Level ${level + 1}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: Colors.white70,
+                  color: AppColors.textSecondary,
                 ),
               ),
             ],
@@ -91,10 +99,7 @@ class DashboardXpHeroCard extends ConsumerWidget {
           Positioned(
             right: 24,
             top: -16,
-            child: XPFloatIndicator(
-              amount: lastXpGained,
-              visible: showFloat,
-            ),
+            child: XPFloatIndicator(amount: lastXpGained, visible: showFloat),
           ),
       ],
     );
@@ -108,22 +113,32 @@ class _LevelBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 72,
-      height: 72,
+      width: 76,
+      height: 76,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.white.withValues(alpha: 0.15),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 2),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.primary, AppColors.purple],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.5),
+            blurRadius: 20,
+            spreadRadius: 0,
+          ),
+        ],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.bolt_rounded, color: Colors.white, size: 20),
+          const Icon(Icons.bolt_rounded, color: Colors.white, size: 18),
           Text(
             '$level',
             style: const TextStyle(
               fontFamily: 'Poppins',
-              fontSize: 20,
+              fontSize: 22,
               fontWeight: FontWeight.w800,
               color: Colors.white,
               height: 1.0,
@@ -135,12 +150,12 @@ class _LevelBadge extends StatelessWidget {
   }
 }
 
-class _WhiteXpBar extends StatelessWidget {
+class _GlowXpBar extends StatelessWidget {
   final double progress;
   final int currentXP;
   final int maxXP;
 
-  const _WhiteXpBar({
+  const _GlowXpBar({
     required this.progress,
     required this.currentXP,
     required this.maxXP,
@@ -154,13 +169,13 @@ class _WhiteXpBar extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               'XP',
               style: TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
-                color: Colors.white70,
+                color: AppColors.primaryLight.withValues(alpha: 0.8),
                 letterSpacing: 0.8,
               ),
             ),
@@ -170,23 +185,23 @@ class _WhiteXpBar extends StatelessWidget {
                 fontFamily: 'Inter',
                 fontSize: 11,
                 fontWeight: FontWeight.w500,
-                color: Colors.white70,
+                color: AppColors.textSecondary,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 8),
         ClipRRect(
           borderRadius: BorderRadius.circular(6),
           child: Stack(
             children: [
               Container(
                 height: 10,
-                color: Colors.white.withValues(alpha: 0.2),
+                color: Colors.white.withValues(alpha: 0.06),
               ),
               TweenAnimationBuilder<double>(
                 tween: Tween<double>(begin: 0, end: progress.clamp(0.0, 1.0)),
-                duration: const Duration(milliseconds: 600),
+                duration: const Duration(milliseconds: 700),
                 curve: Curves.easeOutCubic,
                 builder: (context, value, _) {
                   return FractionallySizedBox(
@@ -194,12 +209,14 @@ class _WhiteXpBar extends StatelessWidget {
                     child: Container(
                       height: 10,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        gradient: const LinearGradient(
+                          colors: [AppColors.primary, AppColors.cyan],
+                        ),
                         borderRadius: BorderRadius.circular(6),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.white.withValues(alpha: 0.6),
-                            blurRadius: 6,
+                            color: AppColors.primary.withValues(alpha: 0.6),
+                            blurRadius: 8,
                           ),
                         ],
                       ),

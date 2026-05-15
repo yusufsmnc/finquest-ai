@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../dashboard/dashboard_providers.dart';
 import '../../../gamification/gamification_providers.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class ProfileXpSection extends ConsumerWidget {
   const ProfileXpSection({super.key});
@@ -21,9 +22,21 @@ class ProfileXpSection extends ConsumerWidget {
       margin: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.3),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+          BoxShadow(
+            color: AppColors.primaryGlow(0.08),
+            blurRadius: 24,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,15 +49,16 @@ class ProfileXpSection extends ConsumerWidget {
                   fontFamily: 'Poppins',
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF0F172A),
+                  color: AppColors.textPrimary,
                 ),
               ),
               const Spacer(),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEFF6FF),
+                  color: AppColors.primary.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
                 ),
                 child: Text(
                   'Level $level',
@@ -52,7 +66,7 @@ class ProfileXpSection extends ConsumerWidget {
                     fontFamily: 'Inter',
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF2563EB),
+                    color: AppColors.primary,
                   ),
                 ),
               ),
@@ -68,7 +82,7 @@ class ProfileXpSection extends ConsumerWidget {
                   fontFamily: 'Poppins',
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF0F172A),
+                  color: AppColors.textPrimary,
                   height: 1.0,
                 ),
               ),
@@ -78,7 +92,7 @@ class ProfileXpSection extends ConsumerWidget {
                   fontFamily: 'Inter',
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF64748B),
+                  color: AppColors.textSecondary,
                 ),
               ),
               const Spacer(),
@@ -87,7 +101,7 @@ class ProfileXpSection extends ConsumerWidget {
                 style: const TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 12,
-                  color: Color(0xFF64748B),
+                  color: AppColors.textSecondary,
                 ),
               ),
             ],
@@ -98,9 +112,8 @@ class ProfileXpSection extends ConsumerWidget {
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 10,
-              backgroundColor: const Color(0xFFEFF6FF),
-              valueColor:
-                  const AlwaysStoppedAnimation<Color>(Color(0xFF2563EB)),
+              backgroundColor: AppColors.surfaceHigh,
+              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
             ),
           ),
           const SizedBox(height: 12),
@@ -110,14 +123,14 @@ class ProfileXpSection extends ConsumerWidget {
                 label: 'Total XP Earned',
                 value: '$totalXp XP',
                 icon: Icons.star_rounded,
-                color: const Color(0xFFF59E0B),
+                color: AppColors.xpGold,
               ),
               const SizedBox(width: 12),
               _XpStat(
                 label: 'Next Level At',
                 value: '${level * xpToNext} XP',
                 icon: Icons.arrow_upward_rounded,
-                color: const Color(0xFF2563EB),
+                color: AppColors.primary,
               ),
             ],
           ),
@@ -146,8 +159,9 @@ class _XpStat extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: const Color(0xFFF8FAFC),
+          color: AppColors.surfaceUp,
           borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: AppColors.border),
         ),
         child: Row(
           children: [
@@ -163,7 +177,7 @@ class _XpStat extends StatelessWidget {
                       fontFamily: 'Inter',
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF0F172A),
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   Text(
@@ -171,7 +185,7 @@ class _XpStat extends StatelessWidget {
                     style: const TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 10,
-                      color: Color(0xFF94A3B8),
+                      color: AppColors.textMuted,
                     ),
                   ),
                 ],

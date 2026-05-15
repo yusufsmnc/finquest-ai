@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../domain/market_event.dart';
 
 class MarketEventCard extends StatefulWidget {
@@ -65,14 +66,23 @@ class _MarketEventCardState extends State<MarketEventCard>
         child: Container(
           width: 272,
           decoration: BoxDecoration(
-            color: resolved ? const Color(0xFFF8FAFC) : Colors.white,
+            color: resolved ? AppColors.surfaceUp : AppColors.surface,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: const Color(0xFFE2E8F0)),
+            border: Border.all(
+              color: resolved
+                  ? AppColors.border
+                  : impact.color.withValues(alpha: 0.25),
+            ),
             boxShadow: resolved
                 ? null
                 : [
                     BoxShadow(
-                      color: impact.color.withValues(alpha: 0.08),
+                      color: impact.color.withValues(alpha: 0.12),
+                      blurRadius: 16,
+                      offset: const Offset(0, 4),
+                    ),
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -97,8 +107,8 @@ class _MarketEventCardState extends State<MarketEventCard>
                                   horizontal: 8, vertical: 3),
                               decoration: BoxDecoration(
                                 color: resolved
-                                    ? const Color(0xFFE2E8F0)
-                                    : impact.color.withValues(alpha: 0.1),
+                                    ? AppColors.surfaceHigh
+                                    : impact.color.withValues(alpha: 0.12),
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Row(
@@ -133,8 +143,9 @@ class _MarketEventCardState extends State<MarketEventCard>
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 7, vertical: 3),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFF1F5F9),
+                                color: AppColors.surfaceHigh,
                                 borderRadius: BorderRadius.circular(6),
+                                border: Border.all(color: AppColors.border),
                               ),
                               child: Text(
                                 e.category,
@@ -142,7 +153,7 @@ class _MarketEventCardState extends State<MarketEventCard>
                                   fontFamily: 'Inter',
                                   fontSize: 10,
                                   fontWeight: FontWeight.w500,
-                                  color: Color(0xFF64748B),
+                                  color: AppColors.textSecondary,
                                 ),
                               ),
                             ),
@@ -156,8 +167,8 @@ class _MarketEventCardState extends State<MarketEventCard>
                             fontSize: 13,
                             fontWeight: FontWeight.w700,
                             color: resolved
-                                ? const Color(0xFF94A3B8)
-                                : const Color(0xFF0F172A),
+                                ? AppColors.textMuted
+                                : AppColors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -167,8 +178,8 @@ class _MarketEventCardState extends State<MarketEventCard>
                             fontFamily: 'Inter',
                             fontSize: 11,
                             color: resolved
-                                ? const Color(0xFFCBD5E1)
-                                : const Color(0xFF64748B),
+                                ? AppColors.textMuted
+                                : AppColors.textSecondary,
                             height: 1.5,
                           ),
                           maxLines: 2,

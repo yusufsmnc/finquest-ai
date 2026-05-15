@@ -5,6 +5,7 @@ import '../../application/scenario_event_dispatcher.dart';
 import '../../domain/scenario_model.dart';
 import '../widgets/scenario_risk_indicator.dart';
 import '../widgets/scenario_xp_summary.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class ScenarioFeedbackScreen extends ConsumerWidget {
   const ScenarioFeedbackScreen({super.key});
@@ -24,9 +25,9 @@ class ScenarioFeedbackScreen extends ConsumerWidget {
     final correctOption = scenario.correctOption;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF8FAFC),
+        backgroundColor: AppColors.background,
         elevation: 0,
         scrolledUnderElevation: 0,
         automaticallyImplyLeading: false,
@@ -36,7 +37,7 @@ class ScenarioFeedbackScreen extends ConsumerWidget {
             fontFamily: 'Poppins',
             fontSize: 18,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF0F172A),
+            color: AppColors.textPrimary,
           ),
         ),
       ),
@@ -75,9 +76,7 @@ class ScenarioFeedbackScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             _RiskContextRow(riskLevel: scenario.riskLevel),
             const SizedBox(height: 28),
-            _ActionButtons(
-              dispatcher: dispatcher,
-            ),
+            _ActionButtons(dispatcher: dispatcher),
           ],
         ),
       ),
@@ -91,19 +90,22 @@ class _ResultBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = isCorrect ? AppColors.success : AppColors.error;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
-        color: isCorrect
-            ? const Color(0xFF16A34A).withValues(alpha: 0.08)
-            : const Color(0xFFDC2626).withValues(alpha: 0.07),
+        color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isCorrect
-              ? const Color(0xFF16A34A).withValues(alpha: 0.25)
-              : const Color(0xFFDC2626).withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.12),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -111,14 +113,12 @@ class _ResultBanner extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: isCorrect
-                  ? const Color(0xFF16A34A).withValues(alpha: 0.12)
-                  : const Color(0xFFDC2626).withValues(alpha: 0.1),
+              color: color.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded,
-              color: isCorrect ? const Color(0xFF16A34A) : const Color(0xFFDC2626),
+              color: color,
               size: 22,
             ),
           ),
@@ -132,7 +132,7 @@ class _ResultBanner extends StatelessWidget {
                   fontFamily: 'Poppins',
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: isCorrect ? const Color(0xFF16A34A) : const Color(0xFFDC2626),
+                  color: color,
                 ),
               ),
               Text(
@@ -140,9 +140,7 @@ class _ResultBanner extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 12,
-                  color: isCorrect
-                      ? const Color(0xFF15803D)
-                      : const Color(0xFFB91C1C),
+                  color: color.withValues(alpha: 0.7),
                 ),
               ),
             ],
@@ -168,15 +166,22 @@ class _FeedbackCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isCorrect ? const Color(0xFF16A34A) : const Color(0xFFDC2626);
+    final color = isCorrect ? AppColors.success : AppColors.error;
 
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: color.withValues(alpha: 0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.25),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,7 +211,7 @@ class _FeedbackCard extends StatelessWidget {
             style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 13,
-              color: Color(0xFF475569),
+              color: AppColors.textSecondary,
               height: 1.6,
             ),
           ),
@@ -226,9 +231,16 @@ class _MentorCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF7C3AED).withValues(alpha: 0.05),
+        color: AppColors.purple.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF7C3AED).withValues(alpha: 0.15)),
+        border: Border.all(color: AppColors.purple.withValues(alpha: 0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.purple.withValues(alpha: 0.12),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -239,12 +251,12 @@ class _MentorCard extends StatelessWidget {
                 width: 28,
                 height: 28,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF7C3AED).withValues(alpha: 0.1),
+                  color: AppColors.purple.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
                   Icons.auto_awesome_rounded,
-                  color: Color(0xFF7C3AED),
+                  color: AppColors.purple,
                   size: 14,
                 ),
               ),
@@ -255,7 +267,7 @@ class _MentorCard extends StatelessWidget {
                   fontFamily: 'Inter',
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF7C3AED),
+                  color: AppColors.purple,
                 ),
               ),
             ],
@@ -266,7 +278,7 @@ class _MentorCard extends StatelessWidget {
             style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 13,
-              color: Color(0xFF475569),
+              color: AppColors.textSecondary,
               height: 1.65,
             ),
           ),
@@ -302,8 +314,17 @@ class _ActionButtons extends StatelessWidget {
             onTap: () => dispatcher.onNextScenario(),
             child: Container(
               decoration: BoxDecoration(
-                color: const Color(0xFF2563EB),
+                gradient: const LinearGradient(
+                  colors: [AppColors.primary, AppColors.purple],
+                ),
                 borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryGlow(0.35),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
               ),
               child: const Center(
                 child: Text(
@@ -330,7 +351,7 @@ class _ActionButtons extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.transparent,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFE2E8F0)),
+                border: Border.all(color: AppColors.border),
               ),
               child: const Center(
                 child: Text(
@@ -339,7 +360,7 @@ class _ActionButtons extends StatelessWidget {
                     fontFamily: 'Inter',
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF64748B),
+                    color: AppColors.textSecondary,
                   ),
                 ),
               ),

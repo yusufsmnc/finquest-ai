@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../dashboard_providers.dart';
 import '../../domain/dashboard_state.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class DashboardAchievementsSection extends ConsumerWidget {
   const DashboardAchievementsSection({super.key});
@@ -12,7 +13,7 @@ class DashboardAchievementsSection extends ConsumerWidget {
         ref.watch(dashboardNotifierProvider.select((s) => s.achievements));
 
     return SizedBox(
-      height: 100,
+      height: 104,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -45,29 +46,35 @@ class _AchievementChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final unlocked = achievement.unlocked;
-    final goldColor = const Color(0xFFF59E0B);
-    final lockedColor = const Color(0xFFCBD5E1);
 
     return Container(
-      width: 80,
+      width: 82,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       decoration: BoxDecoration(
         color: unlocked
-            ? goldColor.withValues(alpha: 0.08)
-            : const Color(0xFFF8FAFC),
+            ? AppColors.xpGold.withValues(alpha: 0.08)
+            : AppColors.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: unlocked
-              ? goldColor.withValues(alpha: 0.3)
-              : const Color(0xFFE2E8F0),
+              ? AppColors.xpGold.withValues(alpha: 0.35)
+              : AppColors.border,
         ),
+        boxShadow: unlocked
+            ? [
+                BoxShadow(
+                  color: AppColors.xpGold.withValues(alpha: 0.15),
+                  blurRadius: 12,
+                ),
+              ]
+            : null,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             unlocked ? _icon(achievement.id) : Icons.lock_rounded,
-            color: unlocked ? goldColor : lockedColor,
+            color: unlocked ? AppColors.xpGold : AppColors.textMuted,
             size: 28,
           ),
           const SizedBox(height: 6),
@@ -79,7 +86,7 @@ class _AchievementChip extends StatelessWidget {
               fontFamily: 'Inter',
               fontSize: 9,
               fontWeight: FontWeight.w600,
-              color: unlocked ? const Color(0xFF0F172A) : lockedColor,
+              color: unlocked ? AppColors.textPrimary : AppColors.textMuted,
               height: 1.2,
             ),
           ),

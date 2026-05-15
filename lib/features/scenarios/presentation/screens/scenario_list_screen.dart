@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../scenario_providers.dart';
 import '../../domain/scenario_model.dart';
 import '../widgets/scenario_risk_indicator.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class ScenarioListScreen extends ConsumerWidget {
   const ScenarioListScreen({super.key});
@@ -15,13 +16,13 @@ class ScenarioListScreen extends ConsumerWidget {
     final dispatcher = ref.read(scenarioDispatcherProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF8FAFC),
+        backgroundColor: AppColors.background,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: Color(0xFF0F172A)),
+          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text(
@@ -30,7 +31,7 @@ class ScenarioListScreen extends ConsumerWidget {
             fontFamily: 'Poppins',
             fontSize: 18,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF0F172A),
+            color: AppColors.textPrimary,
           ),
         ),
         actions: [
@@ -75,13 +76,14 @@ class _StatsChip extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF7ED),
+        color: AppColors.xpGold.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.xpGold.withValues(alpha: 0.25)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.bolt_rounded, color: Color(0xFFF59E0B), size: 14),
+          const Icon(Icons.bolt_rounded, color: AppColors.xpGold, size: 14),
           const SizedBox(width: 3),
           Text(
             '$xp XP',
@@ -89,7 +91,7 @@ class _StatsChip extends ConsumerWidget {
               fontFamily: 'Poppins',
               fontSize: 12,
               fontWeight: FontWeight.w700,
-              color: Color(0xFFD97706),
+              color: AppColors.xpGold,
             ),
           ),
         ],
@@ -142,11 +144,21 @@ class _FilterChip extends StatelessWidget {
         margin: const EdgeInsets.only(right: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: selected ? const Color(0xFF2563EB) : Colors.white,
+          color: selected ? AppColors.primary : AppColors.surface,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: selected ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0),
+            color: selected
+                ? AppColors.primary
+                : AppColors.border,
           ),
+          boxShadow: selected
+              ? [
+                  BoxShadow(
+                    color: AppColors.primaryGlow(0.35),
+                    blurRadius: 10,
+                  ),
+                ]
+              : null,
         ),
         child: Text(
           label,
@@ -154,7 +166,7 @@ class _FilterChip extends StatelessWidget {
             fontFamily: 'Inter',
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: selected ? Colors.white : const Color(0xFF64748B),
+            color: selected ? Colors.white : AppColors.textSecondary,
           ),
         ),
       ),
@@ -176,11 +188,11 @@ class _ScenarioCard extends StatelessWidget {
   Color _categoryColor(String cat) {
     switch (cat) {
       case 'Investing':
-        return const Color(0xFF2563EB);
+        return AppColors.primary;
       case 'Savings':
-        return const Color(0xFF0EA5E9);
+        return AppColors.cyan;
       default:
-        return const Color(0xFF16A34A);
+        return AppColors.success;
     }
   }
 
@@ -197,18 +209,25 @@ class _ScenarioCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
               color: isCompleted
-                  ? const Color(0xFF16A34A).withValues(alpha: 0.3)
-                  : const Color(0xFFE2E8F0),
+                  ? AppColors.success.withValues(alpha: 0.3)
+                  : catColor.withValues(alpha: 0.15),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
+                color: isCompleted
+                    ? AppColors.successGlow(0.08)
+                    : catColor.withValues(alpha: 0.08),
+                blurRadius: 16,
+                offset: const Offset(0, 4),
+              ),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.3),
                 blurRadius: 10,
-                offset: const Offset(0, 3),
+                offset: const Offset(0, 2),
               ),
             ],
           ),
@@ -220,8 +239,9 @@ class _ScenarioCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: catColor.withValues(alpha: 0.1),
+                      color: catColor.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: catColor.withValues(alpha: 0.2)),
                     ),
                     child: Text(
                       scenario.category,
@@ -247,7 +267,7 @@ class _ScenarioCard extends StatelessWidget {
                   fontFamily: 'Poppins',
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF0F172A),
+                  color: AppColors.textPrimary,
                 ),
               ),
               const SizedBox(height: 6),
@@ -258,14 +278,14 @@ class _ScenarioCard extends StatelessWidget {
                 style: const TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 13,
-                  color: Color(0xFF64748B),
+                  color: AppColors.textSecondary,
                   height: 1.5,
                 ),
               ),
               const SizedBox(height: 14),
               Row(
                 children: [
-                  const Icon(Icons.bolt_rounded, color: Color(0xFFF59E0B), size: 14),
+                  const Icon(Icons.bolt_rounded, color: AppColors.xpGold, size: 14),
                   const SizedBox(width: 4),
                   Text(
                     '+${scenario.xpCorrect} XP for correct',
@@ -273,12 +293,12 @@ class _ScenarioCard extends StatelessWidget {
                       fontFamily: 'Inter',
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: Color(0xFF94A3B8),
+                      color: AppColors.textSecondary,
                     ),
                   ),
                   const Spacer(),
                   const Icon(Icons.arrow_forward_ios_rounded,
-                      size: 12, color: Color(0xFF94A3B8)),
+                      size: 12, color: AppColors.textMuted),
                 ],
               ),
             ],
@@ -297,13 +317,14 @@ class _CompletedBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFF16A34A).withValues(alpha: 0.1),
+        color: AppColors.success.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.success.withValues(alpha: 0.25)),
       ),
       child: const Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.check_circle_rounded, size: 12, color: Color(0xFF16A34A)),
+          Icon(Icons.check_circle_rounded, size: 12, color: AppColors.success),
           SizedBox(width: 4),
           Text(
             'Completed',
@@ -311,7 +332,7 @@ class _CompletedBadge extends StatelessWidget {
               fontFamily: 'Inter',
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF16A34A),
+              color: AppColors.success,
             ),
           ),
         ],
@@ -331,7 +352,7 @@ class _EmptyState extends StatelessWidget {
         style: TextStyle(
           fontFamily: 'Inter',
           fontSize: 14,
-          color: Color(0xFF94A3B8),
+          color: AppColors.textSecondary,
         ),
       ),
     );

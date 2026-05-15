@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../achievements_providers.dart';
 import '../../domain/achievement_model.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class AchievementsFilterBar extends ConsumerWidget {
   const AchievementsFilterBar({super.key});
@@ -24,7 +25,7 @@ class AchievementsFilterBar extends ConsumerWidget {
             label: 'All',
             icon: Icons.grid_view_rounded,
             selected: filter == null,
-            color: const Color(0xFF2563EB),
+            color: AppColors.primary,
             onTap: () => notifier.setFilter(null),
           ),
           ...categories.map(
@@ -33,12 +34,12 @@ class AchievementsFilterBar extends ConsumerWidget {
               icon: cat.icon,
               selected: filter == cat,
               color: cat == AchievementCategory.streak
-                  ? const Color(0xFFF59E0B)
+                  ? AppColors.xpGold
                   : cat == AchievementCategory.xp
-                      ? const Color(0xFF7C3AED)
+                      ? AppColors.purple
                       : cat == AchievementCategory.decisions
-                          ? const Color(0xFF2563EB)
-                          : const Color(0xFF059669),
+                          ? AppColors.primary
+                          : AppColors.success,
               onTap: () => notifier.setFilter(cat),
             ),
           ),
@@ -74,8 +75,19 @@ class _FilterChip extends StatelessWidget {
         margin: const EdgeInsets.only(right: 8),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: selected ? color : const Color(0xFFF1F5F9),
+          color: selected ? color : AppColors.surface,
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: selected ? color : AppColors.border,
+          ),
+          boxShadow: selected
+              ? [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.3),
+                    blurRadius: 10,
+                  ),
+                ]
+              : null,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -83,7 +95,7 @@ class _FilterChip extends StatelessWidget {
             Icon(
               icon,
               size: 14,
-              color: selected ? Colors.white : const Color(0xFF64748B),
+              color: selected ? Colors.white : AppColors.textSecondary,
             ),
             const SizedBox(width: 6),
             Text(
@@ -92,7 +104,7 @@ class _FilterChip extends StatelessWidget {
                 fontFamily: 'Inter',
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: selected ? Colors.white : const Color(0xFF64748B),
+                color: selected ? Colors.white : AppColors.textSecondary,
               ),
             ),
           ],

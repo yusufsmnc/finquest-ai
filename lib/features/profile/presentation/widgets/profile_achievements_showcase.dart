@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../achievements/achievements_providers.dart';
 import '../../../achievements/domain/achievement_model.dart';
 import '../../../../core/routing/app_router.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class ProfileAchievementsShowcase extends ConsumerWidget {
   const ProfileAchievementsShowcase({super.key});
@@ -32,7 +33,7 @@ class ProfileAchievementsShowcase extends ConsumerWidget {
                   fontFamily: 'Poppins',
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF0F172A),
+                  color: AppColors.textPrimary,
                 ),
               ),
               const Spacer(),
@@ -40,20 +41,20 @@ class ProfileAchievementsShowcase extends ConsumerWidget {
                 behavior: HitTestBehavior.opaque,
                 onTap: () =>
                     Navigator.of(context).pushNamed(AppRoutes.achievements),
-                child: Row(
-                  children: const [
+                child: const Row(
+                  children: [
                     Text(
                       'View All',
                       style: TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF2563EB),
+                        color: AppColors.primary,
                       ),
                     ),
                     SizedBox(width: 2),
                     Icon(Icons.chevron_right_rounded,
-                        size: 16, color: Color(0xFF2563EB)),
+                        size: 16, color: AppColors.primary),
                   ],
                 ),
               ),
@@ -65,7 +66,7 @@ class ProfileAchievementsShowcase extends ConsumerWidget {
             style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 12,
-              color: Color(0xFF64748B),
+              color: AppColors.textSecondary,
             ),
           ),
           const SizedBox(height: 12),
@@ -92,20 +93,20 @@ class _EmptyShowcase extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: AppColors.border),
       ),
       child: const Row(
         children: [
-          Icon(Icons.lock_outline_rounded, size: 16, color: Color(0xFFCBD5E1)),
+          Icon(Icons.lock_outline_rounded, size: 16, color: AppColors.textMuted),
           SizedBox(width: 10),
           Text(
             'Complete scenarios to unlock achievements',
             style: TextStyle(
               fontFamily: 'Inter',
               fontSize: 12,
-              color: Color(0xFF94A3B8),
+              color: AppColors.textMuted,
             ),
           ),
         ],
@@ -131,11 +132,17 @@ class _AchievementBubble extends StatelessWidget {
           height: 52,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: rarity.backgroundColor,
+            color: rarity.color.withValues(alpha: 0.1),
             border: Border.all(
               color: rarity.color.withValues(alpha: 0.4),
               width: 2,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: rarity.color.withValues(alpha: 0.15),
+                blurRadius: 10,
+              ),
+            ],
           ),
           child: Icon(achievement.icon, size: 22, color: rarity.color),
         ),
@@ -156,8 +163,8 @@ class _MoreBubble extends StatelessWidget {
       height: 52,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: const Color(0xFFF1F5F9),
-        border: Border.all(color: const Color(0xFFE2E8F0), width: 2),
+        color: AppColors.surfaceUp,
+        border: Border.all(color: AppColors.border, width: 2),
       ),
       child: Center(
         child: Text(
@@ -166,7 +173,7 @@ class _MoreBubble extends StatelessWidget {
             fontFamily: 'Inter',
             fontSize: 12,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF64748B),
+            color: AppColors.textSecondary,
           ),
         ),
       ),

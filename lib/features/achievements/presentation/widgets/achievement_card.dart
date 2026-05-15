@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../domain/achievement_model.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class AchievementCard extends StatelessWidget {
   final Achievement achievement;
@@ -24,14 +25,29 @@ class AchievementCard extends StatelessWidget {
         curve: Curves.easeOutCubic,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: unlocked ? rarity.backgroundColor : const Color(0xFFF8FAFC),
+          color: unlocked
+              ? rarity.color.withValues(alpha: 0.08)
+              : AppColors.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: unlocked
                 ? rarity.color.withValues(alpha: 0.35)
-                : const Color(0xFFE2E8F0),
+                : AppColors.border,
             width: unlocked ? 1.5 : 1,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.25),
+              blurRadius: 12,
+              offset: const Offset(0, 3),
+            ),
+            if (unlocked)
+              BoxShadow(
+                color: rarity.color.withValues(alpha: 0.15),
+                blurRadius: 20,
+                offset: const Offset(0, 4),
+              ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,9 +70,7 @@ class AchievementCard extends StatelessWidget {
                 fontFamily: 'Poppins',
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: unlocked
-                    ? const Color(0xFF0F172A)
-                    : const Color(0xFF94A3B8),
+                color: unlocked ? AppColors.textPrimary : AppColors.textMuted,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -67,9 +81,7 @@ class AchievementCard extends StatelessWidget {
               style: TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 11,
-                color: unlocked
-                    ? const Color(0xFF64748B)
-                    : const Color(0xFFCBD5E1),
+                color: unlocked ? AppColors.textSecondary : AppColors.textMuted,
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -102,13 +114,13 @@ class _AchievementIcon extends StatelessWidget {
       decoration: BoxDecoration(
         color: unlocked
             ? rarity.color.withValues(alpha: 0.15)
-            : const Color(0xFFE2E8F0),
+            : AppColors.surfaceUp,
         shape: BoxShape.circle,
       ),
       child: Icon(
         icon,
         size: 22,
-        color: unlocked ? rarity.color : const Color(0xFFCBD5E1),
+        color: unlocked ? rarity.color : AppColors.textMuted,
       ),
     );
   }
@@ -127,7 +139,7 @@ class _RarityBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: unlocked
             ? rarity.color.withValues(alpha: 0.12)
-            : const Color(0xFFE2E8F0),
+            : AppColors.surfaceUp,
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
@@ -136,7 +148,7 @@ class _RarityBadge extends StatelessWidget {
           fontFamily: 'Inter',
           fontSize: 9,
           fontWeight: FontWeight.w700,
-          color: unlocked ? rarity.color : const Color(0xFFCBD5E1),
+          color: unlocked ? rarity.color : AppColors.textMuted,
           letterSpacing: 0.5,
         ),
       ),
@@ -181,8 +193,8 @@ class _ProgressRow extends StatelessWidget {
           child: LinearProgressIndicator(
             value: fraction,
             minHeight: 4,
-            backgroundColor: const Color(0xFFE2E8F0),
-            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF94A3B8)),
+            backgroundColor: AppColors.surfaceHigh,
+            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.textMuted),
           ),
         ),
         const SizedBox(height: 4),
@@ -191,7 +203,7 @@ class _ProgressRow extends StatelessWidget {
           style: const TextStyle(
             fontFamily: 'Inter',
             fontSize: 9,
-            color: Color(0xFF94A3B8),
+            color: AppColors.textMuted,
             fontWeight: FontWeight.w500,
           ),
         ),

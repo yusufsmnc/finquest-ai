@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../domain/achievement_model.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class AchievementDetailModal extends StatelessWidget {
   final Achievement achievement;
@@ -23,8 +24,16 @@ class AchievementDetailModal extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surfaceUp,
         borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.5),
+            blurRadius: 40,
+            offset: const Offset(0, -8),
+          ),
+        ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -34,7 +43,7 @@ class AchievementDetailModal extends StatelessWidget {
             width: 36,
             height: 4,
             decoration: BoxDecoration(
-              color: const Color(0xFFE2E8F0),
+              color: AppColors.border,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -53,20 +62,20 @@ class AchievementDetailModal extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 _InfoRow(
-                  dotColor: const Color(0xFF64748B),
+                  dotColor: AppColors.textSecondary,
                   label: 'Category',
                   value: achievement.category.label,
-                  valueColor: const Color(0xFF0F172A),
+                  valueColor: AppColors.textPrimary,
                 ),
                 const SizedBox(height: 12),
                 _ProgressSection(achievement: achievement, rarity: rarity),
                 if (unlocked && achievement.unlockedAt != null) ...[
                   const SizedBox(height: 12),
                   _InfoRow(
-                    dotColor: const Color(0xFF059669),
+                    dotColor: AppColors.success,
                     label: 'Unlocked',
                     value: _formatDate(achievement.unlockedAt!),
-                    valueColor: const Color(0xFF059669),
+                    valueColor: AppColors.success,
                   ),
                 ],
                 const SizedBox(height: 20),
@@ -115,18 +124,27 @@ class _HeroSection extends StatelessWidget {
             shape: BoxShape.circle,
             color: unlocked
                 ? rarity.color.withValues(alpha: 0.12)
-                : const Color(0xFFF1F5F9),
+                : AppColors.surfaceHigh,
             border: Border.all(
               color: unlocked
-                  ? rarity.color.withValues(alpha: 0.3)
-                  : const Color(0xFFE2E8F0),
+                  ? rarity.color.withValues(alpha: 0.35)
+                  : AppColors.border,
               width: 2,
             ),
+            boxShadow: unlocked
+                ? [
+                    BoxShadow(
+                      color: rarity.color.withValues(alpha: 0.25),
+                      blurRadius: 24,
+                      spreadRadius: 4,
+                    ),
+                  ]
+                : null,
           ),
           child: Icon(
             achievement.icon,
             size: 36,
-            color: unlocked ? rarity.color : const Color(0xFFCBD5E1),
+            color: unlocked ? rarity.color : AppColors.textMuted,
           ),
         ),
         const SizedBox(height: 16),
@@ -136,7 +154,7 @@ class _HeroSection extends StatelessWidget {
             fontFamily: 'Poppins',
             fontSize: 20,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF0F172A),
+            color: AppColors.textPrimary,
           ),
         ),
         const SizedBox(height: 6),
@@ -148,7 +166,7 @@ class _HeroSection extends StatelessWidget {
             style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 13,
-              color: Color(0xFF64748B),
+              color: AppColors.textSecondary,
               height: 1.5,
             ),
           ),
@@ -186,7 +204,7 @@ class _InfoRow extends StatelessWidget {
           style: const TextStyle(
             fontFamily: 'Inter',
             fontSize: 13,
-            color: Color(0xFF64748B),
+            color: AppColors.textSecondary,
           ),
         ),
         const Spacer(),
@@ -218,9 +236,9 @@ class _ProgressSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -233,7 +251,7 @@ class _ProgressSection extends StatelessWidget {
                   fontFamily: 'Inter',
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF64748B),
+                  color: AppColors.textSecondary,
                 ),
               ),
               const Spacer(),
@@ -245,7 +263,7 @@ class _ProgressSection extends StatelessWidget {
                   fontFamily: 'Inter',
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  color: unlocked ? rarity.color : const Color(0xFF64748B),
+                  color: unlocked ? rarity.color : AppColors.textSecondary,
                 ),
               ),
             ],
@@ -256,9 +274,9 @@ class _ProgressSection extends StatelessWidget {
             child: LinearProgressIndicator(
               value: fraction,
               minHeight: 8,
-              backgroundColor: const Color(0xFFE2E8F0),
+              backgroundColor: AppColors.surfaceHigh,
               valueColor: AlwaysStoppedAnimation<Color>(
-                unlocked ? rarity.color : const Color(0xFF94A3B8),
+                unlocked ? rarity.color : AppColors.textMuted,
               ),
             ),
           ),
@@ -286,13 +304,13 @@ class _RewardPreview extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: unlocked
-            ? rarity.backgroundColor
-            : const Color(0xFFF8FAFC),
+            ? rarity.color.withValues(alpha: 0.08)
+            : AppColors.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: unlocked
               ? rarity.color.withValues(alpha: 0.25)
-              : const Color(0xFFE2E8F0),
+              : AppColors.border,
         ),
       ),
       child: Row(
@@ -301,7 +319,7 @@ class _RewardPreview extends StatelessWidget {
           Icon(
             unlocked ? Icons.format_quote_rounded : Icons.lock_outline_rounded,
             size: 18,
-            color: unlocked ? rarity.color : const Color(0xFFCBD5E1),
+            color: unlocked ? rarity.color : AppColors.textMuted,
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -310,9 +328,7 @@ class _RewardPreview extends StatelessWidget {
               style: TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 13,
-                color: unlocked
-                    ? const Color(0xFF0F172A)
-                    : const Color(0xFF94A3B8),
+                color: unlocked ? AppColors.textPrimary : AppColors.textMuted,
                 height: 1.5,
                 fontStyle: unlocked ? FontStyle.italic : FontStyle.normal,
               ),

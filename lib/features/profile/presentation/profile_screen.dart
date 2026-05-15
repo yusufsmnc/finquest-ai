@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/theme/app_colors.dart';
 import 'widgets/profile_identity_card.dart';
 import 'widgets/profile_xp_section.dart';
 import 'widgets/profile_streak_section.dart';
@@ -59,7 +60,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background,
       body: FadeTransition(
         opacity: _fadeIn,
         child: SlideTransition(
@@ -86,7 +87,7 @@ class _ProfileAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background,
       elevation: 0,
       scrolledUnderElevation: 0,
       pinned: true,
@@ -95,7 +96,7 @@ class _ProfileAppBar extends StatelessWidget {
         onTap: () => Navigator.of(context).pop(),
         child: const Icon(
           Icons.arrow_back_rounded,
-          color: Color(0xFF0F172A),
+          color: AppColors.textPrimary,
           size: 22,
         ),
       ),
@@ -105,7 +106,7 @@ class _ProfileAppBar extends StatelessWidget {
           fontFamily: 'Poppins',
           fontSize: 18,
           fontWeight: FontWeight.w700,
-          color: Color(0xFF0F172A),
+          color: AppColors.textPrimary,
         ),
       ),
     );

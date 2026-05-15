@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/avatar_data.dart';
 import '../../profile_providers.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class AvatarPickerModal extends ConsumerWidget {
   const AvatarPickerModal({super.key});
@@ -26,8 +27,16 @@ class AvatarPickerModal extends ConsumerWidget {
     return Container(
       margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surfaceUp,
         borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.5),
+            blurRadius: 40,
+            offset: const Offset(0, -8),
+          ),
+        ],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -37,7 +46,7 @@ class AvatarPickerModal extends ConsumerWidget {
             width: 36,
             height: 4,
             decoration: BoxDecoration(
-              color: const Color(0xFFE2E8F0),
+              color: AppColors.border,
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -48,7 +57,7 @@ class AvatarPickerModal extends ConsumerWidget {
               fontFamily: 'Poppins',
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF0F172A),
+              color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 6),
@@ -57,7 +66,7 @@ class AvatarPickerModal extends ConsumerWidget {
             style: TextStyle(
               fontFamily: 'Inter',
               fontSize: 13,
-              color: Color(0xFF64748B),
+              color: AppColors.textSecondary,
             ),
           ),
           const SizedBox(height: 24),
@@ -130,7 +139,7 @@ class AvatarPickerModal extends ConsumerWidget {
                               : FontWeight.w500,
                           color: isSelected
                               ? avatar.primary
-                              : const Color(0xFF64748B),
+                              : AppColors.textSecondary,
                         ),
                         textAlign: TextAlign.center,
                       ),

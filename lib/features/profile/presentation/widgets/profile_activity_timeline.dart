@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../achievements/achievements_providers.dart';
 import '../../../achievements/domain/achievement_model.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class ProfileActivityTimeline extends ConsumerWidget {
   const ProfileActivityTimeline({super.key});
@@ -27,7 +28,7 @@ class ProfileActivityTimeline extends ConsumerWidget {
               fontFamily: 'Poppins',
               fontSize: 15,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF0F172A),
+              color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 12),
@@ -54,20 +55,20 @@ class _EmptyTimeline extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8FAFC),
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: AppColors.border),
       ),
       child: const Column(
         children: [
-          Icon(Icons.history_rounded, size: 28, color: Color(0xFFCBD5E1)),
+          Icon(Icons.history_rounded, size: 28, color: AppColors.textMuted),
           SizedBox(height: 8),
           Text(
             'No activity yet',
             style: TextStyle(
               fontFamily: 'Inter',
               fontSize: 13,
-              color: Color(0xFF94A3B8),
+              color: AppColors.textSecondary,
             ),
           ),
           SizedBox(height: 2),
@@ -76,7 +77,7 @@ class _EmptyTimeline extends StatelessWidget {
             style: TextStyle(
               fontFamily: 'Inter',
               fontSize: 11,
-              color: Color(0xFFCBD5E1),
+              color: AppColors.textMuted,
             ),
           ),
         ],
@@ -108,19 +109,18 @@ class _TimelineItem extends StatelessWidget {
                   height: 32,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: rarity.backgroundColor,
+                    color: rarity.color.withValues(alpha: 0.1),
                     border: Border.all(
                       color: rarity.color.withValues(alpha: 0.4),
                     ),
                   ),
-                  child:
-                      Icon(achievement.icon, size: 15, color: rarity.color),
+                  child: Icon(achievement.icon, size: 15, color: rarity.color),
                 ),
                 if (!isLast)
                   Expanded(
                     child: Container(
                       width: 1.5,
-                      color: const Color(0xFFE2E8F0),
+                      color: AppColors.border,
                     ),
                   ),
               ],
@@ -133,9 +133,9 @@ class _TimelineItem extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppColors.surface,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFE2E8F0)),
+                  border: Border.all(color: AppColors.border),
                 ),
                 child: Row(
                   children: [
@@ -149,7 +149,7 @@ class _TimelineItem extends StatelessWidget {
                               fontFamily: 'Inter',
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF0F172A),
+                              color: AppColors.textPrimary,
                             ),
                           ),
                           const SizedBox(height: 2),
@@ -171,7 +171,7 @@ class _TimelineItem extends StatelessWidget {
                       style: const TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 10,
-                        color: Color(0xFF94A3B8),
+                        color: AppColors.textMuted,
                       ),
                     ),
                   ],

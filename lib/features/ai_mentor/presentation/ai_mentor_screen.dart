@@ -6,6 +6,7 @@ import '../domain/mentor_message.dart';
 import 'widgets/mentor_avatar.dart';
 import 'widgets/mentor_insight_card.dart';
 import 'widgets/mentor_next_step_card.dart';
+import '../../../core/theme/app_colors.dart';
 
 class AiMentorScreen extends ConsumerStatefulWidget {
   const AiMentorScreen({super.key});
@@ -52,7 +53,7 @@ class _AiMentorScreenState extends ConsumerState<AiMentorScreen>
     final history = mentorState.messageHistory;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background,
       body: FadeTransition(
         opacity: _fadeIn,
         child: CustomScrollView(
@@ -108,7 +109,7 @@ class _MentorAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background,
       elevation: 0,
       scrolledUnderElevation: 0,
       pinned: true,
@@ -117,7 +118,7 @@ class _MentorAppBar extends StatelessWidget {
         onTap: () => Navigator.of(context).pop(),
         child: const Icon(
           Icons.arrow_back_rounded,
-          color: Color(0xFF0F172A),
+          color: AppColors.textPrimary,
           size: 22,
         ),
       ),
@@ -129,7 +130,7 @@ class _MentorAppBar extends StatelessWidget {
               fontFamily: 'Poppins',
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF0F172A),
+              color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(width: 10),
@@ -162,6 +163,18 @@ class _MentorHeroSection extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: gradients.first.withValues(alpha: 0.3),
+            blurRadius: 32,
+            offset: const Offset(0, 8),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.4),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -192,8 +205,7 @@ class _MentorHeroSection extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(14),
-              border:
-                  Border.all(color: Colors.white.withValues(alpha: 0.2)),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -233,13 +245,13 @@ class _CategoryInsightsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final categories = [
-      (MentorContext.categoryInvesting, const Color(0xFF2563EB),
+      (MentorContext.categoryInvesting, AppColors.primary,
           Icons.trending_up_rounded, 'Investing'),
-      (MentorContext.categoryBudgeting, const Color(0xFF059669),
+      (MentorContext.categoryBudgeting, AppColors.success,
           Icons.account_balance_wallet_rounded, 'Budgeting'),
-      (MentorContext.categorySavings, const Color(0xFF0EA5E9),
+      (MentorContext.categorySavings, AppColors.cyan,
           Icons.savings_rounded, 'Savings'),
-      (MentorContext.categoryRisk, const Color(0xFFF59E0B),
+      (MentorContext.categoryRisk, AppColors.xpGold,
           Icons.shield_rounded, 'Risk'),
     ];
 
@@ -254,7 +266,7 @@ class _CategoryInsightsSection extends StatelessWidget {
               fontFamily: 'Poppins',
               fontSize: 15,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF0F172A),
+              color: AppColors.textPrimary,
             ),
           ),
         ),
@@ -303,9 +315,21 @@ class _CategoryInsightCard extends StatelessWidget {
       margin: const EdgeInsets.only(right: 12),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: color.withValues(alpha: 0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.25),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
+          ),
+          BoxShadow(
+            color: color.withValues(alpha: 0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -316,7 +340,7 @@ class _CategoryInsightCard extends StatelessWidget {
                 width: 28,
                 height: 28,
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
+                  color: color.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(7),
                 ),
                 child: Icon(icon, size: 14, color: color),
@@ -340,7 +364,7 @@ class _CategoryInsightCard extends StatelessWidget {
               style: const TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 11,
-                color: Color(0xFF334155),
+                color: AppColors.textSecondary,
                 height: 1.5,
               ),
               maxLines: 4,
@@ -367,7 +391,7 @@ class _SectionHeader extends StatelessWidget {
           fontFamily: 'Poppins',
           fontSize: 15,
           fontWeight: FontWeight.w700,
-          color: Color(0xFF0F172A),
+          color: AppColors.textPrimary,
         ),
       ),
     );

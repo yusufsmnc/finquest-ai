@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../dashboard/dashboard_providers.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class ProfileStatsSection extends ConsumerWidget {
   const ProfileStatsSection({super.key});
@@ -21,30 +22,46 @@ class ProfileStatsSection extends ConsumerWidget {
               fontFamily: 'Poppins',
               fontSize: 15,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF0F172A),
+              color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 12),
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.surface,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFE2E8F0)),
+              border: Border.all(color: AppColors.border),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.25),
+                  blurRadius: 12,
+                  offset: const Offset(0, 3),
+                ),
+              ],
             ),
             child: Column(
               children: categories.asMap().entries.map((entry) {
                 final i = entry.key;
                 final cat = entry.value;
                 final isLast = i == categories.length - 1;
-                return Padding(
-                  padding: EdgeInsets.only(bottom: isLast ? 0 : 16),
-                  child: _CategoryRow(
-                    icon: cat.icon,
-                    name: cat.name,
-                    progress: cat.progress,
-                    color: cat.color,
-                  ),
+                return Column(
+                  children: [
+                    _CategoryRow(
+                      icon: cat.icon,
+                      name: cat.name,
+                      progress: cat.progress,
+                      color: cat.color,
+                    ),
+                    if (!isLast) ...[
+                      const SizedBox(height: 8),
+                      Divider(
+                        color: AppColors.border,
+                        height: 1,
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                  ],
                 );
               }).toList(),
             ),
@@ -77,7 +94,7 @@ class _CategoryRow extends StatelessWidget {
           width: 32,
           height: 32,
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
+            color: color.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 16, color: color),
@@ -95,7 +112,7 @@ class _CategoryRow extends StatelessWidget {
                       fontFamily: 'Inter',
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF0F172A),
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   const Spacer(),
@@ -116,7 +133,7 @@ class _CategoryRow extends StatelessWidget {
                 child: LinearProgressIndicator(
                   value: progress,
                   minHeight: 6,
-                  backgroundColor: const Color(0xFFE2E8F0),
+                  backgroundColor: AppColors.surfaceHigh,
                   valueColor: AlwaysStoppedAnimation<Color>(color),
                 ),
               ),

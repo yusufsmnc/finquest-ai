@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../dashboard_providers.dart';
 import '../../../core/routing/app_router.dart';
+import '../../../core/theme/app_colors.dart';
 import 'widgets/dashboard_xp_hero_card.dart';
 import 'widgets/dashboard_stats_row.dart';
 import 'widgets/dashboard_challenges_section.dart';
@@ -86,7 +87,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     });
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background,
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -95,16 +96,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
             heroTag: 'fab_profile',
             onPressed: () =>
                 Navigator.of(context).pushNamed(AppRoutes.profile),
-            backgroundColor: const Color(0xFF0F172A),
+            backgroundColor: AppColors.surfaceHigh,
             child: const Icon(Icons.person_rounded,
-                color: Colors.white, size: 18),
+                color: AppColors.textPrimary, size: 18),
           ),
           const SizedBox(height: 8),
           FloatingActionButton.small(
             heroTag: 'fab_achievements',
             onPressed: () =>
                 Navigator.of(context).pushNamed(AppRoutes.achievements),
-            backgroundColor: const Color(0xFF7C3AED),
+            backgroundColor: AppColors.purple,
             child: const Icon(Icons.emoji_events_rounded,
                 color: Colors.white, size: 18),
           ),
@@ -113,7 +114,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
             heroTag: 'fab_scenarios',
             onPressed: () =>
                 Navigator.of(context).pushNamed(AppRoutes.scenarios),
-            backgroundColor: const Color(0xFF2563EB),
+            backgroundColor: AppColors.primary,
             icon: const Icon(Icons.psychology_alt_rounded,
                 color: Colors.white, size: 20),
             label: const Text(
@@ -227,7 +228,7 @@ class _DashboardAppBar extends ConsumerWidget {
         ref.watch(dashboardNotifierProvider.select((s) => s.currentLevel));
 
     return SliverAppBar(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background,
       elevation: 0,
       scrolledUnderElevation: 0,
       floating: true,
@@ -242,7 +243,7 @@ class _DashboardAppBar extends ConsumerWidget {
               fontFamily: 'Poppins',
               fontSize: 20,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF0F172A),
+              color: AppColors.textPrimary,
             ),
           ),
           Text(
@@ -251,7 +252,7 @@ class _DashboardAppBar extends ConsumerWidget {
               fontFamily: 'Inter',
               fontSize: 12,
               fontWeight: FontWeight.w400,
-              color: Color(0xFF94A3B8),
+              color: AppColors.textSecondary,
             ),
           ),
         ],
@@ -261,7 +262,7 @@ class _DashboardAppBar extends ConsumerWidget {
           onPressed: () {},
           icon: const Icon(
             Icons.notifications_outlined,
-            color: Color(0xFF0F172A),
+            color: AppColors.textSecondary,
             size: 22,
           ),
         ),
@@ -290,16 +291,25 @@ class _SectionHeader extends StatelessWidget {
               fontFamily: 'Poppins',
               fontSize: 16,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF0F172A),
+              color: AppColors.textPrimary,
             ),
           ),
           if (trailing != null)
-            Text(
-              trailing!,
-              style: const TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 12,
-                color: Color(0xFF94A3B8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: AppColors.error.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: AppColors.error.withValues(alpha: 0.25)),
+              ),
+              child: Text(
+                trailing!,
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.error,
+                ),
               ),
             ),
         ],
@@ -320,7 +330,7 @@ class _SectionHeaderInline extends StatelessWidget {
         fontFamily: 'Poppins',
         fontSize: 16,
         fontWeight: FontWeight.w700,
-        color: Color(0xFF0F172A),
+        color: AppColors.textPrimary,
       ),
     );
   }

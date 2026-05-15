@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../dashboard_providers.dart';
 import '../../../../shared/widgets/streak_counter.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class DashboardStatsRow extends ConsumerWidget {
   const DashboardStatsRow({super.key});
@@ -18,6 +19,7 @@ class DashboardStatsRow extends ConsumerWidget {
         Expanded(
           child: _StatCell(
             label: 'Streak',
+            accentColor: AppColors.streakOrange,
             child: StreakCounter(streak: streak, pulse: streakPulse),
           ),
         ),
@@ -25,10 +27,11 @@ class DashboardStatsRow extends ConsumerWidget {
         Expanded(
           child: _StatCell(
             label: 'Total XP',
+            accentColor: AppColors.xpGold,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.bolt_rounded, color: Color(0xFFF59E0B), size: 18),
+                const Icon(Icons.bolt_rounded, color: AppColors.xpGold, size: 18),
                 const SizedBox(width: 4),
                 Text(
                   '$xp',
@@ -36,7 +39,7 @@ class DashboardStatsRow extends ConsumerWidget {
                     fontFamily: 'Poppins',
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF0F172A),
+                    color: AppColors.textPrimary,
                   ),
                 ),
               ],
@@ -47,13 +50,14 @@ class DashboardStatsRow extends ConsumerWidget {
         Expanded(
           child: _StatCell(
             label: 'Scenarios',
+            accentColor: AppColors.cyan,
             child: Text(
               '$scenarios',
               style: const TextStyle(
                 fontFamily: 'Poppins',
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF0F172A),
+                color: AppColors.textPrimary,
               ),
             ),
           ),
@@ -66,22 +70,27 @@ class DashboardStatsRow extends ConsumerWidget {
 class _StatCell extends StatelessWidget {
   final String label;
   final Widget child;
+  final Color accentColor;
 
-  const _StatCell({required this.label, required this.child});
+  const _StatCell({
+    required this.label,
+    required this.child,
+    required this.accentColor,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: accentColor.withValues(alpha: 0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -96,7 +105,7 @@ class _StatCell extends StatelessWidget {
               fontFamily: 'Inter',
               fontSize: 11,
               fontWeight: FontWeight.w500,
-              color: Color(0xFF94A3B8),
+              color: AppColors.textSecondary,
             ),
           ),
         ],

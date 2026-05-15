@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../achievements_providers.dart';
+import '../../../../core/theme/app_colors.dart';
 import 'widgets/achievements_stats_header.dart';
 import 'widgets/achievements_filter_bar.dart';
 import 'widgets/achievement_card.dart';
@@ -55,7 +56,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen>
     );
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background,
       body: FadeTransition(
         opacity: _fadeIn,
         child: CustomScrollView(
@@ -105,7 +106,7 @@ class _AchievementsAppBar extends ConsumerWidget {
     );
 
     return SliverAppBar(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AppColors.background,
       elevation: 0,
       scrolledUnderElevation: 0,
       pinned: true,
@@ -114,7 +115,7 @@ class _AchievementsAppBar extends ConsumerWidget {
         onTap: () => Navigator.of(context).pop(),
         child: const Icon(
           Icons.arrow_back_rounded,
-          color: Color(0xFF0F172A),
+          color: AppColors.textPrimary,
           size: 22,
         ),
       ),
@@ -127,7 +128,7 @@ class _AchievementsAppBar extends ConsumerWidget {
               fontFamily: 'Poppins',
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF0F172A),
+              color: AppColors.textPrimary,
             ),
           ),
           Text(
@@ -135,7 +136,7 @@ class _AchievementsAppBar extends ConsumerWidget {
             style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 11,
-              color: Color(0xFF64748B),
+              color: AppColors.textSecondary,
               fontWeight: FontWeight.w500,
             ),
           ),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../dashboard/dashboard_providers.dart';
 import '../../../scenarios/scenario_providers.dart';
 import '../../profile_providers.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class ProfileStreakSection extends ConsumerWidget {
   const ProfileStreakSection({super.key});
@@ -52,9 +53,21 @@ class _StreakCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: AppColors.xpGold.withValues(alpha: 0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.25),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
+          ),
+          BoxShadow(
+            color: AppColors.xpGold.withValues(alpha: 0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,13 +78,13 @@ class _StreakCard extends StatelessWidget {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFFBEB),
+                  color: AppColors.xpGold.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
                   Icons.local_fire_department_rounded,
                   size: 18,
-                  color: Color(0xFFF59E0B),
+                  color: AppColors.xpGold,
                 ),
               ),
               const SizedBox(width: 8),
@@ -81,7 +94,7 @@ class _StreakCard extends StatelessWidget {
                   fontFamily: 'Inter',
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF64748B),
+                  color: AppColors.textSecondary,
                 ),
               ),
             ],
@@ -96,7 +109,7 @@ class _StreakCard extends StatelessWidget {
                   fontFamily: 'Poppins',
                   fontSize: 32,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF0F172A),
+                  color: AppColors.textPrimary,
                   height: 1.0,
                 ),
               ),
@@ -107,7 +120,7 @@ class _StreakCard extends StatelessWidget {
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 11,
-                    color: Color(0xFF94A3B8),
+                    color: AppColors.textMuted,
                   ),
                 ),
               ),
@@ -117,7 +130,7 @@ class _StreakCard extends StatelessWidget {
           Row(
             children: [
               const Icon(Icons.emoji_events_rounded,
-                  size: 12, color: Color(0xFFF59E0B)),
+                  size: 12, color: AppColors.xpGold),
               const SizedBox(width: 4),
               Text(
                 'Best: $best',
@@ -125,7 +138,7 @@ class _StreakCard extends StatelessWidget {
                   fontFamily: 'Inter',
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFFF59E0B),
+                  color: AppColors.xpGold,
                 ),
               ),
             ],
@@ -154,9 +167,7 @@ class _FlameRow extends StatelessWidget {
           child: Icon(
             Icons.local_fire_department_rounded,
             size: 14,
-            color: active
-                ? const Color(0xFFF59E0B)
-                : const Color(0xFFE2E8F0),
+            color: active ? AppColors.xpGold : AppColors.surfaceHigh,
           ),
         );
       }),
@@ -174,17 +185,29 @@ class _AccuracyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final percent = (rate * 100).toInt();
     final color = rate >= 0.7
-        ? const Color(0xFF059669)
+        ? AppColors.success
         : rate >= 0.5
-            ? const Color(0xFFF59E0B)
-            : const Color(0xFFDC2626);
+            ? AppColors.xpGold
+            : AppColors.error;
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.25),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
+          ),
+          BoxShadow(
+            color: color.withValues(alpha: 0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,7 +218,7 @@ class _AccuracyCard extends StatelessWidget {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
+                  color: color.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
@@ -211,7 +234,7 @@ class _AccuracyCard extends StatelessWidget {
                   fontFamily: 'Inter',
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF64748B),
+                  color: AppColors.textSecondary,
                 ),
               ),
             ],
@@ -238,7 +261,7 @@ class _AccuracyCard extends StatelessWidget {
                     fontFamily: 'Inter',
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF94A3B8),
+                    color: AppColors.textMuted,
                   ),
                 ),
               ),
@@ -250,7 +273,7 @@ class _AccuracyCard extends StatelessWidget {
             style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 11,
-              color: Color(0xFF94A3B8),
+              color: AppColors.textMuted,
             ),
           ),
           const SizedBox(height: 10),
@@ -259,7 +282,7 @@ class _AccuracyCard extends StatelessWidget {
             child: LinearProgressIndicator(
               value: rate.clamp(0.0, 1.0),
               minHeight: 6,
-              backgroundColor: const Color(0xFFE2E8F0),
+              backgroundColor: AppColors.surfaceHigh,
               valueColor: AlwaysStoppedAnimation<Color>(color),
             ),
           ),

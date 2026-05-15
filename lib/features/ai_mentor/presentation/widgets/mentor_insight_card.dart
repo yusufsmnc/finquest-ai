@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../domain/mentor_message.dart';
+import '../../../../core/theme/app_colors.dart';
 import 'mentor_avatar.dart';
 
 class MentorInsightCard extends StatelessWidget {
@@ -23,13 +24,18 @@ class MentorInsightCard extends StatelessWidget {
         key: ValueKey(message.id),
         padding: EdgeInsets.all(compact ? 14 : 16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: accentColor.withValues(alpha: 0.2)),
           boxShadow: [
             BoxShadow(
-              color: accentColor.withValues(alpha: 0.06),
+              color: Colors.black.withValues(alpha: 0.3),
               blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+            BoxShadow(
+              color: accentColor.withValues(alpha: 0.08),
+              blurRadius: 16,
               offset: const Offset(0, 4),
             ),
           ],
@@ -70,7 +76,7 @@ class MentorInsightCard extends StatelessWidget {
                         style: const TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 10,
-                          color: Color(0xFF94A3B8),
+                          color: AppColors.textMuted,
                         ),
                       ),
                     ],
@@ -81,7 +87,7 @@ class MentorInsightCard extends StatelessWidget {
                   style: const TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 10,
-                    color: Color(0xFF94A3B8),
+                    color: AppColors.textMuted,
                   ),
                 ),
               ],
@@ -90,7 +96,7 @@ class MentorInsightCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: accentColor.withValues(alpha: 0.04),
+                color: accentColor.withValues(alpha: 0.06),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Row(
@@ -105,7 +111,7 @@ class MentorInsightCard extends StatelessWidget {
                       style: const TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 13,
-                        color: Color(0xFF334155),
+                        color: AppColors.textSecondary,
                         height: 1.55,
                       ),
                     ),
