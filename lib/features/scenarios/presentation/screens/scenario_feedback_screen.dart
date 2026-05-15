@@ -46,7 +46,7 @@ class ScenarioFeedbackScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _ResultBanner(isCorrect: isCorrect),
+            _ResultBanner(isCorrect: isCorrect, streak: streak),
             const SizedBox(height: 16),
             if (lastXpGained > 0) ...[
               ScenarioXpSummary(
@@ -86,7 +86,23 @@ class ScenarioFeedbackScreen extends ConsumerWidget {
 
 class _ResultBanner extends StatelessWidget {
   final bool isCorrect;
-  const _ResultBanner({required this.isCorrect});
+  final int streak;
+  const _ResultBanner({required this.isCorrect, required this.streak});
+
+  String get _headline {
+    if (!isCorrect) return 'Not the Best Choice';
+    if (streak >= 5) return '🔥🔥 On Fire! $streak in a row!';
+    if (streak >= 3) return '🔥 Hot Streak! $streak correct!';
+    if (streak == 2) return '2 in a Row!';
+    return 'Excellent Decision!';
+  }
+
+  String get _subline {
+    if (!isCorrect) return 'Learn from the feedback below.';
+    if (streak >= 3) return 'You\'re on a roll — keep going!';
+    if (streak == 2) return 'Two smart decisions in a row!';
+    return 'You chose wisely.';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +143,7 @@ class _ResultBanner extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                isCorrect ? 'Excellent Decision!' : 'Not the Best Choice',
+                _headline,
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontSize: 15,
@@ -136,7 +152,7 @@ class _ResultBanner extends StatelessWidget {
                 ),
               ),
               Text(
-                isCorrect ? 'You chose wisely.' : 'Learn from the feedback below.',
+                _subline,
                 style: TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 12,

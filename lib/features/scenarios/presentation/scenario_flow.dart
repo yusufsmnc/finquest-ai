@@ -55,6 +55,17 @@ class _ScenarioFlowState extends ConsumerState<ScenarioFlow> {
       }
     });
 
+    ref.listen(scenarioNotifierProvider.select((s) => s.showRewardToast),
+        (_, show) {
+      if (show) {
+        Future.delayed(const Duration(milliseconds: 3000), () {
+          if (mounted) {
+            ref.read(scenarioDispatcherProvider).onRewardToastDismissed();
+          }
+        });
+      }
+    });
+
     return Stack(
       children: [
         AnimatedSwitcher(

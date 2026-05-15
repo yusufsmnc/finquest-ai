@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../shared/widgets/card_container.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class ScenarioXpSummary extends StatefulWidget {
   final int xpGained;
@@ -56,8 +57,22 @@ class _ScenarioXpSummaryState extends State<ScenarioXpSummary>
     super.dispose();
   }
 
+  String get _streakMessage {
+    if (widget.streak >= 5) return '🔥🔥 ${widget.streak} in a row — Unstoppable!';
+    if (widget.streak >= 3) return '🔥 ${widget.streak} correct — Hot streak!';
+    return '🔥 2 in a row — Keep it up!';
+  }
+
+  Color get _streakGlowColor {
+    if (widget.streak >= 5) return AppColors.error;
+    if (widget.streak >= 3) return AppColors.xpGold;
+    return AppColors.xpGold;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final showStreak = widget.isCorrect && widget.streak >= 2;
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) => FadeTransition(
@@ -65,6 +80,7 @@ class _ScenarioXpSummaryState extends State<ScenarioXpSummary>
         child: Transform.scale(scale: _scale.value, child: child),
       ),
       child: CardContainer(
+        glowColor: showStreak ? _streakGlowColor : null,
         child: Column(
           children: [
             Row(
@@ -76,7 +92,7 @@ class _ScenarioXpSummaryState extends State<ScenarioXpSummary>
                     fontFamily: 'Poppins',
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF0F172A),
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 _XpChip(amount: widget.xpGained),
@@ -87,13 +103,14 @@ class _ScenarioXpSummaryState extends State<ScenarioXpSummary>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF16A34A).withValues(alpha: 0.06),
+                  color: AppColors.success.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: AppColors.success.withValues(alpha: 0.2)),
                 ),
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.stars_rounded, color: Color(0xFF16A34A), size: 14),
+                    Icon(Icons.stars_rounded, color: AppColors.success, size: 14),
                     SizedBox(width: 6),
                     Text(
                       'Correct Decision Bonus +50 XP',
@@ -101,36 +118,39 @@ class _ScenarioXpSummaryState extends State<ScenarioXpSummary>
                         fontFamily: 'Inter',
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF16A34A),
+                        color: AppColors.success,
                       ),
                     ),
                   ],
                 ),
               ),
             ],
-            if (widget.streak > 1) ...[
-              const SizedBox(height: 12),
+            if (showStreak) ...[
+              const SizedBox(height: 10),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF59E0B).withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('🔥', style: TextStyle(fontSize: 13)),
-                    const SizedBox(width: 6),
-                    Text(
-                      '${widget.streak} day streak — keep it up!',
-                      style: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFFD97706),
-                      ),
+                  color: _streakGlowColor.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                      color: _streakGlowColor.withValues(alpha: 0.3)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: _streakGlowColor.withValues(alpha: 0.15),
+                      blurRadius: 12,
                     ),
                   ],
+                ),
+                child: Text(
+                  _streakMessage,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: _streakGlowColor,
+                  ),
                 ),
               ),
             ],
@@ -150,13 +170,14 @@ class _XpChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF7ED),
+        color: AppColors.xpGold.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.xpGold.withValues(alpha: 0.25)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.bolt_rounded, color: Color(0xFFF59E0B), size: 16),
+          const Icon(Icons.bolt_rounded, color: AppColors.xpGold, size: 16),
           const SizedBox(width: 4),
           Text(
             '+$amount XP',
@@ -164,7 +185,7 @@ class _XpChip extends StatelessWidget {
               fontFamily: 'Poppins',
               fontSize: 16,
               fontWeight: FontWeight.w700,
-              color: Color(0xFFD97706),
+              color: AppColors.xpGold,
             ),
           ),
         ],
