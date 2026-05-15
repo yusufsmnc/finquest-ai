@@ -4,6 +4,7 @@ import '../../ai_mentor_providers.dart';
 import '../../data/mentor_repository.dart';
 import '../../domain/mentor_message.dart';
 import '../../../../core/routing/app_router.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class MentorNextStepCard extends ConsumerWidget {
   const MentorNextStepCard({super.key});
@@ -18,12 +19,21 @@ class MentorNextStepCard extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: AppColors.surfaceUp,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.06),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,12 +44,12 @@ class MentorNextStepCard extends ConsumerWidget {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.1),
+                  color: AppColors.primary.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
                   Icons.arrow_forward_rounded,
-                  color: Colors.white,
+                  color: AppColors.primary,
                   size: 16,
                 ),
               ),
@@ -50,7 +60,7 @@ class MentorNextStepCard extends ConsumerWidget {
                   fontFamily: 'Poppins',
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: AppColors.textPrimary,
                 ),
               ),
             ],
@@ -61,7 +71,7 @@ class MentorNextStepCard extends ConsumerWidget {
             style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 13,
-              color: Colors.white70,
+              color: AppColors.textSecondary,
               height: 1.55,
             ),
           ),
@@ -72,6 +82,7 @@ class MentorNextStepCard extends ConsumerWidget {
                 child: _ActionButton(
                   label: 'Scenarios',
                   icon: Icons.psychology_alt_rounded,
+                  color: AppColors.primary,
                   onTap: () =>
                       Navigator.of(context).pushNamed(AppRoutes.scenarios),
                 ),
@@ -81,6 +92,7 @@ class MentorNextStepCard extends ConsumerWidget {
                 child: _ActionButton(
                   label: 'Achievements',
                   icon: Icons.emoji_events_rounded,
+                  color: AppColors.purple,
                   onTap: () =>
                       Navigator.of(context).pushNamed(AppRoutes.achievements),
                 ),
@@ -96,11 +108,13 @@ class MentorNextStepCard extends ConsumerWidget {
 class _ActionButton extends StatelessWidget {
   final String label;
   final IconData icon;
+  final Color color;
   final VoidCallback onTap;
 
   const _ActionButton({
     required this.label,
     required this.icon,
+    required this.color,
     required this.onTap,
   });
 
@@ -110,24 +124,31 @@ class _ActionButton extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.symmetric(vertical: 11),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.1),
+          color: color.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+          border: Border.all(color: color.withValues(alpha: 0.25)),
+          boxShadow: [
+            BoxShadow(
+              color: color.withValues(alpha: 0.12),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 14, color: Colors.white70),
+            Icon(icon, size: 14, color: color),
             const SizedBox(width: 6),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: Colors.white70,
+                color: color,
               ),
             ),
           ],
