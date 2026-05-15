@@ -53,31 +53,50 @@ class _EmptyTimeline extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.border),
       ),
-      child: const Column(
+      child: Column(
         children: [
-          Icon(Icons.history_rounded, size: 28, color: AppColors.textMuted),
-          SizedBox(height: 8),
-          Text(
-            'No activity yet',
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: AppColors.cyan.withValues(alpha: 0.08),
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.cyan.withValues(alpha: 0.2)),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.cyan.withValues(alpha: 0.12),
+                  blurRadius: 20,
+                ),
+              ],
+            ),
+            child: const Icon(Icons.rocket_launch_rounded,
+                color: AppColors.cyan, size: 26),
+          ),
+          const SizedBox(height: 14),
+          const Text(
+            'Your journey starts here',
             style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 13,
-              color: AppColors.textSecondary,
+              fontFamily: 'Poppins',
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
             ),
           ),
-          SizedBox(height: 2),
-          Text(
-            'Complete scenarios to start your journey',
+          const SizedBox(height: 6),
+          const Text(
+            'Complete scenarios to start building\nyour activity history.',
+            textAlign: TextAlign.center,
             style: TextStyle(
               fontFamily: 'Inter',
-              fontSize: 11,
-              color: AppColors.textMuted,
+              fontSize: 12,
+              color: AppColors.textSecondary,
+              height: 1.5,
             ),
           ),
         ],

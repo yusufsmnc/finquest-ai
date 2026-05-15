@@ -7,6 +7,7 @@ import 'screens/scenario_decision_screen.dart';
 import 'screens/scenario_feedback_screen.dart';
 import 'widgets/scenario_xp_float_overlay.dart';
 import 'widgets/scenario_reward_toast_overlay.dart';
+import '../../../core/theme/app_colors.dart';
 
 class ScenarioFlow extends ConsumerStatefulWidget {
   const ScenarioFlow({super.key});
@@ -66,27 +67,30 @@ class _ScenarioFlowState extends ConsumerState<ScenarioFlow> {
       }
     });
 
-    return Stack(
-      children: [
-        AnimatedSwitcher(
-          duration: const Duration(milliseconds: 280),
-          switchInCurve: Curves.easeOutCubic,
-          switchOutCurve: Curves.easeInCubic,
-          transitionBuilder: (child, animation) => FadeTransition(
-            opacity: animation,
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(0.04, 0),
-                end: Offset.zero,
-              ).animate(animation),
-              child: child,
+    return ColoredBox(
+      color: AppColors.background,
+      child: Stack(
+        children: [
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 280),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeInCubic,
+            transitionBuilder: (child, animation) => FadeTransition(
+              opacity: animation,
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(0.04, 0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              ),
             ),
+            child: _screenFor(phase),
           ),
-          child: _screenFor(phase),
-        ),
-        const ScenarioXpFloatOverlay(),
-        const ScenarioRewardToastOverlay(),
-      ],
+          const ScenarioXpFloatOverlay(),
+          const ScenarioRewardToastOverlay(),
+        ],
+      ),
     );
   }
 

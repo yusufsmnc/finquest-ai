@@ -91,7 +91,8 @@ class _ProfileAppBar extends StatelessWidget {
       elevation: 0,
       scrolledUnderElevation: 0,
       pinned: true,
-      leading: Navigator.of(context).canPop()
+      automaticallyImplyLeading: false,
+      leading: ModalRoute.of(context)?.canPop == true
           ? GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () => Navigator.of(context).pop(),

@@ -191,6 +191,7 @@ class _DashboardAppBar extends ConsumerWidget {
       scrolledUnderElevation: 0,
       floating: true,
       pinned: false,
+      automaticallyImplyLeading: false,
       toolbarHeight: 64,
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

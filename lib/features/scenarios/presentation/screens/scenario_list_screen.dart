@@ -21,7 +21,8 @@ class ScenarioListScreen extends ConsumerWidget {
         backgroundColor: AppColors.background,
         elevation: 0,
         scrolledUnderElevation: 0,
-        leading: Navigator.of(context).canPop()
+        automaticallyImplyLeading: false,
+        leading: ModalRoute.of(context)?.canPop == true
             ? IconButton(
                 icon: const Icon(Icons.arrow_back_rounded,
                     color: AppColors.textPrimary),
@@ -52,7 +53,10 @@ class ScenarioListScreen extends ConsumerWidget {
           const SizedBox(height: 8),
           Expanded(
             child: scenarios.isEmpty
-                ? const _EmptyState()
+                ? _EmptyState(
+                    hasFilter: selectedCategory != null,
+                    onClear: () => dispatcher.onCategorySelected(null),
+                  )
                 : ListView.separated(
                     padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
                     itemCount: scenarios.length,
@@ -345,17 +349,86 @@ class _CompletedBadge extends StatelessWidget {
 }
 
 class _EmptyState extends StatelessWidget {
-  const _EmptyState();
+  final bool hasFilter;
+  final VoidCallback onClear;
+
+  const _EmptyState({required this.hasFilter, required this.onClear});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'No scenarios in this category yet.',
-        style: TextStyle(
-          fontFamily: 'Inter',
-          fontSize: 14,
-          color: AppColors.textSecondary,
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 40),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryGlow(0.15),
+                    blurRadius: 24,
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.psychology_alt_rounded,
+                color: AppColors.primary,
+                size: 34,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              hasFilter ? 'No scenarios here' : 'No scenarios yet',
+              style: const TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              hasFilter
+                  ? 'There are no scenarios in this category yet.'
+                  : 'Scenarios will appear here once they are available.',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 13,
+                color: AppColors.textSecondary,
+                height: 1.5,
+              ),
+            ),
+            if (hasFilter) ...[
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: onClear,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.25)),
+                  ),
+                  child: const Text(
+                    'Show All Scenarios',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ],
         ),
       ),
     );

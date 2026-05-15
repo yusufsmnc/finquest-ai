@@ -91,22 +91,48 @@ class _EmptyShowcase extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.border),
       ),
-      child: const Row(
+      child: Column(
         children: [
-          Icon(Icons.lock_outline_rounded, size: 16, color: AppColors.textMuted),
-          SizedBox(width: 10),
-          Text(
-            'Complete scenarios to unlock achievements',
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: AppColors.xpGold.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.xpGold.withValues(alpha: 0.15),
+                  blurRadius: 16,
+                ),
+              ],
+            ),
+            child: const Icon(Icons.emoji_events_rounded,
+                color: AppColors.xpGold, size: 22),
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'No achievements yet',
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Complete scenarios to earn your first badge',
+            textAlign: TextAlign.center,
             style: TextStyle(
               fontFamily: 'Inter',
-              fontSize: 12,
-              color: AppColors.textMuted,
+              fontSize: 11,
+              color: AppColors.textSecondary,
             ),
           ),
         ],

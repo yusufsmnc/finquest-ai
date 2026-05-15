@@ -199,20 +199,66 @@ class _MarketEventsScreenState extends ConsumerState<MarketEventsScreen>
               ),
             ],
             if (activeEvents.isEmpty && resolvedEvents.isEmpty)
-              const SliverFillRemaining(
-                child: Center(
-                  child: Text(
-                    'No events at this time.',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 14,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ),
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Center(child: _EmptyMarketState()),
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _EmptyMarketState extends StatelessWidget {
+  const _EmptyMarketState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 40),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 72,
+            height: 72,
+            decoration: BoxDecoration(
+              color: AppColors.cyan.withValues(alpha: 0.08),
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.cyan.withValues(alpha: 0.2)),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.cyan.withValues(alpha: 0.15),
+                  blurRadius: 24,
+                ),
+              ],
+            ),
+            child: const Icon(Icons.show_chart_rounded,
+                color: AppColors.cyan, size: 34),
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'Markets are quiet',
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'No active market events right now.\nCheck back soon for new opportunities.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 13,
+              color: AppColors.textSecondary,
+              height: 1.5,
+            ),
+          ),
+        ],
       ),
     );
   }
