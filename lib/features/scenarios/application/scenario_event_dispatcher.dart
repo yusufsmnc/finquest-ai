@@ -34,8 +34,8 @@ class ScenarioEventDispatcher {
     }
   }
 
-  void onDecisionMade(
-      String scenarioId, String optionId, bool isCorrect, int xpAmount) {
+  Future<void> onDecisionMade(
+      String scenarioId, String optionId, bool isCorrect, int xpAmount) async {
     _dispatch(GameEvent.decisionMade(optionId: optionId));
 
     if (isCorrect) {
@@ -56,6 +56,9 @@ class ScenarioEventDispatcher {
     }
 
     _notifier.markCompleted(scenarioId);
+
+    // Wait for answer animation to play before advancing
+    await Future.delayed(const Duration(milliseconds: 1500));
     _notifier.advanceToFeedback();
   }
 
