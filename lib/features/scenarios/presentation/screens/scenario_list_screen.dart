@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../scenario_providers.dart';
 import '../../domain/scenario_model.dart';
 import '../widgets/scenario_risk_indicator.dart';
+import '../../../../core/routing/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class ScenarioListScreen extends ConsumerWidget {
@@ -12,8 +13,13 @@ class ScenarioListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final scenarios = ref.watch(scenarioNotifierProvider.select((s) => s.filteredScenarios));
     final completedIds = ref.watch(scenarioNotifierProvider.select((s) => s.completedIds));
+    final totalCount = ref.watch(scenarioNotifierProvider.select((s) => s.scenarios.length));
     final selectedCategory = ref.watch(scenarioNotifierProvider.select((s) => s.selectedCategory));
+    final xpEarned = ref.watch(scenarioNotifierProvider.select((s) => s.xpEarned));
+    final accuracyRate = ref.watch(scenarioNotifierProvider.select((s) => s.accuracyRate));
     final dispatcher = ref.read(scenarioDispatcherProvider);
+
+    final allCompleted = totalCount > 0 && completedIds.length >= totalCount;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -43,33 +49,39 @@ class ScenarioListScreen extends ConsumerWidget {
           const SizedBox(width: 12),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _CategoryFilter(
-            selected: selectedCategory,
-            onSelected: dispatcher.onCategorySelected,
-          ),
-          const SizedBox(height: 8),
-          Expanded(
-            child: scenarios.isEmpty
-                ? _EmptyState(
-                    hasFilter: selectedCategory != null,
-                    onClear: () => dispatcher.onCategorySelected(null),
-                  )
-                : ListView.separated(
-                    padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
-                    itemCount: scenarios.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
-                    itemBuilder: (context, i) => _ScenarioCard(
-                      scenario: scenarios[i],
-                      isCompleted: completedIds.contains(scenarios[i].id),
-                      onTap: () => dispatcher.onScenarioSelected(scenarios[i].id),
-                    ),
-                  ),
-          ),
-        ],
-      ),
+      body: allCompleted
+          ? _AllCompletedState(
+              totalScenarios: totalCount,
+              xpEarned: xpEarned,
+              accuracyRate: accuracyRate,
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _CategoryFilter(
+                  selected: selectedCategory,
+                  onSelected: dispatcher.onCategorySelected,
+                ),
+                const SizedBox(height: 8),
+                Expanded(
+                  child: scenarios.isEmpty
+                      ? _EmptyState(
+                          hasFilter: selectedCategory != null,
+                          onClear: () => dispatcher.onCategorySelected(null),
+                        )
+                      : ListView.separated(
+                          padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
+                          itemCount: scenarios.length,
+                          separatorBuilder: (_, __) => const SizedBox(height: 12),
+                          itemBuilder: (context, i) => _ScenarioCard(
+                            scenario: scenarios[i],
+                            isCompleted: completedIds.contains(scenarios[i].id),
+                            onTap: () => dispatcher.onScenarioSelected(scenarios[i].id),
+                          ),
+                        ),
+                ),
+              ],
+            ),
     );
   }
 }
@@ -431,6 +443,242 @@ class _EmptyState extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _AllCompletedState extends StatelessWidget {
+  final int totalScenarios;
+  final int xpEarned;
+  final double accuracyRate;
+
+  const _AllCompletedState({
+    required this.totalScenarios,
+    required this.xpEarned,
+    required this.accuracyRate,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final accuracyPct = (accuracyRate * 100).round();
+
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(28, 24, 28, 48),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 88,
+              height: 88,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFFCA8A04), Color(0xFFFBBF24)],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.xpGold.withValues(alpha: 0.4),
+                    blurRadius: 32,
+                    spreadRadius: 4,
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.emoji_events_rounded,
+                color: Colors.white,
+                size: 42,
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'All Scenarios Complete!',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'You\'ve worked through every scenario.\nYour financial instinct is stronger for it.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 13,
+                color: AppColors.textSecondary,
+                height: 1.6,
+              ),
+            ),
+            const SizedBox(height: 28),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: AppColors.xpGold.withValues(alpha: 0.25),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.xpGold.withValues(alpha: 0.08),
+                    blurRadius: 20,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _StatItem(
+                    icon: Icons.bolt_rounded,
+                    color: AppColors.xpGold,
+                    value: '$xpEarned',
+                    label: 'XP Earned',
+                  ),
+                  Container(width: 1, height: 36, color: AppColors.border),
+                  _StatItem(
+                    icon: Icons.check_circle_rounded,
+                    color: AppColors.success,
+                    value: '$totalScenarios',
+                    label: 'Completed',
+                  ),
+                  Container(width: 1, height: 36, color: AppColors.border),
+                  _StatItem(
+                    icon: Icons.track_changes_rounded,
+                    color: AppColors.primary,
+                    value: '$accuracyPct%',
+                    label: 'Accuracy',
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () =>
+                    Navigator.of(context).pushNamed(AppRoutes.achievements),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFCA8A04), Color(0xFFF59E0B)],
+                    ),
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.xpGold.withValues(alpha: 0.35),
+                        blurRadius: 16,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.emoji_events_rounded,
+                          color: Colors.white, size: 16),
+                      SizedBox(width: 8),
+                      Text(
+                        'View Achievements',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => Navigator.of(context).pop(),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.dashboard_rounded,
+                          color: AppColors.textSecondary, size: 16),
+                      SizedBox(width: 8),
+                      Text(
+                        'Back to Dashboard',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StatItem extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String value;
+  final String label;
+
+  const _StatItem({
+    required this.icon,
+    required this.color,
+    required this.value,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: color, size: 18),
+        const SizedBox(height: 6),
+        Text(
+          value,
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            color: color,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          style: const TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 10,
+            color: AppColors.textMuted,
+          ),
+        ),
+      ],
     );
   }
 }
