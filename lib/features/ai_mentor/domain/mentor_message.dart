@@ -15,6 +15,10 @@ enum MentorContext {
   categoryRisk,
   nextStep,
   onboarding,
+  newUser,
+  firstWin,
+  streakHigh,
+  highAccuracy,
 }
 
 extension MentorMoodExt on MentorMood {
@@ -73,6 +77,10 @@ extension MentorContextExt on MentorContext {
       case MentorContext.categoryRisk:     return 'Risk';
       case MentorContext.nextStep:         return 'Next Step';
       case MentorContext.onboarding:       return 'Welcome';
+      case MentorContext.newUser:          return 'Getting Started';
+      case MentorContext.firstWin:         return 'First Win';
+      case MentorContext.streakHigh:       return 'On Fire';
+      case MentorContext.highAccuracy:     return 'Sharp Mind';
     }
   }
 

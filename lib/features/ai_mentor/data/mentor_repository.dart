@@ -86,6 +86,26 @@ class MentorRepository {
       "Think of me as your financial thinking partner. I don't judge calls — I help you understand them.",
       "You'll make great calls and wrong ones. Both teach something. I'll guide you through both.",
     ],
+    MentorContext.newUser: [
+      'Pick any scenario below — there is no wrong place to start your financial journey.',
+      'Your first decision is the hardest. After that, momentum takes over.',
+      'Start with whatever category interests you most. Curiosity is the best teacher.',
+    ],
+    MentorContext.firstWin: [
+      'First scenario complete. The first step is always the most important one.',
+      "One decision down. You've started building something real — keep going.",
+      'You made your first financial call. That instinct will sharpen with every scenario.',
+    ],
+    MentorContext.streakHigh: [
+      'You are building real momentum. Each correct call sharpens your financial instinct.',
+      'Back-to-back decisions are how great financial habits form. You are in the zone.',
+      'Consistency is the edge most investors lack. You are building it right now.',
+    ],
+    MentorContext.highAccuracy: [
+      'Your accuracy is strong. You are reading risk better than most people ever do.',
+      'That precision comes from thinking, not guessing. It will serve you in the real world.',
+      'Above 80% accuracy means the patterns are clicking. Keep trusting your analysis.',
+    ],
   };
 
   static List<String> messagesFor(MentorContext context) {

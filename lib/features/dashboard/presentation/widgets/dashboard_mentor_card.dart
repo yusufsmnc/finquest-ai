@@ -3,18 +3,28 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/routing/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../ai_mentor/ai_mentor_providers.dart';
+import '../../../ai_mentor/data/mentor_repository.dart';
 import '../../../ai_mentor/domain/mentor_message.dart';
 import '../../../ai_mentor/presentation/widgets/mentor_avatar.dart';
+import '../../../scenarios/scenario_providers.dart';
+import '../../dashboard_providers.dart';
 
 class DashboardMentorCard extends ConsumerWidget {
   const DashboardMentorCard({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mood = ref.watch(aiMentorProvider.select((s) => s.currentMood));
     final message = ref.watch(aiMentorProvider.select((s) => s.currentMessage));
-    final text = message?.text ??
-        'Ready to guide your financial journey. Tap to explore insights.';
+    final msgIndex = ref.watch(aiMentorProvider.select((s) => s.messageSelectIndex));
+    final streak = ref.watch(dashboardNotifierProvider.select((s) => s.currentStreak));
+    final level = ref.watch(dashboardNotifierProvider.select((s) => s.currentLevel));
+    final completedCount = ref.watch(scenarioNotifierProvider.select((s) => s.completedIds.length));
+    final totalDecisions = ref.watch(scenarioNotifierProvider.select((s) => s.totalDecisions));
+    final accuracyRate = ref.watch(scenarioNotifierProvider.select((s) => s.accuracyRate));
+
+    final proactive = _proactiveContext(streak, level, completedCount, totalDecisions, accuracyRate, msgIndex);
+    final mood = message?.mood ?? proactive.mood;
+    final text = message?.text ?? proactive.text;
 
     return Container(
       width: double.infinity,
@@ -150,6 +160,56 @@ class DashboardMentorCard extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+
+  ({String text, MentorMood mood}) _proactiveContext(
+    int streak,
+    int level,
+    int completedCount,
+    int totalDecisions,
+    double accuracyRate,
+    int index,
+  ) {
+    if (totalDecisions == 0) {
+      return (
+        text: MentorRepository.pickMessage(MentorContext.newUser, index),
+        mood: MentorMood.calm,
+      );
+    }
+    if (completedCount == 1 && totalDecisions <= 3) {
+      return (
+        text: MentorRepository.pickMessage(MentorContext.firstWin, index),
+        mood: MentorMood.happy,
+      );
+    }
+    if (streak >= 5) {
+      return (
+        text: MentorRepository.pickMessage(MentorContext.streakHigh, index),
+        mood: MentorMood.proud,
+      );
+    }
+    if (streak >= 3) {
+      return (
+        text: MentorRepository.pickMessage(MentorContext.streakMilestone, index),
+        mood: MentorMood.proud,
+      );
+    }
+    if (accuracyRate >= 0.8 && totalDecisions >= 5) {
+      return (
+        text: MentorRepository.pickMessage(MentorContext.highAccuracy, index),
+        mood: MentorMood.happy,
+      );
+    }
+    if (level >= 5) {
+      return (
+        text: MentorRepository.pickMessage(MentorContext.levelUp, index),
+        mood: MentorMood.excited,
+      );
+    }
+    return (
+      text: MentorRepository.pickMessage(MentorContext.idle, index),
+      mood: MentorMood.calm,
     );
   }
 }
