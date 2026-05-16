@@ -13,6 +13,7 @@ class ScenarioDecisionScreen extends ConsumerWidget {
     final scenario = ref.watch(scenarioNotifierProvider.select((s) => s.activeScenario));
     final selectedOptionId = ref.watch(scenarioNotifierProvider.select((s) => s.selectedOptionId));
     final isCorrect = ref.watch(scenarioNotifierProvider.select((s) => s.isCorrect));
+    final currentStreak = ref.watch(scenarioNotifierProvider.select((s) => s.currentStreak));
     final dispatcher = ref.read(scenarioDispatcherProvider);
 
     if (scenario == null) return const SizedBox.shrink();
@@ -38,51 +39,198 @@ class ScenarioDecisionScreen extends ConsumerWidget {
         ),
         centerTitle: false,
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) => SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(minHeight: constraints.maxHeight - 40),
-          child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ScenarioRiskIndicator(riskLevel: scenario.riskLevel, large: true),
-            const SizedBox(height: 20),
-            _ScenarioEventCard(scenario: scenario),
-            const SizedBox(height: 24),
-            const Text(
-              'What would you do?',
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
+      body: Stack(
+        children: [
+          // Background glow blobs
+          Positioned(
+            top: -80,
+            left: -80,
+            child: IgnorePointer(
+              child: Container(
+                width: 380,
+                height: 380,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      AppColors.primary.withValues(alpha: 0.14),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 12),
-            ...scenario.options.asMap().entries.map((entry) {
-                  final selected = selectedOptionId == entry.value.id;
-                  return _OptionCard(
-                    option: entry.value,
-                    index: entry.key,
-                    isSelected: selected,
-                    isLocked: selectedOptionId != null,
-                    wasCorrect: selected ? isCorrect : null,
-                    onTap: selectedOptionId == null
-                        ? () => dispatcher.onDecisionMade(
-                              scenario.id,
-                              entry.value.id,
-                              entry.value.isCorrect,
-                              entry.value.isCorrect ? scenario.xpCorrect : scenario.xpParticipation,
-                            )
-                        : null,
-                  );
-                }),
-          ],
           ),
-        ),
-        ),
+          Positioned(
+            bottom: -60,
+            right: -60,
+            child: IgnorePointer(
+              child: Container(
+                width: 320,
+                height: 320,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      AppColors.cyan.withValues(alpha: 0.11),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // Main content
+          LayoutBuilder(
+            builder: (context, constraints) => SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight - 40),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ScenarioRiskIndicator(riskLevel: scenario.riskLevel, large: true),
+                    const SizedBox(height: 20),
+                    _ScenarioEventCard(scenario: scenario),
+                    const SizedBox(height: 16),
+                    _StakesBar(
+                      xpCorrect: scenario.xpCorrect,
+                      xpParticipation: scenario.xpParticipation,
+                      streak: currentStreak,
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'What would you do?',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    ...scenario.options.asMap().entries.map((entry) {
+                      final selected = selectedOptionId == entry.value.id;
+                      return _OptionCard(
+                        option: entry.value,
+                        index: entry.key,
+                        isSelected: selected,
+                        isLocked: selectedOptionId != null,
+                        wasCorrect: selected ? isCorrect : null,
+                        onTap: selectedOptionId == null
+                            ? () => dispatcher.onDecisionMade(
+                                  scenario.id,
+                                  entry.value.id,
+                                  entry.value.isCorrect,
+                                  entry.value.isCorrect
+                                      ? scenario.xpCorrect
+                                      : scenario.xpParticipation,
+                                )
+                            : null,
+                      );
+                    }),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StakesBar extends StatelessWidget {
+  final int xpCorrect;
+  final int xpParticipation;
+  final int streak;
+
+  const _StakesBar({
+    required this.xpCorrect,
+    required this.xpParticipation,
+    required this.streak,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.xpGold.withValues(alpha: 0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.xpGold.withValues(alpha: 0.06),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: AppColors.xpGold.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Icon(Icons.bolt_rounded, color: AppColors.xpGold, size: 18),
+          ),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '+$xpCorrect XP if correct',
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.xpGold,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                '+$xpParticipation XP for participating',
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 11,
+                  color: AppColors.textMuted,
+                ),
+              ),
+            ],
+          ),
+          const Spacer(),
+          if (streak > 0)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.error.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColors.error.withValues(alpha: 0.2)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('🔥', style: TextStyle(fontSize: 13)),
+                  const SizedBox(width: 4),
+                  Text(
+                    '$streak streak',
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.error,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
       ),
     );
   }
