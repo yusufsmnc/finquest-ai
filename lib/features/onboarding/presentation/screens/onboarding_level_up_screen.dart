@@ -178,7 +178,7 @@ class _OnboardingLevelUpScreenState
       child: Stack(
         children: [
           Scaffold(
-            backgroundColor: AppColors.background,
+            backgroundColor: Colors.transparent,
             body: SafeArea(
               child: FadeTransition(
                 opacity: _contentFade,

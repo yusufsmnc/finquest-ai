@@ -75,7 +75,7 @@ class _OnboardingDecisionScreenState
       child: Stack(
         children: [
           Scaffold(
-            backgroundColor: AppColors.background,
+            backgroundColor: Colors.transparent,
             body: SafeArea(
               child: AnimatedBuilder(
                 animation: _shakeAnim,
