@@ -1,5 +1,5 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class LevelUpModal extends StatefulWidget {
@@ -122,12 +122,16 @@ class _LevelUpModalState extends State<LevelUpModal>
               ),
             ),
           ),
-          // Confetti burst — own opacity, no parent fade dampening
-          ...List.generate(20, (i) => _ConfettiDot(
-            animation: _burstController,
-            index: i,
-            screenSize: size,
-          )),
+          // Lottie confetti — full-screen, non-interactive
+          Positioned.fill(
+            child: IgnorePointer(
+              child: Lottie.asset(
+                'assets/animations/confetti.json',
+                fit: BoxFit.cover,
+                repeat: false,
+              ),
+            ),
+          ),
             // Pulsing rings behind card
             Center(
               child: AnimatedBuilder(
@@ -355,67 +359,6 @@ class _LevelBurst extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _ConfettiDot extends StatelessWidget {
-  final Animation<double> animation;
-  final int index;
-  final Size screenSize;
-
-  const _ConfettiDot({
-    required this.animation,
-    required this.index,
-    required this.screenSize,
-  });
-
-  static const _colors = [
-    AppColors.xpGold,
-    AppColors.primary,
-    AppColors.cyan,
-    AppColors.success,
-    AppColors.purple,
-    AppColors.pink,
-    AppColors.warningLight,
-    AppColors.cyanLight,
-    AppColors.primaryLight,
-    AppColors.successLight,
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final angle = (index / 20) * 2 * pi - pi / 2;
-    final radius = 140.0 + (index % 4) * 30.0;
-    final color = _colors[index % _colors.length];
-
-    return AnimatedBuilder(
-      animation: animation,
-      builder: (context, _) {
-        final progress = animation.value;
-        final dx = cos(angle) * radius * progress;
-        final dy = sin(angle) * radius * progress;
-        final opacity = (progress * (1.0 - progress) * 4).clamp(0.0, 1.0);
-
-        return Positioned(
-          left: screenSize.width / 2 + dx - 6,
-          top: screenSize.height / 2 + dy - 6,
-          child: Opacity(
-            opacity: opacity,
-            child: Transform.rotate(
-              angle: angle + progress * pi * 2,
-              child: Container(
-                width: index.isEven ? 10 : 7,
-                height: index.isEven ? 6 : 10,
-                decoration: BoxDecoration(
-                  color: color,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }
