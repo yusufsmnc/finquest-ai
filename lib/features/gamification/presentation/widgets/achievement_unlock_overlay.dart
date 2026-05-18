@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class AchievementUnlockOverlay extends StatefulWidget {
@@ -91,17 +92,12 @@ class _AchievementUnlockOverlayState extends State<AchievementUnlockOverlay>
               ),
               child: Row(
                 children: [
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: AppColors.xpGold.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: const Icon(
-                      Icons.military_tech_rounded,
-                      color: Color(0xFFF59E0B),
-                      size: 26,
+                  SizedBox(
+                    width: 56,
+                    height: 56,
+                    child: Lottie.asset(
+                      'assets/animations/trophy.json',
+                      repeat: false,
                     ),
                   ),
                   const SizedBox(width: 14),
@@ -116,7 +112,7 @@ class _AchievementUnlockOverlayState extends State<AchievementUnlockOverlay>
                             fontFamily: 'Inter',
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFFF59E0B),
+                            color: AppColors.xpGold,
                             letterSpacing: 0.3,
                           ),
                         ),
