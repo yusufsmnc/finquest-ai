@@ -89,35 +89,47 @@ class _OnboardingXpRevealScreenState
                         width: 96,
                         height: 96,
                         decoration: BoxDecoration(
-                          color: AppColors.xpGold.withValues(alpha: 0.1),
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: AppColors.xpGold.withValues(alpha: 0.3),
-                            width: 2,
+                          gradient: const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [AppColors.xpGoldGlow, AppColors.warningLight],
                           ),
+                          shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.xpGold.withValues(alpha: 0.25),
-                              blurRadius: 28,
+                              color: AppColors.xpGold.withValues(alpha: 0.5),
+                              blurRadius: 36,
+                              spreadRadius: 4,
                               offset: const Offset(0, 8),
+                            ),
+                            BoxShadow(
+                              color: AppColors.xpGoldGlow.withValues(alpha: 0.25),
+                              blurRadius: 60,
+                              spreadRadius: -4,
                             ),
                           ],
                         ),
                         child: const Icon(
                           Icons.bolt_rounded,
-                          color: AppColors.xpGold,
+                          color: Colors.white,
                           size: 52,
                         ),
                       ),
                       const SizedBox(height: 28),
-                      const Text(
-                        'Earn XP & Level Up',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 26,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
+                      ShaderMask(
+                        blendMode: BlendMode.srcIn,
+                        shaderCallback: (bounds) => const LinearGradient(
+                          colors: [AppColors.xpGold, AppColors.warningLight],
+                        ).createShader(bounds),
+                        child: const Text(
+                          'Earn XP & Level Up',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 26,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -184,13 +196,19 @@ class _XpPreviewCard extends StatelessWidget {
                   color: AppColors.xpGold.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Text(
-                  '+$xp XP',
-                  style: const TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.xpGold,
+                child: ShaderMask(
+                  blendMode: BlendMode.srcIn,
+                  shaderCallback: (bounds) => const LinearGradient(
+                    colors: [AppColors.xpGoldGlow, AppColors.warningLight],
+                  ).createShader(bounds),
+                  child: Text(
+                    '+$xp XP',
+                    style: const TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -275,13 +293,19 @@ class _EarnItem extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 22),
           const SizedBox(height: 8),
-          Text(
-            xp,
-            style: TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: color,
+          ShaderMask(
+            blendMode: BlendMode.srcIn,
+            shaderCallback: (bounds) => LinearGradient(
+              colors: [color, color.withValues(alpha: 0.6)],
+            ).createShader(bounds),
+            child: Text(
+              xp,
+              style: const TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
             ),
           ),
           const SizedBox(height: 2),

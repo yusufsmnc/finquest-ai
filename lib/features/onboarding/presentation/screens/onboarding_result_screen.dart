@@ -198,32 +198,50 @@ class _ResultHeader extends StatelessWidget {
         ? 'You made the smart financial decision.'
         : 'Every decision is a learning opportunity.';
 
+    final gradientEnd = isCorrect ? AppColors.successLight : AppColors.cyanLight;
+
     return Column(
       children: [
         Container(
           width: 72,
           height: 72,
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [color, color.withValues(alpha: 0.6)],
+            ),
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
+                color: color.withValues(alpha: 0.45),
+                blurRadius: 28,
+                spreadRadius: 4,
+                offset: const Offset(0, 6),
+              ),
+              BoxShadow(
                 color: color.withValues(alpha: 0.2),
-                blurRadius: 20,
-                offset: const Offset(0, 4),
+                blurRadius: 56,
+                spreadRadius: -4,
               ),
             ],
           ),
-          child: Icon(icon, color: color, size: 38),
+          child: Icon(icon, color: Colors.white, size: 38),
         ),
         const SizedBox(height: 14),
-        Text(
-          headline,
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-            color: color,
+        ShaderMask(
+          blendMode: BlendMode.srcIn,
+          shaderCallback: (bounds) => LinearGradient(
+            colors: [color, gradientEnd],
+          ).createShader(bounds),
+          child: Text(
+            headline,
+            style: const TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
+            ),
           ),
         ),
         const SizedBox(height: 4),
@@ -282,13 +300,19 @@ class _XpEarnedCard extends StatelessWidget {
                     const Icon(Icons.bolt_rounded,
                         color: AppColors.xpGold, size: 16),
                     const SizedBox(width: 4),
-                    Text(
-                      '+$xpEarned XP',
-                      style: const TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.xpGold,
+                    ShaderMask(
+                      blendMode: BlendMode.srcIn,
+                      shaderCallback: (bounds) => const LinearGradient(
+                        colors: [AppColors.xpGoldGlow, AppColors.warningLight],
+                      ).createShader(bounds),
+                      child: Text(
+                        '+$xpEarned XP',
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ],

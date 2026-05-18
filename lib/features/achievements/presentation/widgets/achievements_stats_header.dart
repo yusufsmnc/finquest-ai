@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../achievements_providers.dart';
 import '../../domain/achievement_model.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class AchievementsStatsHeader extends ConsumerWidget {
   const AchievementsStatsHeader({super.key});
@@ -18,11 +19,23 @@ class AchievementsStatsHeader extends ConsumerWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF2563EB), Color(0xFF7C3AED)],
+          colors: [AppColors.primaryDark, AppColors.purpleDark],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryDark.withValues(alpha: 0.4),
+            blurRadius: 32,
+            offset: const Offset(0, 8),
+          ),
+          BoxShadow(
+            color: AppColors.purpleDark.withValues(alpha: 0.2),
+            blurRadius: 48,
+            spreadRadius: -4,
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -30,14 +43,20 @@ class AchievementsStatsHeader extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  '$unlocked / $total',
-                  style: const TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 32,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    height: 1.1,
+                ShaderMask(
+                  blendMode: BlendMode.srcIn,
+                  shaderCallback: (bounds) => const LinearGradient(
+                    colors: [Colors.white, AppColors.skyLight],
+                  ).createShader(bounds),
+                  child: Text(
+                    '$unlocked / $total',
+                    style: const TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 32,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      height: 1.1,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -53,12 +72,24 @@ class AchievementsStatsHeader extends ConsumerWidget {
                 const SizedBox(height: 16),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(4),
-                  child: LinearProgressIndicator(
-                    value: percent,
-                    minHeight: 6,
-                    backgroundColor: Colors.white24,
-                    valueColor:
-                        const AlwaysStoppedAnimation<Color>(Colors.white),
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: 6,
+                        color: Colors.white24,
+                      ),
+                      FractionallySizedBox(
+                        widthFactor: percent.clamp(0.0, 1.0),
+                        child: Container(
+                          height: 6,
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Colors.white, AppColors.skyLight],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 6),

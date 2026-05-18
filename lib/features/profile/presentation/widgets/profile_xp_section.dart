@@ -76,14 +76,20 @@ class ProfileXpSection extends ConsumerWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                '$currentXp',
-                style: const TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
-                  height: 1.0,
+              ShaderMask(
+                blendMode: BlendMode.srcIn,
+                shaderCallback: (bounds) => const LinearGradient(
+                  colors: [AppColors.xpGoldGlow, AppColors.warningLight],
+                ).createShader(bounds),
+                child: Text(
+                  '$currentXp',
+                  style: const TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 28,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    height: 1.0,
+                  ),
                 ),
               ),
               const Text(
@@ -109,11 +115,21 @@ class ProfileXpSection extends ConsumerWidget {
           const SizedBox(height: 12),
           ClipRRect(
             borderRadius: BorderRadius.circular(6),
-            child: LinearProgressIndicator(
-              value: progress,
-              minHeight: 10,
-              backgroundColor: AppColors.surfaceHigh,
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+            child: Stack(
+              children: [
+                Container(height: 10, color: AppColors.surfaceHigh),
+                FractionallySizedBox(
+                  widthFactor: progress.clamp(0.0, 1.0),
+                  child: Container(
+                    height: 10,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [AppColors.primary, AppColors.primaryLight],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 12),
@@ -128,7 +144,7 @@ class ProfileXpSection extends ConsumerWidget {
               const SizedBox(width: 12),
               _XpStat(
                 label: 'Next Level At',
-                value: '${level * xpToNext} XP',
+                value: '$xpToNext XP',
                 icon: Icons.arrow_upward_rounded,
                 color: AppColors.primary,
               ),

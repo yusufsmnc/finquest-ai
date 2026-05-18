@@ -112,15 +112,29 @@ class _AchievementIcon extends StatelessWidget {
       width: 44,
       height: 44,
       decoration: BoxDecoration(
-        color: unlocked
-            ? rarity.color.withValues(alpha: 0.15)
-            : AppColors.surfaceUp,
+        gradient: unlocked
+            ? LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [rarity.color, rarity.color.withValues(alpha: 0.5)],
+              )
+            : null,
+        color: unlocked ? null : AppColors.surfaceUp,
         shape: BoxShape.circle,
+        boxShadow: unlocked
+            ? [
+                BoxShadow(
+                  color: rarity.color.withValues(alpha: 0.4),
+                  blurRadius: 12,
+                  offset: const Offset(0, 3),
+                ),
+              ]
+            : null,
       ),
       child: Icon(
         icon,
         size: 22,
-        color: unlocked ? rarity.color : AppColors.textMuted,
+        color: unlocked ? Colors.white : AppColors.textMuted,
       ),
     );
   }

@@ -6,6 +6,7 @@ import '../../../dashboard/dashboard_providers.dart';
 import '../../../gamification/gamification_providers.dart';
 import '../../../achievements/achievements_providers.dart';
 import '../../../scenarios/scenario_providers.dart';
+import '../../../../core/theme/app_colors.dart';
 import 'avatar_picker_modal.dart';
 
 class ProfileIdentityCard extends ConsumerWidget {
@@ -34,11 +35,19 @@ class ProfileIdentityCard extends ConsumerWidget {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
+          colors: [AppColors.background, AppColors.surfaceUp],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: AppColors.borderBright),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.12),
+            blurRadius: 32,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -79,7 +88,7 @@ class ProfileIdentityCard extends ConsumerWidget {
                       style: const TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 12,
-                        color: Colors.white54,
+                        color: AppColors.textSecondary,
                       ),
                     ),
                   ],
@@ -89,7 +98,7 @@ class ProfileIdentityCard extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 20),
-          const Divider(color: Colors.white12, height: 1),
+          const Divider(color: AppColors.border, height: 1),
           const SizedBox(height: 16),
           Row(
             children: [
@@ -97,19 +106,19 @@ class ProfileIdentityCard extends ConsumerWidget {
                 icon: Icons.star_rounded,
                 label: 'XP',
                 value: '$totalXp',
-                color: const Color(0xFFF59E0B),
+                color: AppColors.xpGold,
               ),
               _StatChip(
                 icon: Icons.emoji_events_rounded,
                 label: 'Badges',
                 value: '$unlockedCount',
-                color: const Color(0xFF7C3AED),
+                color: AppColors.purple,
               ),
               _StatChip(
                 icon: Icons.psychology_rounded,
                 label: 'Decisions',
                 value: '$totalDecisions',
-                color: const Color(0xFF0EA5E9),
+                color: AppColors.cyan,
               ),
             ],
           ),
@@ -127,11 +136,11 @@ class ProfileIdentityCard extends ConsumerWidget {
   }
 
   Color _tierColor(int level) {
-    if (level >= 10) return const Color(0xFFF59E0B);
-    if (level >= 7) return const Color(0xFF7C3AED);
-    if (level >= 5) return const Color(0xFF2563EB);
-    if (level >= 3) return const Color(0xFF0EA5E9);
-    return const Color(0xFF64748B);
+    if (level >= 10) return AppColors.xpGold;
+    if (level >= 7) return AppColors.purple;
+    if (level >= 5) return AppColors.primaryDark;
+    if (level >= 3) return AppColors.cyan;
+    return AppColors.textSecondary;
   }
 }
 
@@ -169,9 +178,9 @@ class _AvatarBubble extends StatelessWidget {
               width: 22,
               height: 22,
               decoration: BoxDecoration(
-                color: const Color(0xFF2563EB),
+                color: AppColors.primaryDark,
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFF0F172A), width: 2),
+                border: Border.all(color: AppColors.background, width: 2),
               ),
               child: const Icon(Icons.edit_rounded, color: Colors.white, size: 11),
             ),
@@ -338,13 +347,19 @@ class _StatChip extends StatelessWidget {
         children: [
           Icon(icon, size: 16, color: color),
           const SizedBox(height: 4),
-          Text(
-            value,
-            style: const TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
+          ShaderMask(
+            blendMode: BlendMode.srcIn,
+            shaderCallback: (bounds) => LinearGradient(
+              colors: [color, color.withValues(alpha: 0.6)],
+            ).createShader(bounds),
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
             ),
           ),
           Text(
