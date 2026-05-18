@@ -5,11 +5,60 @@ import '../../domain/scenario_model.dart';
 import '../widgets/scenario_risk_indicator.dart';
 import '../../../../core/theme/app_colors.dart';
 
-class ScenarioDecisionScreen extends ConsumerWidget {
+class ScenarioDecisionScreen extends ConsumerStatefulWidget {
   const ScenarioDecisionScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ScenarioDecisionScreen> createState() =>
+      _ScenarioDecisionScreenState();
+}
+
+class _ScenarioDecisionScreenState
+    extends ConsumerState<ScenarioDecisionScreen> with TickerProviderStateMixin {
+  late AnimationController _blob1Controller;
+  late AnimationController _blob2Controller;
+  late Animation<double> _blob1Top;
+  late Animation<double> _blob1Left;
+  late Animation<double> _blob1Opacity;
+  late Animation<double> _blob2Bottom;
+  late Animation<double> _blob2Right;
+  late Animation<double> _blob2Opacity;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _blob1Controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 8),
+    )..repeat(reverse: true);
+
+    _blob2Controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 11),
+    )..repeat(reverse: true);
+
+    final curve1 = CurvedAnimation(parent: _blob1Controller, curve: Curves.easeInOut);
+    final curve2 = CurvedAnimation(parent: _blob2Controller, curve: Curves.easeInOut);
+
+    _blob1Top     = Tween<double>(begin: -80, end: -50).animate(curve1);
+    _blob1Left    = Tween<double>(begin: -80, end: -48).animate(curve1);
+    _blob1Opacity = Tween<double>(begin: 0.13, end: 0.22).animate(curve1);
+
+    _blob2Bottom  = Tween<double>(begin: -60, end: -32).animate(curve2);
+    _blob2Right   = Tween<double>(begin: -60, end: -88).animate(curve2);
+    _blob2Opacity = Tween<double>(begin: 0.10, end: 0.18).animate(curve2);
+  }
+
+  @override
+  void dispose() {
+    _blob1Controller.dispose();
+    _blob2Controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final scenario = ref.watch(scenarioNotifierProvider.select((s) => s.activeScenario));
     final selectedOptionId = ref.watch(scenarioNotifierProvider.select((s) => s.selectedOptionId));
     final isCorrect = ref.watch(scenarioNotifierProvider.select((s) => s.isCorrect));
@@ -41,43 +90,50 @@ class ScenarioDecisionScreen extends ConsumerWidget {
       ),
       body: Stack(
         children: [
-          // Background glow blobs
-          Positioned(
-            top: -80,
-            left: -80,
-            child: IgnorePointer(
-              child: Container(
-                width: 380,
-                height: 380,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      AppColors.primary.withValues(alpha: 0.14),
-                      Colors.transparent,
-                    ],
+          // Animated background glow blobs
+          AnimatedBuilder(
+            animation: Listenable.merge([_blob1Controller, _blob2Controller]),
+            builder: (context, _) => Stack(
+              children: [
+                Positioned(
+                  top: _blob1Top.value,
+                  left: _blob1Left.value,
+                  child: IgnorePointer(
+                    child: Container(
+                      width: 380,
+                      height: 380,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: RadialGradient(
+                          colors: [
+                            AppColors.primary.withValues(alpha: _blob1Opacity.value),
+                            Colors.transparent,
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -60,
-            right: -60,
-            child: IgnorePointer(
-              child: Container(
-                width: 320,
-                height: 320,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      AppColors.cyan.withValues(alpha: 0.11),
-                      Colors.transparent,
-                    ],
+                Positioned(
+                  bottom: _blob2Bottom.value,
+                  right: _blob2Right.value,
+                  child: IgnorePointer(
+                    child: Container(
+                      width: 320,
+                      height: 320,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: RadialGradient(
+                          colors: [
+                            AppColors.cyan.withValues(alpha: _blob2Opacity.value),
+                            Colors.transparent,
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
           // Main content
