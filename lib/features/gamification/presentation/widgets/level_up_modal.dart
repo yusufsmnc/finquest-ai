@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class LevelUpModal extends StatefulWidget {
   final int level;
@@ -16,42 +17,88 @@ class LevelUpModal extends StatefulWidget {
 }
 
 class _LevelUpModalState extends State<LevelUpModal>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
+    with TickerProviderStateMixin {
+  late AnimationController _burstController;
+  late AnimationController _cardController;
+  late AnimationController _ringController;
+
+  late Animation<double> _overlayFade;
   late Animation<double> _cardScale;
-  late Animation<double> _fade;
-  late Animation<double> _confettiProgress;
+  late Animation<double> _cardFade;
+  late Animation<double> _ring1Scale;
+  late Animation<double> _ring1Opacity;
+  late Animation<double> _ring2Scale;
+  late Animation<double> _ring2Opacity;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
+
+    _burstController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 800),
     );
-    _cardScale = Tween<double>(begin: 0.72, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+
+    _cardController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
     );
-    _fade = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+
+    _ringController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
     );
-    _confettiProgress = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
+
+    _overlayFade = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _burstController, curve: const Interval(0.0, 0.4, curve: Curves.easeOut)),
     );
+
+    _cardScale = Tween<double>(begin: 0.6, end: 1.0).animate(
+      CurvedAnimation(parent: _cardController, curve: Curves.easeOutBack),
+    );
+    _cardFade = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _cardController, curve: Curves.easeOut),
+    );
+
+    _ring1Scale = Tween<double>(begin: 0.6, end: 2.2).animate(
+      CurvedAnimation(parent: _ringController, curve: Curves.easeOut),
+    );
+    _ring1Opacity = Tween<double>(begin: 0.5, end: 0.0).animate(
+      CurvedAnimation(parent: _ringController, curve: Curves.easeIn),
+    );
+    _ring2Scale = Tween<double>(begin: 0.6, end: 2.2).animate(
+      CurvedAnimation(
+        parent: _ringController,
+        curve: const Interval(0.4, 1.0, curve: Curves.easeOut),
+      ),
+    );
+    _ring2Opacity = Tween<double>(begin: 0.5, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _ringController,
+        curve: const Interval(0.4, 1.0, curve: Curves.easeIn),
+      ),
+    );
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       if (MediaQuery.of(context).disableAnimations) {
-        _controller.value = 1.0;
-      } else {
-        _controller.forward();
+        _burstController.value = 1.0;
+        _cardController.value = 1.0;
+        return;
       }
+      _burstController.forward().then((_) {
+        if (!mounted) return;
+        _ringController.repeat();
+        _cardController.forward();
+      });
     });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _burstController.dispose();
+    _cardController.dispose();
+    _ringController.dispose();
     super.dispose();
   }
 
@@ -61,51 +108,111 @@ class _LevelUpModalState extends State<LevelUpModal>
 
     return Material(
       color: Colors.transparent,
-      child: AnimatedBuilder(
-        animation: _fade,
-        builder: (context, child) => Opacity(opacity: _fade.value, child: child),
-        child: Container(
-          color: Colors.black.withValues(alpha: 0.78),
-          width: size.width,
-          height: size.height,
-          child: Stack(
-            children: [
-              // Confetti dots
-              ...List.generate(
-                12,
-                (i) => _ConfettiDot(
-                  animation: _confettiProgress,
-                  index: i,
-                  screenSize: size,
-                ),
+      child: Stack(
+        children: [
+          // Dark overlay — fades in with burst
+          AnimatedBuilder(
+            animation: _overlayFade,
+            builder: (context, _) => Opacity(
+              opacity: _overlayFade.value,
+              child: Container(
+                width: size.width,
+                height: size.height,
+                color: Colors.black.withValues(alpha: 0.88),
               ),
-              // Modal card
-              Center(
-                child: AnimatedBuilder(
-                  animation: _cardScale,
-                  builder: (context, child) =>
-                      Transform.scale(scale: _cardScale.value, child: child),
-                  child: _buildCard(context),
-                ),
-              ),
-            ],
+            ),
           ),
+          // Confetti burst — own opacity, no parent fade dampening
+          ...List.generate(20, (i) => _ConfettiDot(
+            animation: _burstController,
+            index: i,
+            screenSize: size,
+          )),
+            // Pulsing rings behind card
+            Center(
+              child: AnimatedBuilder(
+                animation: _ringController,
+                builder: (context, _) => Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Transform.scale(
+                      scale: _ring1Scale.value,
+                      child: Opacity(
+                        opacity: _ring1Opacity.value,
+                        child: Container(
+                          width: 120,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: AppColors.primary,
+                              width: 2,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Transform.scale(
+                      scale: _ring2Scale.value,
+                      child: Opacity(
+                        opacity: _ring2Opacity.value,
+                        child: Container(
+                          width: 120,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: AppColors.cyan,
+                              width: 1.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Card
+            Center(
+              child: AnimatedBuilder(
+                animation: _cardController,
+                builder: (context, child) => Transform.scale(
+                  scale: _cardScale.value,
+                  child: Opacity(opacity: _cardFade.value, child: child),
+                ),
+                child: _buildCard(),
+              ),
+            ),
+          ],
         ),
-      ),
     );
   }
 
-  Widget _buildCard(BuildContext context) {
+  Widget _buildCard() {
     return Container(
       width: 300,
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(28),
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: 0.4),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 40,
+            color: AppColors.primary.withValues(alpha: 0.35),
+            blurRadius: 48,
+            spreadRadius: 4,
+          ),
+          BoxShadow(
+            color: AppColors.cyan.withValues(alpha: 0.15),
+            blurRadius: 80,
+            spreadRadius: 8,
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.5),
+            blurRadius: 24,
             offset: const Offset(0, 12),
           ),
         ],
@@ -118,8 +225,11 @@ class _LevelUpModalState extends State<LevelUpModal>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF7ED),
+              color: AppColors.xpGold.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: AppColors.xpGold.withValues(alpha: 0.3),
+              ),
             ),
             child: const Text(
               'LEVEL UP!',
@@ -127,20 +237,25 @@ class _LevelUpModalState extends State<LevelUpModal>
                 fontFamily: 'Inter',
                 fontSize: 11,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFFD97706),
-                letterSpacing: 1.2,
+                color: AppColors.xpGold,
+                letterSpacing: 1.5,
               ),
             ),
           ),
           const SizedBox(height: 12),
-          Text(
-            'Level ${widget.level}',
-            style: const TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 48,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFF0F172A),
-              height: 1.0,
+          ShaderMask(
+            shaderCallback: (bounds) => const LinearGradient(
+              colors: [AppColors.primary, AppColors.cyan],
+            ).createShader(bounds),
+            child: Text(
+              'Level ${widget.level}',
+              style: const TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 52,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+                height: 1.0,
+              ),
             ),
           ),
           const SizedBox(height: 6),
@@ -149,7 +264,7 @@ class _LevelUpModalState extends State<LevelUpModal>
             style: const TextStyle(
               fontFamily: 'Inter',
               fontSize: 14,
-              color: Color(0xFF64748B),
+              color: AppColors.textSecondary,
             ),
           ),
           const SizedBox(height: 24),
@@ -160,8 +275,17 @@ class _LevelUpModalState extends State<LevelUpModal>
               width: double.infinity,
               height: 48,
               decoration: BoxDecoration(
-                color: const Color(0xFF2563EB),
+                gradient: const LinearGradient(
+                  colors: [AppColors.primary, AppColors.cyan],
+                ),
                 borderRadius: BorderRadius.circular(14),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryGlow(0.4),
+                    blurRadius: 16,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: const Center(
                 child: Text(
@@ -192,30 +316,30 @@ class _LevelBurst extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         Container(
-          width: 100,
-          height: 100,
+          width: 108,
+          height: 108,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: const Color(0xFF2563EB).withValues(alpha: 0.08),
+            color: AppColors.primary.withValues(alpha: 0.08),
           ),
         ),
         Container(
-          width: 76,
-          height: 76,
+          width: 80,
+          height: 80,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: const Color(0xFF2563EB).withValues(alpha: 0.12),
+            color: AppColors.primary.withValues(alpha: 0.14),
           ),
         ),
         Container(
-          width: 56,
-          height: 56,
+          width: 60,
+          height: 60,
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF2563EB), Color(0xFF0EA5E9)],
+              colors: [AppColors.primary, AppColors.cyan],
             ),
           ),
           child: Center(
@@ -223,7 +347,7 @@ class _LevelBurst extends StatelessWidget {
               '$level',
               style: const TextStyle(
                 fontFamily: 'Poppins',
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: FontWeight.w800,
                 color: Colors.white,
               ),
@@ -247,16 +371,22 @@ class _ConfettiDot extends StatelessWidget {
   });
 
   static const _colors = [
-    Color(0xFFF59E0B), Color(0xFF2563EB), Color(0xFF16A34A),
-    Color(0xFFDC2626), Color(0xFF7C3AED), Color(0xFF0EA5E9),
-    Color(0xFFF97316), Color(0xFF06B6D4), Color(0xFFEC4899),
-    Color(0xFF84CC16), Color(0xFFEF4444), Color(0xFF8B5CF6),
+    AppColors.xpGold,
+    AppColors.primary,
+    AppColors.cyan,
+    AppColors.success,
+    AppColors.purple,
+    AppColors.pink,
+    AppColors.warningLight,
+    AppColors.cyanLight,
+    AppColors.primaryLight,
+    AppColors.successLight,
   ];
 
   @override
   Widget build(BuildContext context) {
-    final angle = (index / 12) * 2 * pi - pi / 2;
-    const radius = 160.0;
+    final angle = (index / 20) * 2 * pi - pi / 2;
+    final radius = 140.0 + (index % 4) * 30.0;
     final color = _colors[index % _colors.length];
 
     return AnimatedBuilder(
@@ -273,10 +403,10 @@ class _ConfettiDot extends StatelessWidget {
           child: Opacity(
             opacity: opacity,
             child: Transform.rotate(
-              angle: angle + progress * pi,
+              angle: angle + progress * pi * 2,
               child: Container(
-                width: 12,
-                height: 8,
+                width: index.isEven ? 10 : 7,
+                height: index.isEven ? 6 : 10,
                 decoration: BoxDecoration(
                   color: color,
                   borderRadius: BorderRadius.circular(2),

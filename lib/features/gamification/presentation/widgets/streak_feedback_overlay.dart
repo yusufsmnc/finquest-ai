@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class StreakFeedbackOverlay extends StatefulWidget {
   final int streak;
@@ -25,35 +26,43 @@ class _StreakFeedbackOverlayState extends State<StreakFeedbackOverlay>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 1800),
     );
-    // Bounce: overshoot to 1.15 then settle at 1.0
+
+    // Pop in with bounce, hold, then fade out
     _scale = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween(begin: 0.3, end: 1.15)
-            .chain(CurveTween(curve: Curves.easeOut)),
-        weight: 60,
+        tween: Tween(begin: 0.4, end: 1.12)
+            .chain(CurveTween(curve: Curves.easeOutBack)),
+        weight: 18,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: 1.15, end: 1.0)
+        tween: Tween(begin: 1.12, end: 1.0)
             .chain(CurveTween(curve: Curves.easeIn)),
-        weight: 40,
+        weight: 8,
+      ),
+      TweenSequenceItem(
+        tween: ConstantTween(1.0),
+        weight: 57,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: 1.0, end: 0.95)
+            .chain(CurveTween(curve: Curves.easeIn)),
+        weight: 17,
       ),
     ]).animate(_controller);
+
     _fade = TweenSequence<double>([
-      TweenSequenceItem(
-          tween: Tween(begin: 0.0, end: 1.0), weight: 30),
-      TweenSequenceItem(
-          tween: Tween(begin: 1.0, end: 1.0), weight: 50),
-      TweenSequenceItem(
-          tween: Tween(begin: 1.0, end: 0.0), weight: 20),
+      TweenSequenceItem(tween: Tween(begin: 0.0, end: 1.0), weight: 12),
+      TweenSequenceItem(tween: ConstantTween(1.0), weight: 70),
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.0), weight: 18),
     ]).animate(_controller);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       if (MediaQuery.of(context).disableAnimations) {
         _controller.value = 1.0;
-        widget.onDismiss();
+        Future.microtask(() { if (mounted) widget.onDismiss(); });
         return;
       }
       _controller.forward().then((_) {
@@ -68,61 +77,109 @@ class _StreakFeedbackOverlayState extends State<StreakFeedbackOverlay>
     super.dispose();
   }
 
+  String _streakLabel() {
+    if (widget.streak >= 10) return 'Unstoppable!';
+    if (widget.streak >= 5) return "You're on fire!";
+    return 'Keep it up!';
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: IgnorePointer(
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, child) => FadeTransition(
-            opacity: _fade,
-            child: Transform.scale(scale: _scale.value, child: child),
-          ),
-          child: Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFFBEB),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: const Color(0xFFF59E0B).withValues(alpha: 0.4),
+    return Material(
+      color: Colors.transparent,
+      child: Align(
+      alignment: const Alignment(0, -0.3),
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) => Opacity(
+          opacity: _fade.value,
+          child: Transform.scale(scale: _scale.value, child: child),
+        ),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 18),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: AppColors.streakOrange.withValues(alpha: 0.45),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.streakOrange.withValues(alpha: 0.30),
+                blurRadius: 32,
+                spreadRadius: 2,
+                offset: const Offset(0, 6),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
-                  blurRadius: 24,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('🔥', style: TextStyle(fontSize: 36)),
-                const SizedBox(height: 6),
-                Text(
-                  '${widget.streak} Day Streak!',
-                  style: const TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                    color: Color(0xFFD97706),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.4),
+                blurRadius: 16,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 52,
+                height: 52,
+                decoration: BoxDecoration(
+                  color: AppColors.streakOrange.withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.streakOrange.withValues(alpha: 0.3),
                   ),
                 ),
-                const SizedBox(height: 2),
-                const Text(
-                  'You\'re on fire — keep going!',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 12,
-                    color: Color(0xFFF59E0B),
-                  ),
+                child: const Center(
+                  child: Text('🔥', style: TextStyle(fontSize: 26)),
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 16),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        '${widget.streak}',
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.streakOrange,
+                          height: 1.0,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      const Text(
+                        'STREAK',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.streakOrange,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    _streakLabel(),
+                    style: const TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
+    ),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/events/game_event.dart';
+import '../../../core/theme/app_colors.dart';
 import '../domain/gamification_overlay_state.dart';
 
 class GamificationOverlayNotifier
@@ -74,7 +75,7 @@ class GamificationOverlayNotifier
       title: 'Reward Unlocked!',
       message: _labelForReward(rewardId),
       icon: Icons.card_giftcard_rounded,
-      color: const Color(0xFFF59E0B),
+      color: AppColors.xpGold,
     );
   }
 

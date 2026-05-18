@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class AchievementUnlockOverlay extends StatefulWidget {
   final String achievementName;
@@ -78,7 +79,7 @@ class _AchievementUnlockOverlayState extends State<AchievementUnlockOverlay>
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFF0F172A),
+                color: AppColors.surface,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
@@ -94,7 +95,7 @@ class _AchievementUnlockOverlayState extends State<AchievementUnlockOverlay>
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF59E0B).withValues(alpha: 0.15),
+                      color: AppColors.xpGold.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: const Icon(
@@ -135,7 +136,7 @@ class _AchievementUnlockOverlayState extends State<AchievementUnlockOverlay>
                   GestureDetector(
                     onTap: _dismiss,
                     child: const Icon(Icons.close_rounded,
-                        color: Color(0xFF64748B), size: 18),
+                        color: AppColors.textMuted, size: 18),
                   ),
                 ],
               ),
