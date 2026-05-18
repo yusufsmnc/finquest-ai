@@ -89,13 +89,19 @@ class _StreakCounterState extends State<StreakCounter>
                 style: TextStyle(fontSize: 14),
               ),
               const SizedBox(width: 4),
-              Text(
-                '${widget.streak}',
-                style: const TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.streakOrange,
+              ShaderMask(
+                blendMode: BlendMode.srcIn,
+                shaderCallback: (bounds) => const LinearGradient(
+                  colors: [AppColors.streakOrange, AppColors.warningLight],
+                ).createShader(bounds),
+                child: Text(
+                  '${widget.streak}',
+                  style: const TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],

@@ -28,21 +28,27 @@ class DashboardStatsRow extends ConsumerWidget {
           child: _StatCell(
             label: 'Total XP',
             accentColor: AppColors.xpGold,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.bolt_rounded, color: AppColors.xpGold, size: 18),
-                const SizedBox(width: 4),
-                Text(
-                  '$xp',
-                  style: const TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.xpGold,
+            child: ShaderMask(
+              blendMode: BlendMode.srcIn,
+              shaderCallback: (bounds) => const LinearGradient(
+                colors: [AppColors.xpGoldGlow, AppColors.warningLight],
+              ).createShader(bounds),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.bolt_rounded, color: Colors.white, size: 18),
+                  const SizedBox(width: 4),
+                  Text(
+                    '$xp',
+                    style: const TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -51,13 +57,19 @@ class DashboardStatsRow extends ConsumerWidget {
           child: _StatCell(
             label: 'Scenarios',
             accentColor: AppColors.cyan,
-            child: Text(
-              '$scenarios',
-              style: const TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                color: AppColors.cyan,
+            child: ShaderMask(
+              blendMode: BlendMode.srcIn,
+              shaderCallback: (bounds) => const LinearGradient(
+                colors: [AppColors.cyan, AppColors.cyanLight],
+              ).createShader(bounds),
+              child: Text(
+                '$scenarios',
+                style: const TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
