@@ -226,21 +226,17 @@ class _ScenarioCard extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
-            color: AppColors.surface,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: isCompleted
-                  ? AppColors.success.withValues(alpha: 0.3)
-                  : catColor.withValues(alpha: 0.15),
+              color: (isCompleted ? AppColors.success : catColor).withValues(alpha: 0.2),
             ),
             boxShadow: [
               BoxShadow(
                 color: isCompleted
-                    ? AppColors.successGlow(0.08)
-                    : catColor.withValues(alpha: 0.08),
-                blurRadius: 16,
+                    ? AppColors.successGlow(0.12)
+                    : catColor.withValues(alpha: 0.14),
+                blurRadius: 20,
                 offset: const Offset(0, 4),
               ),
               BoxShadow(
@@ -250,7 +246,32 @@ class _ScenarioCard extends StatelessWidget {
               ),
             ],
           ),
-          child: Column(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(19),
+            child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  width: 4,
+                  color: isCompleted ? AppColors.success : catColor,
+                ),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: [
+                          (isCompleted ? AppColors.success : catColor).withValues(alpha: 0.08),
+                          AppColors.surface,
+                        ],
+                        stops: const [0.0, 0.4],
+                      ),
+                    ),
+                    child: Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 18, 18, 18),
+                    child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -322,7 +343,14 @@ class _ScenarioCard extends StatelessWidget {
               ),
             ],
           ),
-        ),
+          ),    // Padding
+        ),      // Container (gradient bg)
+        ),      // Expanded
+      ],        // Row children
+    ),          // Row
+    ),          // IntrinsicHeight
+  ),            // ClipRRect
+),              // outer Container
       ),
     );
   }
@@ -476,7 +504,7 @@ class _AllCompletedState extends StatelessWidget {
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color(0xFFCA8A04), Color(0xFFFBBF24)],
+                  colors: [AppColors.xpGoldDark, AppColors.warningLight],
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -569,7 +597,7 @@ class _AllCompletedState extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFFCA8A04), Color(0xFFF59E0B)],
+                      colors: [AppColors.xpGoldDark, AppColors.xpGold],
                     ),
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [

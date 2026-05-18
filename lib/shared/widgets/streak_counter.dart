@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_colors.dart';
 
 /// StreakCounter — pulses when STREAK_UPDATED fires.
 class StreakCounter extends StatefulWidget {
@@ -73,10 +74,10 @@ class _StreakCounterState extends State<StreakCounter>
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFF7ED),
+            color: AppColors.streakOrange.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
+              color: AppColors.streakOrange.withValues(alpha: 0.3),
               width: 1.5,
             ),
           ),
@@ -94,7 +95,7 @@ class _StreakCounterState extends State<StreakCounter>
                   fontFamily: 'Poppins',
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFFD97706),
+                  color: AppColors.streakOrange,
                 ),
               ),
             ],

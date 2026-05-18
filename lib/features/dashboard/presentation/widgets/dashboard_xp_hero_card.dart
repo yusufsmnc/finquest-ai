@@ -27,70 +27,111 @@ class DashboardXpHeroCard extends ConsumerWidget {
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF1E1B4B), Color(0xFF0F172A), Color(0xFF0A1628)],
-              stops: [0.0, 0.5, 1.0],
+              colors: [
+                AppColors.indigoDeep,
+                AppColors.purpleDark,
+                AppColors.cyanDark,
+              ],
+              stops: [0.0, 0.55, 1.0],
             ),
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+            border: Border.all(
+              color: AppColors.primaryLight.withValues(alpha: 0.35),
+            ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withValues(alpha: 0.25),
-                blurRadius: 32,
-                offset: const Offset(0, 8),
+                color: AppColors.primary.withValues(alpha: 0.45),
+                blurRadius: 40,
+                offset: const Offset(0, 10),
               ),
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.5),
-                blurRadius: 16,
-                offset: const Offset(0, 4),
+                color: AppColors.cyan.withValues(alpha: 0.2),
+                blurRadius: 60,
+                spreadRadius: -8,
+                offset: const Offset(0, 16),
               ),
             ],
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Stack(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // Decorative watermark circle top-right
+              Positioned(
+                top: -40,
+                right: -40,
+                child: Container(
+                  width: 180,
+                  height: 180,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withValues(alpha: 0.05),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withValues(alpha: 0.04),
+                  ),
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'YOUR LEVEL',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.primaryLight.withValues(alpha: 0.8),
-                          letterSpacing: 1.2,
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'YOUR LEVEL',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white.withValues(alpha: 0.7),
+                              letterSpacing: 1.4,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          ShaderMask(
+                            shaderCallback: (bounds) => const LinearGradient(
+                              colors: [Colors.white, AppColors.skyLight],
+                            ).createShader(bounds),
+                            child: Text(
+                              'Level $level',
+                              style: const TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 38,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                                height: 1.1,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Level $level',
-                        style: const TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 36,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimary,
-                          height: 1.1,
-                        ),
-                      ),
+                      _LevelBadge(level: level),
                     ],
                   ),
-                  _LevelBadge(level: level),
+                  const SizedBox(height: 24),
+                  _GlowXpBar(progress: progress, currentXP: xp, maxXP: xpMax),
+                  const SizedBox(height: 10),
+                  Text(
+                    '$remaining XP to Level ${level + 1}',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white.withValues(alpha: 0.6),
+                    ),
+                  ),
                 ],
-              ),
-              const SizedBox(height: 24),
-              _GlowXpBar(progress: progress, currentXP: xp, maxXP: xpMax),
-              const SizedBox(height: 10),
-              Text(
-                '$remaining XP to Level ${level + 1}',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textSecondary,
-                ),
               ),
             ],
           ),
@@ -113,20 +154,20 @@ class _LevelBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 76,
-      height: 76,
+      width: 80,
+      height: 80,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppColors.primary, AppColors.purple],
+        color: Colors.white.withValues(alpha: 0.15),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.3),
+          width: 2,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.5),
+            color: Colors.white.withValues(alpha: 0.15),
             blurRadius: 20,
-            spreadRadius: 0,
+            spreadRadius: 2,
           ),
         ],
       ),
@@ -138,7 +179,7 @@ class _LevelBadge extends StatelessWidget {
             '$level',
             style: const TextStyle(
               fontFamily: 'Poppins',
-              fontSize: 22,
+              fontSize: 24,
               fontWeight: FontWeight.w800,
               color: Colors.white,
               height: 1.0,
@@ -174,30 +215,30 @@ class _GlowXpBar extends StatelessWidget {
               style: TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: AppColors.primaryLight.withValues(alpha: 0.8),
+                fontWeight: FontWeight.w700,
+                color: Colors.white.withValues(alpha: 0.7),
                 letterSpacing: 0.8,
               ),
             ),
             Text(
               '$currentXP / $maxXP',
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 11,
-                fontWeight: FontWeight.w500,
-                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
+                color: Colors.white.withValues(alpha: 0.6),
               ),
             ),
           ],
         ),
         const SizedBox(height: 8),
         ClipRRect(
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(8),
           child: Stack(
             children: [
               Container(
-                height: 10,
-                color: Colors.white.withValues(alpha: 0.06),
+                height: 12,
+                color: Colors.white.withValues(alpha: 0.12),
               ),
               TweenAnimationBuilder<double>(
                 tween: Tween<double>(begin: 0, end: progress.clamp(0.0, 1.0)),
@@ -207,16 +248,16 @@ class _GlowXpBar extends StatelessWidget {
                   return FractionallySizedBox(
                     widthFactor: value,
                     child: Container(
-                      height: 10,
+                      height: 12,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [AppColors.primary, AppColors.cyan],
+                          colors: [Colors.white, AppColors.skyLight],
                         ),
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(8),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primary.withValues(alpha: 0.6),
-                            blurRadius: 8,
+                            color: Colors.white.withValues(alpha: 0.5),
+                            blurRadius: 10,
                           ),
                         ],
                       ),

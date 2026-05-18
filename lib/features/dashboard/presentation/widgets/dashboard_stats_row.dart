@@ -37,9 +37,9 @@ class DashboardStatsRow extends ConsumerWidget {
                   '$xp',
                   style: const TextStyle(
                     fontFamily: 'Poppins',
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.xpGold,
                   ),
                 ),
               ],
@@ -55,9 +55,9 @@ class DashboardStatsRow extends ConsumerWidget {
               '$scenarios',
               style: const TextStyle(
                 fontFamily: 'Poppins',
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: AppColors.cyan,
               ),
             ),
           ),
@@ -83,13 +83,20 @@ class _StatCell extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        gradient: LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: [
+            accentColor.withValues(alpha: 0.10),
+            AppColors.surface,
+          ],
+        ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: accentColor.withValues(alpha: 0.25)),
         boxShadow: [
           BoxShadow(
-            color: accentColor.withValues(alpha: 0.08),
-            blurRadius: 16,
+            color: accentColor.withValues(alpha: 0.15),
+            blurRadius: 20,
             offset: const Offset(0, 4),
           ),
         ],

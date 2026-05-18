@@ -18,12 +18,16 @@ class AppColors {
   static const Color primaryLight   = Color(0xFF818CF8);
   static const Color primaryDark    = Color(0xFF4F46E5);
   static const Color indigoDark     = Color(0xFF4338CA);
+  static const Color indigoDeep     = Color(0xFF3730A3);
 
   // ── Accent palette ────────────────────────────────────────────
   static const Color cyan           = Color(0xFF06B6D4);
   static const Color cyanLight      = Color(0xFF67E8F9);
+  static const Color cyanDark       = Color(0xFF0E7490);
+  static const Color skyLight       = Color(0xFFBAE6FD);
   static const Color purple         = Color(0xFF8B5CF6);
   static const Color purpleLight    = Color(0xFFA78BFA);
+  static const Color purpleDark     = Color(0xFF6D28D9);
   static const Color pink           = Color(0xFFEC4899);
 
   // ── Semantic ──────────────────────────────────────────────────
@@ -36,6 +40,7 @@ class AppColors {
 
   // ── XP / Gamification ─────────────────────────────────────────
   static const Color xpGold         = Color(0xFFF59E0B);
+  static const Color xpGoldDark     = Color(0xFFCA8A04);
   static const Color xpGoldGlow     = Color(0xFFFF8C00);
   static const Color streakOrange   = Color(0xFFF97316);
 
