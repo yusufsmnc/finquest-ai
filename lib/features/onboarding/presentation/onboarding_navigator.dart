@@ -123,7 +123,7 @@ class _OnboardingNavigatorState extends ConsumerState<OnboardingNavigator>
                 right: _b3Right.value,
                 child: _AuroraBlob(
                   size: 300,
-                  color: const Color(0xFF4338CA),
+                  color: AppColors.indigoDark,
                   opacity: _b3Opacity.value,
                 ),
               ),

@@ -92,6 +92,9 @@ class DashboardState {
   final int xpToNextLevel;
   final int currentStreak;
   final int totalScenarios;
+  final int completedCount;
+  final int totalDecisions;
+  final int correctCount;
   final List<DashboardChallenge> challenges;
   final List<DashboardAchievement> achievements;
   final List<DashboardCategory> categories;
@@ -107,6 +110,9 @@ class DashboardState {
     this.xpToNextLevel = 100,
     this.currentStreak = 1,
     this.totalScenarios = 1,
+    this.completedCount = 0,
+    this.totalDecisions = 0,
+    this.correctCount = 0,
     this.challenges = const [],
     this.achievements = const [],
     this.categories = const [],
@@ -124,6 +130,8 @@ class DashboardState {
 
   double get xpProgress => (currentXP / xpToNextLevel).clamp(0.0, 1.0);
   int get xpRemaining => xpToNextLevel - currentXP;
+  double get accuracyRate =>
+      totalDecisions == 0 ? 0.0 : (correctCount / totalDecisions).clamp(0.0, 1.0);
 
   DashboardState copyWith({
     int? currentLevel,
@@ -131,6 +139,9 @@ class DashboardState {
     int? xpToNextLevel,
     int? currentStreak,
     int? totalScenarios,
+    int? completedCount,
+    int? totalDecisions,
+    int? correctCount,
     List<DashboardChallenge>? challenges,
     List<DashboardAchievement>? achievements,
     List<DashboardCategory>? categories,
@@ -146,6 +157,9 @@ class DashboardState {
       xpToNextLevel: xpToNextLevel ?? this.xpToNextLevel,
       currentStreak: currentStreak ?? this.currentStreak,
       totalScenarios: totalScenarios ?? this.totalScenarios,
+      completedCount: completedCount ?? this.completedCount,
+      totalDecisions: totalDecisions ?? this.totalDecisions,
+      correctCount: correctCount ?? this.correctCount,
       challenges: challenges ?? this.challenges,
       achievements: achievements ?? this.achievements,
       categories: categories ?? this.categories,

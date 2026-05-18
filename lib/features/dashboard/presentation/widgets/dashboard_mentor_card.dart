@@ -6,7 +6,6 @@ import '../../../ai_mentor/ai_mentor_providers.dart';
 import '../../../ai_mentor/data/mentor_repository.dart';
 import '../../../ai_mentor/domain/mentor_message.dart';
 import '../../../ai_mentor/presentation/widgets/mentor_avatar.dart';
-import '../../../scenarios/scenario_providers.dart';
 import '../../dashboard_providers.dart';
 
 class DashboardMentorCard extends ConsumerWidget {
@@ -18,9 +17,9 @@ class DashboardMentorCard extends ConsumerWidget {
     final msgIndex = ref.watch(aiMentorProvider.select((s) => s.messageSelectIndex));
     final streak = ref.watch(dashboardNotifierProvider.select((s) => s.currentStreak));
     final level = ref.watch(dashboardNotifierProvider.select((s) => s.currentLevel));
-    final completedCount = ref.watch(scenarioNotifierProvider.select((s) => s.completedIds.length));
-    final totalDecisions = ref.watch(scenarioNotifierProvider.select((s) => s.totalDecisions));
-    final accuracyRate = ref.watch(scenarioNotifierProvider.select((s) => s.accuracyRate));
+    final completedCount = ref.watch(dashboardNotifierProvider.select((s) => s.completedCount));
+    final totalDecisions = ref.watch(dashboardNotifierProvider.select((s) => s.totalDecisions));
+    final accuracyRate = ref.watch(dashboardNotifierProvider.select((s) => s.accuracyRate));
 
     final proactive = _proactiveContext(streak, level, completedCount, totalDecisions, accuracyRate, msgIndex);
     final mood = message?.mood ?? proactive.mood;

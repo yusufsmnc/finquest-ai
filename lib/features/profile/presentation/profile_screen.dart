@@ -93,14 +93,13 @@ class _ProfileAppBar extends StatelessWidget {
       pinned: true,
       automaticallyImplyLeading: false,
       leading: ModalRoute.of(context)?.canPop == true
-          ? GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => Navigator.of(context).pop(),
-              child: const Icon(
+          ? IconButton(
+              icon: const Icon(
                 Icons.arrow_back_rounded,
                 color: AppColors.textPrimary,
                 size: 22,
               ),
+              onPressed: () => Navigator.of(context).pop(),
             )
           : null,
       title: const Text(

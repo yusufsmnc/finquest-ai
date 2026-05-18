@@ -46,11 +46,19 @@ class DashboardGamificationHandler {
       case GameEventType.decisionMade:
         return state.copyWith(
           totalScenarios: state.totalScenarios + 1,
+          totalDecisions: state.totalDecisions + 1,
         );
 
       case GameEventType.decisionCorrect:
+        return state.copyWith(
+          completedCount: state.completedCount + 1,
+          correctCount: state.correctCount + 1,
+        );
+
       case GameEventType.decisionWrong:
-        return state;
+        return state.copyWith(
+          completedCount: state.completedCount + 1,
+        );
     }
   }
 }

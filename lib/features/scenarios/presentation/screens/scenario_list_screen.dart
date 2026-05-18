@@ -605,7 +605,8 @@ class _AllCompletedState extends StatelessWidget {
               width: double.infinity,
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: () => Navigator.of(context).pop(),
+                onTap: () => Navigator.of(context)
+                    .pushReplacementNamed(AppRoutes.dashboard),
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   decoration: BoxDecoration(

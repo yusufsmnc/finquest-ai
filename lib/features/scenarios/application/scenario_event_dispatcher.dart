@@ -12,13 +12,17 @@ class ScenarioEventDispatcher {
   final AiMentorNotifier _mentorNotifier;
   final MarketEventsNotifier _marketEventsNotifier;
 
-  const ScenarioEventDispatcher(
+  bool _disposed = false;
+
+  ScenarioEventDispatcher(
     this._notifier,
     this._overlayNotifier,
     this._achievementsNotifier,
     this._mentorNotifier,
     this._marketEventsNotifier,
   );
+
+  void dispose() => _disposed = true;
 
   void _dispatch(GameEvent event) {
     _notifier.applyEvent(event);
@@ -59,6 +63,7 @@ class ScenarioEventDispatcher {
 
     // Wait for answer animation to play before advancing
     await Future.delayed(const Duration(milliseconds: 1500));
+    if (_disposed) return;
     _notifier.advanceToFeedback();
   }
 

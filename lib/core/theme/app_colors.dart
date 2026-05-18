@@ -17,6 +17,7 @@ class AppColors {
   static const Color primary        = Color(0xFF6366F1);
   static const Color primaryLight   = Color(0xFF818CF8);
   static const Color primaryDark    = Color(0xFF4F46E5);
+  static const Color indigoDark     = Color(0xFF4338CA);
 
   // ── Accent palette ────────────────────────────────────────────
   static const Color cyan           = Color(0xFF06B6D4);
