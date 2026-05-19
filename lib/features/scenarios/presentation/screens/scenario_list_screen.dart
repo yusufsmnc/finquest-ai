@@ -4,6 +4,7 @@ import '../../scenario_providers.dart';
 import '../../domain/scenario_model.dart';
 import '../widgets/scenario_risk_indicator.dart';
 import '../../../../core/navigation/shell_providers.dart';
+import '../../../../core/routing/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/widgets/animated_gradient_border.dart';
 
@@ -29,13 +30,6 @@ class ScenarioListScreen extends ConsumerWidget {
         elevation: 0,
         scrolledUnderElevation: 0,
         automaticallyImplyLeading: false,
-        leading: ModalRoute.of(context)?.canPop == true
-            ? IconButton(
-                icon: const Icon(Icons.arrow_back_rounded,
-                    color: AppColors.textPrimary),
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            : null,
         title: const Text(
           'Scenarios',
           style: TextStyle(
@@ -596,8 +590,12 @@ class _AllCompletedState extends ConsumerWidget {
               width: double.infinity,
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: () =>
-                    ref.read(shellTabIndexProvider.notifier).state = ShellTab.achievements,
+                onTap: () {
+                  ref.read(shellTabIndexProvider.notifier).state = ShellTab.achievements;
+                  if (ModalRoute.of(context)?.settings.name == AppRoutes.scenarios) {
+                    Navigator.of(context).pop();
+                  }
+                },
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   decoration: BoxDecoration(
@@ -638,8 +636,12 @@ class _AllCompletedState extends ConsumerWidget {
               width: double.infinity,
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: () =>
-                    ref.read(shellTabIndexProvider.notifier).state = ShellTab.dashboard,
+                onTap: () {
+                  ref.read(shellTabIndexProvider.notifier).state = ShellTab.dashboard;
+                  if (ModalRoute.of(context)?.settings.name == AppRoutes.scenarios) {
+                    Navigator.of(context).pop();
+                  }
+                },
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   decoration: BoxDecoration(

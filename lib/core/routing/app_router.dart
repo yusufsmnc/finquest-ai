@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import '../navigation/main_shell.dart';
+import '../theme/app_colors.dart';
 import '../../features/scenarios/presentation/scenario_flow.dart';
 import '../../features/achievements/presentation/achievements_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/ai_mentor/presentation/ai_mentor_screen.dart';
 import '../../features/market_events/presentation/market_events_screen.dart';
+import '../../shared/widgets/aurora_background.dart';
 
 class AppRoutes {
   static const String onboarding = '/onboarding';
@@ -38,27 +40,67 @@ class AppRouter {
       case AppRoutes.scenarios:
         return _buildRoute(
           settings: settings,
-          builder: (_) => const ScenarioFlow(),
+          builder: (_) => Scaffold(
+            backgroundColor: AppColors.background,
+            body: Stack(
+              children: [
+                const Positioned.fill(child: AuroraBackground()),
+                const ScenarioFlow(),
+              ],
+            ),
+          ),
         );
       case AppRoutes.achievements:
         return _buildRoute(
           settings: settings,
-          builder: (_) => const AchievementsScreen(),
+          builder: (_) => Scaffold(
+            backgroundColor: AppColors.background,
+            body: Stack(
+              children: [
+                const Positioned.fill(child: AuroraBackground()),
+                const AchievementsScreen(),
+              ],
+            ),
+          ),
         );
       case AppRoutes.profile:
         return _buildRoute(
           settings: settings,
-          builder: (_) => const ProfileScreen(),
+          builder: (_) => Scaffold(
+            backgroundColor: AppColors.background,
+            body: Stack(
+              children: [
+                const Positioned.fill(child: AuroraBackground()),
+                const ProfileScreen(),
+              ],
+            ),
+          ),
         );
       case AppRoutes.aiMentor:
         return _buildRoute(
           settings: settings,
-          builder: (_) => const AiMentorScreen(),
+          builder: (_) => Scaffold(
+            backgroundColor: AppColors.background,
+            body: Stack(
+              children: [
+                const Positioned.fill(child: AuroraBackground()),
+                const AiMentorScreen(),
+              ],
+            ),
+          ),
         );
       case AppRoutes.marketEvents:
         return _buildRoute(
           settings: settings,
-          builder: (_) => const MarketEventsScreen(),
+          builder: (_) => Scaffold(
+            backgroundColor: AppColors.background,
+            body: Stack(
+              children: [
+                const Positioned.fill(child: AuroraBackground()),
+                const MarketEventsScreen(),
+              ],
+            ),
+          ),
         );
       default:
         return _buildRoute(
