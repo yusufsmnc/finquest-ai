@@ -132,9 +132,9 @@ class _OnboardingNavigatorState extends ConsumerState<OnboardingNavigator>
         ),
         // Screen content
         AnimatedSwitcher(
-      duration: const Duration(milliseconds: 320),
-      switchInCurve: Curves.easeOutCubic,
-      switchOutCurve: Curves.easeOutCubic,
+      duration: const Duration(milliseconds: 400),
+      switchInCurve: Curves.easeInOutCubic,
+      switchOutCurve: Curves.easeInOutCubic,
       // Spec:
       //   Enter: FadeIn + SlideDown (offset 0,0.1 → 0,0) 320ms easeOutCubic
       //   Exit:  FadeOut + SlideUp  (offset 0,0  → 0,-0.1) 320ms easeOutCubic
