@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../domain/achievement_model.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/widgets/animated_gradient_border.dart';
 
 class AchievementCard extends StatelessWidget {
   final Achievement achievement;
@@ -17,7 +18,7 @@ class AchievementCard extends StatelessWidget {
     final rarity = achievement.rarity;
     final unlocked = achievement.unlocked;
 
-    return GestureDetector(
+    final card = GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: AnimatedContainer(
@@ -29,12 +30,7 @@ class AchievementCard extends StatelessWidget {
               ? rarity.color.withValues(alpha: 0.08)
               : AppColors.surface,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: unlocked
-                ? rarity.color.withValues(alpha: 0.35)
-                : AppColors.border,
-            width: unlocked ? 1.5 : 1,
-          ),
+          border: unlocked ? null : Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.25),
@@ -92,6 +88,10 @@ class AchievementCard extends StatelessWidget {
         ),
       ),
     );
+
+    return unlocked
+        ? AnimatedGradientBorder(borderRadius: 16, borderWidth: 2.0, child: card)
+        : card;
   }
 }
 

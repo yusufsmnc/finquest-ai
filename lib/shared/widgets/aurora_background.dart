@@ -111,7 +111,7 @@ class _AuroraBackgroundState extends State<AuroraBackground>
                 left: _b2Left.value,
                 child: _AuroraBlob(
                   size: 360,
-                  color: AppColors.cyan,
+                  color: AppColors.purple,
                   opacity: _b2Opacity.value,
                 ),
               ),

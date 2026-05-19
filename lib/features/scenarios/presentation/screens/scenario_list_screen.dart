@@ -220,9 +220,7 @@ class _ScenarioCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final catColor = _categoryColor(scenario.category);
 
-    return AnimatedGradientBorder(
-      borderRadius: 20,
-      child: Semantics(
+    final card = Semantics(
       button: true,
       label: '${scenario.title}, ${scenario.category}, ${scenario.riskLevel.label} risk',
       child: GestureDetector(
@@ -231,6 +229,9 @@ class _ScenarioCard extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
+            border: isCompleted
+                ? Border.all(color: AppColors.success.withValues(alpha: 0.25))
+                : null,
             boxShadow: [
               BoxShadow(
                 color: isCompleted
@@ -350,10 +351,13 @@ class _ScenarioCard extends StatelessWidget {
     ),          // Row
     ),          // IntrinsicHeight
   ),            // ClipRRect
-),              // outer Container
-      ),
-      ),        // AnimatedGradientBorder
-    );
+        ),      // outer Container
+      ),        // GestureDetector
+    );          // card (Semantics)
+
+    return isCompleted
+        ? card
+        : AnimatedGradientBorder(borderRadius: 20, child: card);
   }
 }
 

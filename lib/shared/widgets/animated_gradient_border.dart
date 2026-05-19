@@ -1,9 +1,9 @@
-import 'dart:math' show pi;
+﻿import 'dart:math' show pi;
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 
 // Wraps its child with a continuously rotating sweep gradient border.
-// Colors cycle through indigo → cyan → purple → light indigo.
+// Colors cycle through indigo â†’ cyan â†’ purple â†’ light indigo.
 class AnimatedGradientBorder extends StatefulWidget {
   final Widget child;
   final double borderRadius;
@@ -120,3 +120,4 @@ class _GradientBorderPainter extends CustomPainter {
   @override
   bool shouldRepaint(_GradientBorderPainter old) => old.angle != angle;
 }
+

@@ -201,20 +201,22 @@ class _SlidingPillState extends State<_SlidingPill>
         return Positioned(
           top: (64 - pillH) / 2,
           left: left,
-          child: Container(
-            width: pillW,
-            height: pillH,
-            decoration: BoxDecoration(
-              color: c.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: c.withValues(alpha: 0.3), width: 0.5),
-              boxShadow: [
-                BoxShadow(
-                  color: c.withValues(alpha: 0.30),
-                  blurRadius: 14,
-                  spreadRadius: 0,
-                ),
-              ],
+          child: IgnorePointer(
+            child: Container(
+              width: pillW,
+              height: pillH,
+              decoration: BoxDecoration(
+                color: c.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: c.withValues(alpha: 0.3), width: 0.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: c.withValues(alpha: 0.30),
+                    blurRadius: 14,
+                    spreadRadius: 0,
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -240,41 +242,46 @@ class _TabItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      child: SizedBox(
-        width: width,
-        height: 64,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AnimatedScale(
-              scale: isSelected ? 1.18 : 1.0,
-              duration: const Duration(milliseconds: 280),
-              curve: Curves.easeOutBack,
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
-                child: Icon(
-                  isSelected ? def.selectedIcon : def.unselectedIcon,
-                  key: ValueKey(isSelected),
-                  size: 22,
-                  color: isSelected ? def.color : AppColors.textMuted,
+    return SizedBox(
+      width: width,
+      height: 64,
+      child: Center(
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AnimatedScale(
+                  scale: isSelected ? 1.18 : 1.0,
+                  duration: const Duration(milliseconds: 280),
+                  curve: Curves.easeOutBack,
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(
+                      isSelected ? def.selectedIcon : def.unselectedIcon,
+                      key: ValueKey(isSelected),
+                      size: 22,
+                      color: isSelected ? def.color : AppColors.textMuted,
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(height: 4),
+                AnimatedDefaultTextStyle(
+                  duration: const Duration(milliseconds: 200),
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 10,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                    color: isSelected ? def.color : AppColors.textMuted,
+                  ),
+                  child: Text(def.label),
+                ),
+              ],
             ),
-            const SizedBox(height: 4),
-            AnimatedDefaultTextStyle(
-              duration: const Duration(milliseconds: 200),
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 10,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                color: isSelected ? def.color : AppColors.textMuted,
-              ),
-              child: Text(def.label),
-            ),
-          ],
+          ),
         ),
       ),
     );
