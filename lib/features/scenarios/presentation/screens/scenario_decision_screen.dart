@@ -240,13 +240,19 @@ class _StakesBar extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                '+$xpCorrect XP if correct',
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.xpGold,
+              ShaderMask(
+                blendMode: BlendMode.srcIn,
+                shaderCallback: (bounds) => const LinearGradient(
+                  colors: [AppColors.xpGoldGlow, AppColors.warningLight],
+                ).createShader(bounds),
+                child: Text(
+                  '+$xpCorrect XP if correct',
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: 2),
@@ -265,9 +271,9 @@ class _StakesBar extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                color: AppColors.error.withValues(alpha: 0.1),
+                color: AppColors.streakOrange.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.error.withValues(alpha: 0.2)),
+                border: Border.all(color: AppColors.streakOrange.withValues(alpha: 0.2)),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -280,7 +286,7 @@ class _StakesBar extends StatelessWidget {
                       fontFamily: 'Inter',
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.error,
+                      color: AppColors.streakOrange,
                     ),
                   ),
                 ],
@@ -349,13 +355,19 @@ class _ScenarioEventCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          Text(
-            scenario.title,
-            style: const TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 18,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+          ShaderMask(
+            blendMode: BlendMode.srcIn,
+            shaderCallback: (bounds) => const LinearGradient(
+              colors: [AppColors.primary, AppColors.cyan],
+            ).createShader(bounds),
+            child: Text(
+              scenario.title,
+              style: const TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
             ),
           ),
           const SizedBox(height: 10),

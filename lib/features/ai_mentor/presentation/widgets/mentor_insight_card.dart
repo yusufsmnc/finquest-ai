@@ -57,13 +57,19 @@ class MentorInsightCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Text(
-                            'AI Mentor',
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: compact ? 12 : 13,
-                              fontWeight: FontWeight.w700,
-                              color: accentColor,
+                          ShaderMask(
+                            blendMode: BlendMode.srcIn,
+                            shaderCallback: (bounds) => LinearGradient(
+                              colors: gradients,
+                            ).createShader(bounds),
+                            child: Text(
+                              'AI Mentor',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: compact ? 12 : 13,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 6),

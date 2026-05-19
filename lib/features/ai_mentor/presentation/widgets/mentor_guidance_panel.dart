@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../ai_mentor_providers.dart';
 import '../../domain/mentor_message.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class MentorGuidancePanel extends ConsumerWidget {
   const MentorGuidancePanel({super.key});
@@ -53,13 +54,19 @@ class MentorGuidancePanel extends ConsumerWidget {
                 children: [
                   Row(
                     children: [
-                      Text(
-                        'Mentor Tip',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: accentColor,
+                      ShaderMask(
+                        blendMode: BlendMode.srcIn,
+                        shaderCallback: (bounds) => LinearGradient(
+                          colors: mood.gradient,
+                        ).createShader(bounds),
+                        child: const Text(
+                          'Mentor Tip',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 6),
@@ -79,7 +86,7 @@ class MentorGuidancePanel extends ConsumerWidget {
                     style: const TextStyle(
                       fontFamily: 'Inter',
                       fontSize: 12,
-                      color: Color(0xFF334155),
+                      color: AppColors.textSecondary,
                       height: 1.5,
                     ),
                   ),
