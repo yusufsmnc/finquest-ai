@@ -7,6 +7,7 @@ import 'screens/scenario_decision_screen.dart';
 import 'screens/scenario_feedback_screen.dart';
 import 'widgets/scenario_xp_float_overlay.dart';
 import 'widgets/scenario_reward_toast_overlay.dart';
+import 'widgets/scenario_money_overlay.dart';
 
 class ScenarioFlow extends ConsumerStatefulWidget {
   const ScenarioFlow({super.key});
@@ -84,6 +85,7 @@ class _ScenarioFlowState extends ConsumerState<ScenarioFlow> {
             ),
             child: _screenFor(phase),
           ),
+          const ScenarioMoneyOverlay(),
           const ScenarioXpFloatOverlay(),
           const ScenarioRewardToastOverlay(),
         ],
