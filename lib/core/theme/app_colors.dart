@@ -5,6 +5,8 @@ class AppColors {
 
   // ── Backgrounds ───────────────────────────────────────────────
   static const Color background     = Color(0xFF07070F);
+  static const Color backgroundBlue = Color(0xFF090C28);
+  static const Color navyBlue       = Color(0xFF0F1545);
   static const Color surface        = Color(0xFF0D0D1A);
   static const Color surfaceUp      = Color(0xFF131328);
   static const Color surfaceHigh    = Color(0xFF1A1A35);

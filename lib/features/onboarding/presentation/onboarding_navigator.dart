@@ -57,20 +57,20 @@ class _OnboardingNavigatorState extends ConsumerState<OnboardingNavigator>
     final c2 = CurvedAnimation(parent: _blob2Controller, curve: Curves.easeInOut);
     final c3 = CurvedAnimation(parent: _blob3Controller, curve: Curves.easeInOut);
 
-    // Blob 1 — violet, top-center drifts right
-    _b1Top     = Tween<double>(begin: -120, end: -80).animate(c1);
+    // Blob 1 — violet, top-left drifts right
+    _b1Top     = Tween<double>(begin: -40,  end:   0).animate(c1);
     _b1Left    = Tween<double>(begin: -60,  end:  40).animate(c1);
-    _b1Opacity = Tween<double>(begin: 0.10, end: 0.20).animate(c1);
+    _b1Opacity = Tween<double>(begin: 0.30, end: 0.50).animate(c1);
 
-    // Blob 2 — cyan, bottom-left drifts up
-    _b2Bottom  = Tween<double>(begin: -80,  end: -40).animate(c2);
-    _b2Left    = Tween<double>(begin: -60,  end:  20).animate(c2);
-    _b2Opacity = Tween<double>(begin: 0.08, end: 0.16).animate(c2);
+    // Blob 2 — cyan, bottom-center drifts up
+    _b2Bottom  = Tween<double>(begin: -40,  end:   0).animate(c2);
+    _b2Left    = Tween<double>(begin:  30,  end:  90).animate(c2);
+    _b2Opacity = Tween<double>(begin: 0.25, end: 0.40).animate(c2);
 
-    // Blob 3 — indigo, center-right drifts left
-    _b3Top     = Tween<double>(begin: 80,   end: 140).animate(c3);
-    _b3Right   = Tween<double>(begin: -80,  end: -20).animate(c3);
-    _b3Opacity = Tween<double>(begin: 0.07, end: 0.14).animate(c3);
+    // Blob 3 — indigo, mid-right drifts left
+    _b3Top     = Tween<double>(begin: 100,  end: 180).animate(c3);
+    _b3Right   = Tween<double>(begin: -40,  end:  20).animate(c3);
+    _b3Opacity = Tween<double>(begin: 0.20, end: 0.35).animate(c3);
   }
 
   @override
@@ -88,9 +88,22 @@ class _OnboardingNavigatorState extends ConsumerState<OnboardingNavigator>
 
     return Stack(
       children: [
-        // Aurora background — persists across all steps
+        // Deep navy gradient — onboarding only
         Positioned.fill(
-          child: ColoredBox(color: AppColors.background),
+          child: Container(
+            decoration: const BoxDecoration(
+              gradient: RadialGradient(
+                center: Alignment(0, -0.4),
+                radius: 1.4,
+                colors: [
+                  AppColors.navyBlue,
+                  AppColors.backgroundBlue,
+                  AppColors.background,
+                ],
+                stops: [0.0, 0.55, 1.0],
+              ),
+            ),
+          ),
         ),
         AnimatedBuilder(
           animation: Listenable.merge(
