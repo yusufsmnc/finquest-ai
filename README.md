@@ -74,6 +74,7 @@ User Action → UI Event → State Update → Gamification Engine → Animation 
 - Correct decision bonus (+50 XP)
 - Streak tracking with pulse animation
 - Reward toast every 3 correct decisions
+- Money Lottie overlay (coins + bills animation) on correct decision / XP_GAINED event
 - AnimatedSwitcher phase transitions (list → decision → feedback)
 
 ### ✅ Profile System
@@ -161,6 +162,8 @@ All game logic flows through a deterministic event contract:
 
 | Widget | Description |
 |---|---|
+| `AuroraBackground` | Animated aurora: deep navy radial gradient + 3 drifting color blobs (9s / 13s / 17s cycles). Used as bottom layer on all screens. |
+| `AnimatedGradientBorder` | Rotating SweepGradient border (indigo → cyan → purple). Applied to unlocked achievements and active scenarios. |
 | `XPFloatIndicator` | Floats up 40px when XP is earned |
 | `RewardToast` | Slides in from bottom on reward unlock |
 | `XPProgressBar` | Animated fill bar |
@@ -173,6 +176,20 @@ All game logic flows through a deterministic event contract:
 | `AchievementDetailModal` | Bottom sheet with progress, reward preview, unlock date |
 | `AchievementsStatsHeader` | Gradient header with completion % and category breakdown |
 | `AchievementsFilterBar` | Animated category filter chips |
+
+---
+
+## Visual Design System
+
+| Component | Detail |
+|---|---|
+| Background | `AuroraBackground` on all 5 tabs + all standalone routes |
+| Card borders | `AnimatedGradientBorder` on unlocked achievements and active (non-completed) scenarios |
+| Reward animation | `Money.json` Lottie (coins + bills) plays on correct decision |
+| Level-up | Full-screen confetti burst (`confetti.json`) every 200 XP |
+| Achievement unlock | `trophy.json` Lottie + slide-in overlay |
+| XP earn | Float indicator (+XP chip animates upward) |
+| Tab bar | Sliding pill indicator with per-tab accent color |
 
 ---
 
