@@ -110,15 +110,7 @@ class _AchievementsAppBar extends ConsumerWidget {
       elevation: 0,
       scrolledUnderElevation: 0,
       pinned: true,
-      leading: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => Navigator.of(context).pop(),
-        child: const Icon(
-          Icons.arrow_back_rounded,
-          color: AppColors.textPrimary,
-          size: 22,
-        ),
-      ),
+      automaticallyImplyLeading: false,
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
