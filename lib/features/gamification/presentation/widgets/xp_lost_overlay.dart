@@ -75,7 +75,9 @@ class _XpLostOverlayState extends State<XpLostOverlay>
       top: MediaQuery.of(context).padding.top + 12,
       left: 20,
       right: 20,
-      child: AnimatedBuilder(
+      child: Material(
+        color: Colors.transparent,
+        child: AnimatedBuilder(
         animation: _controller,
         builder: (context, child) => SlideTransition(
           position: _slideIn,
@@ -122,6 +124,7 @@ class _XpLostOverlayState extends State<XpLostOverlay>
           ),
         ),
       ),
-    );
+    ),
+  );
   }
 }

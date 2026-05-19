@@ -71,7 +71,9 @@ class _AchievementUnlockOverlayState extends State<AchievementUnlockOverlay>
       bottom: 40,
       left: 20,
       right: 20,
-      child: SlideTransition(
+      child: Material(
+        color: Colors.transparent,
+        child: SlideTransition(
         position: _slideIn,
         child: FadeTransition(
           opacity: _fade,
@@ -140,6 +142,7 @@ class _AchievementUnlockOverlayState extends State<AchievementUnlockOverlay>
           ),
         ),
       ),
-    );
+    ),
+  );
   }
 }

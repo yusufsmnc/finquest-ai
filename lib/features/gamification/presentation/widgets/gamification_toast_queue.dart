@@ -65,9 +65,11 @@ class _GamificationToastState extends State<_GamificationToast> {
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
-      label: '${widget.toast.title}: ${widget.toast.message}',
-      child: Container(
+    return Material(
+      color: Colors.transparent,
+      child: Semantics(
+        label: '${widget.toast.title}: ${widget.toast.message}',
+        child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
         decoration: BoxDecoration(
           color: const Color(0xFF0F172A),
@@ -131,6 +133,7 @@ class _GamificationToastState extends State<_GamificationToast> {
           ],
         ),
       ),
-    );
+    ),
+  );
   }
 }
