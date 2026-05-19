@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/routing/app_router.dart';
+import '../../../../core/navigation/shell_providers.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../ai_mentor/ai_mentor_providers.dart';
 import '../../../ai_mentor/data/mentor_repository.dart';
@@ -121,7 +121,7 @@ class DashboardMentorCard extends ConsumerWidget {
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () =>
-                  Navigator.of(context).pushNamed(AppRoutes.aiMentor),
+                  ref.read(shellTabIndexProvider.notifier).state = ShellTab.aiMentor,
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(

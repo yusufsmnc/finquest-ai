@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../scenario_providers.dart';
 import '../../domain/scenario_model.dart';
 import '../widgets/scenario_risk_indicator.dart';
-import '../../../../core/routing/app_router.dart';
+import '../../../../core/navigation/shell_providers.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class ScenarioListScreen extends ConsumerWidget {
@@ -475,7 +475,7 @@ class _EmptyState extends StatelessWidget {
   }
 }
 
-class _AllCompletedState extends StatelessWidget {
+class _AllCompletedState extends ConsumerWidget {
   final int totalScenarios;
   final int xpEarned;
   final double accuracyRate;
@@ -487,7 +487,7 @@ class _AllCompletedState extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final accuracyPct = (accuracyRate * 100).round();
 
     return Center(
@@ -592,7 +592,7 @@ class _AllCompletedState extends StatelessWidget {
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () =>
-                    Navigator.of(context).pushNamed(AppRoutes.achievements),
+                    ref.read(shellTabIndexProvider.notifier).state = ShellTab.achievements,
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   decoration: BoxDecoration(
@@ -633,8 +633,8 @@ class _AllCompletedState extends StatelessWidget {
               width: double.infinity,
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: () => Navigator.of(context)
-                    .pushReplacementNamed(AppRoutes.dashboard),
+                onTap: () =>
+                    ref.read(shellTabIndexProvider.notifier).state = ShellTab.dashboard,
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   decoration: BoxDecoration(

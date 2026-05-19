@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../ai_mentor_providers.dart';
 import '../../data/mentor_repository.dart';
 import '../../domain/mentor_message.dart';
-import '../../../../core/routing/app_router.dart';
+import '../../../../core/navigation/shell_providers.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class MentorNextStepCard extends ConsumerWidget {
@@ -101,7 +101,7 @@ class MentorNextStepCard extends ConsumerWidget {
                   icon: Icons.psychology_alt_rounded,
                   color: AppColors.primary,
                   onTap: () =>
-                      Navigator.of(context).pushNamed(AppRoutes.scenarios),
+                      ref.read(shellTabIndexProvider.notifier).state = ShellTab.scenarios,
                 ),
               ),
               const SizedBox(width: 8),
@@ -111,7 +111,7 @@ class MentorNextStepCard extends ConsumerWidget {
                   icon: Icons.emoji_events_rounded,
                   color: AppColors.purple,
                   onTap: () =>
-                      Navigator.of(context).pushNamed(AppRoutes.achievements),
+                      ref.read(shellTabIndexProvider.notifier).state = ShellTab.achievements,
                 ),
               ),
             ],

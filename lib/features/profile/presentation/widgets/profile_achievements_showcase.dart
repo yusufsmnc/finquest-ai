@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../achievements/achievements_providers.dart';
 import '../../../achievements/domain/achievement_model.dart';
-import '../../../../core/routing/app_router.dart';
+import '../../../../core/navigation/shell_providers.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class ProfileAchievementsShowcase extends ConsumerWidget {
@@ -40,7 +40,7 @@ class ProfileAchievementsShowcase extends ConsumerWidget {
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () =>
-                    Navigator.of(context).pushNamed(AppRoutes.achievements),
+                    ref.read(shellTabIndexProvider.notifier).state = ShellTab.achievements,
                 child: const Row(
                   children: [
                     Text(
