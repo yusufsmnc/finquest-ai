@@ -86,7 +86,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
     });
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.transparent,
       body: FadeTransition(
         opacity: _fadeIn,
         child: SlideTransition(

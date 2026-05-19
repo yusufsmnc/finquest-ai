@@ -7,6 +7,7 @@ import '../../../ai_mentor/data/mentor_repository.dart';
 import '../../../ai_mentor/domain/mentor_message.dart';
 import '../../../ai_mentor/presentation/widgets/mentor_avatar.dart';
 import '../../dashboard_providers.dart';
+import '../../../../shared/widgets/animated_gradient_border.dart';
 
 class DashboardMentorCard extends ConsumerWidget {
   const DashboardMentorCard({super.key});
@@ -25,7 +26,8 @@ class DashboardMentorCard extends ConsumerWidget {
     final mood = message?.mood ?? proactive.mood;
     final text = message?.text ?? proactive.text;
 
-    return Container(
+    return AnimatedGradientBorder(
+      child: Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -36,9 +38,6 @@ class DashboardMentorCard extends ConsumerWidget {
           stops: [0.0, 0.5, 1.0],
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.purple.withValues(alpha: 0.3),
-        ),
         boxShadow: [
           BoxShadow(
             color: AppColors.purple.withValues(alpha: 0.2),
@@ -159,7 +158,8 @@ class DashboardMentorCard extends ConsumerWidget {
           ),
         ],
       ),
-    );
+    ),    // Container
+  );      // AnimatedGradientBorder
   }
 
   ({String text, MentorMood mood}) _proactiveContext(

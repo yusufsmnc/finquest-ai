@@ -7,6 +7,7 @@ import '../../features/achievements/presentation/achievements_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../theme/app_colors.dart';
 import 'shell_providers.dart';
+import '../../shared/widgets/aurora_background.dart';
 
 class MainShell extends ConsumerWidget {
   const MainShell({super.key});
@@ -25,9 +26,14 @@ class MainShell extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: IndexedStack(
-        index: currentIndex,
-        children: _tabs,
+      body: Stack(
+        children: [
+          const Positioned.fill(child: AuroraBackground()),
+          IndexedStack(
+            index: currentIndex,
+            children: _tabs,
+          ),
+        ],
       ),
       bottomNavigationBar: _PremiumTabBar(
         currentIndex: currentIndex,

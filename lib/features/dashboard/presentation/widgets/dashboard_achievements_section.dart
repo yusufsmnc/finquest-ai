@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../dashboard_providers.dart';
 import '../../domain/dashboard_state.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/widgets/animated_gradient_border.dart';
 
 class DashboardAchievementsSection extends ConsumerWidget {
   const DashboardAchievementsSection({super.key});
@@ -47,7 +48,7 @@ class _AchievementChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final unlocked = achievement.unlocked;
 
-    return Container(
+    final chip = Container(
       width: 82,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
       decoration: BoxDecoration(
@@ -55,11 +56,7 @@ class _AchievementChip extends StatelessWidget {
             ? AppColors.xpGold.withValues(alpha: 0.08)
             : AppColors.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: unlocked
-              ? AppColors.xpGold.withValues(alpha: 0.35)
-              : AppColors.border,
-        ),
+        border: unlocked ? null : Border.all(color: AppColors.border),
         boxShadow: unlocked
             ? [
                 BoxShadow(
@@ -93,5 +90,9 @@ class _AchievementChip extends StatelessWidget {
         ],
       ),
     );
+
+    return unlocked
+        ? AnimatedGradientBorder(borderRadius: 16, borderWidth: 2.0, child: chip)
+        : chip;
   }
 }

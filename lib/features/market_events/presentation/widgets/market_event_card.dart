@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/market_event.dart';
+import '../../../../shared/widgets/animated_gradient_border.dart';
 
 class MarketEventCard extends StatefulWidget {
   final MarketEvent event;
@@ -63,16 +64,13 @@ class _MarketEventCardState extends State<MarketEventCard>
         animation: _scale,
         builder: (context, child) =>
             Transform.scale(scale: _scale.value, child: child),
-        child: Container(
+        child: Builder(builder: (context) {
+          final card = Container(
           width: 272,
           decoration: BoxDecoration(
             color: resolved ? AppColors.surfaceUp : AppColors.surface,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: resolved
-                  ? AppColors.border
-                  : impact.color.withValues(alpha: 0.25),
-            ),
+            border: resolved ? Border.all(color: AppColors.border) : null,
             boxShadow: resolved
                 ? null
                 : [
@@ -238,10 +236,12 @@ class _MarketEventCardState extends State<MarketEventCard>
                   ),
                 ),
               ],
-            ),
-          ),
-        ),
-      ),
-    );
+            ),    // Row
+          ),      // ClipRRect
+        );        // card Container
+          return resolved ? card : AnimatedGradientBorder(child: card);
+        }),   // Builder
+      ),      // AnimatedBuilder
+    );        // GestureDetector
   }
 }

@@ -7,7 +7,6 @@ import 'screens/scenario_decision_screen.dart';
 import 'screens/scenario_feedback_screen.dart';
 import 'widgets/scenario_xp_float_overlay.dart';
 import 'widgets/scenario_reward_toast_overlay.dart';
-import '../../../core/theme/app_colors.dart';
 
 class ScenarioFlow extends ConsumerStatefulWidget {
   const ScenarioFlow({super.key});
@@ -67,9 +66,7 @@ class _ScenarioFlowState extends ConsumerState<ScenarioFlow> {
       }
     });
 
-    return ColoredBox(
-      color: AppColors.background,
-      child: Stack(
+    return Stack(
         children: [
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 280),
@@ -90,7 +87,6 @@ class _ScenarioFlowState extends ConsumerState<ScenarioFlow> {
           const ScenarioXpFloatOverlay(),
           const ScenarioRewardToastOverlay(),
         ],
-      ),
     );
   }
 

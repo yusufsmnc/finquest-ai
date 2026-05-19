@@ -56,7 +56,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen>
     );
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.transparent,
       body: FadeTransition(
         opacity: _fadeIn,
         child: CustomScrollView(
@@ -74,7 +74,7 @@ class _AchievementsScreenState extends ConsumerState<AchievementsScreen>
                   crossAxisCount: 2,
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,
-                  childAspectRatio: 0.85,
+                  mainAxisExtent: 172,
                 ),
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
@@ -106,7 +106,7 @@ class _AchievementsAppBar extends ConsumerWidget {
     );
 
     return SliverAppBar(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.transparent,
       elevation: 0,
       scrolledUnderElevation: 0,
       pinned: true,

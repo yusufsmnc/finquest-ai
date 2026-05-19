@@ -5,6 +5,7 @@ import '../../domain/scenario_model.dart';
 import '../widgets/scenario_risk_indicator.dart';
 import '../../../../core/navigation/shell_providers.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/widgets/animated_gradient_border.dart';
 
 class ScenarioListScreen extends ConsumerWidget {
   const ScenarioListScreen({super.key});
@@ -22,9 +23,9 @@ class ScenarioListScreen extends ConsumerWidget {
     final allCompleted = totalCount > 0 && completedIds.length >= totalCount;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
         automaticallyImplyLeading: false,
@@ -219,7 +220,9 @@ class _ScenarioCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final catColor = _categoryColor(scenario.category);
 
-    return Semantics(
+    return AnimatedGradientBorder(
+      borderRadius: 20,
+      child: Semantics(
       button: true,
       label: '${scenario.title}, ${scenario.category}, ${scenario.riskLevel.label} risk',
       child: GestureDetector(
@@ -228,9 +231,6 @@ class _ScenarioCard extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: (isCompleted ? AppColors.success : catColor).withValues(alpha: 0.2),
-            ),
             boxShadow: [
               BoxShadow(
                 color: isCompleted
@@ -352,6 +352,7 @@ class _ScenarioCard extends StatelessWidget {
   ),            // ClipRRect
 ),              // outer Container
       ),
+      ),        // AnimatedGradientBorder
     );
   }
 }

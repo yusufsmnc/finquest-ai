@@ -60,7 +60,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.transparent,
       body: FadeTransition(
         opacity: _fadeIn,
         child: SlideTransition(

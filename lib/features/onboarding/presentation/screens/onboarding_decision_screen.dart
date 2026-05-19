@@ -5,6 +5,7 @@ import '../../data/onboarding_constants.dart';
 import '../../application/onboarding_animation_handler.dart';
 import '../widgets/onboarding_progress_dots.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/widgets/animated_gradient_border.dart';
 
 /// S3 — Decision Screen.
 /// Shows the tutorial scenario (CR-001) and the two decision options.
@@ -91,7 +92,7 @@ class _OnboardingDecisionScreenState
                     children: [
                       const SizedBox(height: 24),
                       const OnboardingProgressDots(currentStep: 3),
-                      const SizedBox(height: 24),
+                      const Spacer(),
                       _ScenarioCard(
                         isCorrectSelected: state.isCorrect,
                         tappedOptionId: _tappedOptionId,
@@ -174,6 +175,8 @@ class _OnboardingDecisionScreenState
   }
 }
 
+// ── Scenario Card ──────────────────────────────────────────────────────────────
+
 class _ScenarioCard extends StatelessWidget {
   final bool? isCorrectSelected;
   final String? tappedOptionId;
@@ -189,19 +192,17 @@ class _ScenarioCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: correctScale,
-      builder: (context, child) {
-        return Transform.scale(
-          scale: isCorrectSelected == true ? correctScale.value : 1.0,
-          child: child,
-        );
-      },
-      child: Container(
+      builder: (context, child) => Transform.scale(
+        scale: isCorrectSelected == true ? correctScale.value : 1.0,
+        child: child,
+      ),
+      child: AnimatedGradientBorder(
+        child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
               color: AppColors.primary.withValues(alpha: 0.06),
@@ -266,9 +267,12 @@ class _ScenarioCard extends StatelessWidget {
           ],
         ),
       ),
+      ),    // AnimatedGradientBorder
     );
   }
 }
+
+// ── Risk Badge ─────────────────────────────────────────────────────────────────
 
 class _RiskBadge extends StatelessWidget {
   final String level;
@@ -315,6 +319,8 @@ class _RiskBadge extends StatelessWidget {
     );
   }
 }
+
+// ── Option Button ──────────────────────────────────────────────────────────────
 
 class _OptionButton extends StatefulWidget {
   final String optionId;

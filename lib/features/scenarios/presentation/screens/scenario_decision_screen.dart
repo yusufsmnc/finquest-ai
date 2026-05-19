@@ -4,61 +4,13 @@ import '../../scenario_providers.dart';
 import '../../domain/scenario_model.dart';
 import '../widgets/scenario_risk_indicator.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/widgets/animated_gradient_border.dart';
 
-class ScenarioDecisionScreen extends ConsumerStatefulWidget {
+class ScenarioDecisionScreen extends ConsumerWidget {
   const ScenarioDecisionScreen({super.key});
 
   @override
-  ConsumerState<ScenarioDecisionScreen> createState() =>
-      _ScenarioDecisionScreenState();
-}
-
-class _ScenarioDecisionScreenState
-    extends ConsumerState<ScenarioDecisionScreen> with TickerProviderStateMixin {
-  late AnimationController _blob1Controller;
-  late AnimationController _blob2Controller;
-  late Animation<double> _blob1Top;
-  late Animation<double> _blob1Left;
-  late Animation<double> _blob1Opacity;
-  late Animation<double> _blob2Bottom;
-  late Animation<double> _blob2Right;
-  late Animation<double> _blob2Opacity;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _blob1Controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 8),
-    )..repeat(reverse: true);
-
-    _blob2Controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 11),
-    )..repeat(reverse: true);
-
-    final curve1 = CurvedAnimation(parent: _blob1Controller, curve: Curves.easeInOut);
-    final curve2 = CurvedAnimation(parent: _blob2Controller, curve: Curves.easeInOut);
-
-    _blob1Top     = Tween<double>(begin: -80, end: -50).animate(curve1);
-    _blob1Left    = Tween<double>(begin: -80, end: -48).animate(curve1);
-    _blob1Opacity = Tween<double>(begin: 0.13, end: 0.22).animate(curve1);
-
-    _blob2Bottom  = Tween<double>(begin: -60, end: -32).animate(curve2);
-    _blob2Right   = Tween<double>(begin: -60, end: -88).animate(curve2);
-    _blob2Opacity = Tween<double>(begin: 0.10, end: 0.18).animate(curve2);
-  }
-
-  @override
-  void dispose() {
-    _blob1Controller.dispose();
-    _blob2Controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final scenario = ref.watch(scenarioNotifierProvider.select((s) => s.activeScenario));
     final selectedOptionId = ref.watch(scenarioNotifierProvider.select((s) => s.selectedOptionId));
     final isCorrect = ref.watch(scenarioNotifierProvider.select((s) => s.isCorrect));
@@ -68,9 +20,9 @@ class _ScenarioDecisionScreenState
     if (scenario == null) return const SizedBox.shrink();
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
@@ -88,110 +40,62 @@ class _ScenarioDecisionScreenState
         ),
         centerTitle: false,
       ),
-      body: Stack(
-        children: [
-          // Animated background glow blobs
-          AnimatedBuilder(
-            animation: Listenable.merge([_blob1Controller, _blob2Controller]),
-            builder: (context, _) => Stack(
+      body: LayoutBuilder(
+        builder: (context, constraints) => SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight - 40),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Positioned(
-                  top: _blob1Top.value,
-                  left: _blob1Left.value,
-                  child: IgnorePointer(
-                    child: Container(
-                      width: 380,
-                      height: 380,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: RadialGradient(
-                          colors: [
-                            AppColors.primary.withValues(alpha: _blob1Opacity.value),
-                            Colors.transparent,
-                          ],
-                        ),
-                      ),
-                    ),
+                ScenarioRiskIndicator(riskLevel: scenario.riskLevel, large: true),
+                const SizedBox(height: 20),
+                AnimatedGradientBorder(
+                  borderRadius: 20,
+                  child: _ScenarioEventCard(scenario: scenario),
+                ),
+                const SizedBox(height: 16),
+                _StakesBar(
+                  xpCorrect: scenario.xpCorrect,
+                  xpParticipation: scenario.xpParticipation,
+                  streak: currentStreak,
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'What would you do?',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
                   ),
                 ),
-                Positioned(
-                  bottom: _blob2Bottom.value,
-                  right: _blob2Right.value,
-                  child: IgnorePointer(
-                    child: Container(
-                      width: 320,
-                      height: 320,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: RadialGradient(
-                          colors: [
-                            AppColors.cyan.withValues(alpha: _blob2Opacity.value),
-                            Colors.transparent,
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                const SizedBox(height: 12),
+                ...scenario.options.asMap().entries.map((entry) {
+                  final selected = selectedOptionId == entry.value.id;
+                  return _OptionCard(
+                    option: entry.value,
+                    index: entry.key,
+                    isSelected: selected,
+                    isLocked: selectedOptionId != null,
+                    wasCorrect: selected ? isCorrect : null,
+                    onTap: selectedOptionId == null
+                        ? () => dispatcher.onDecisionMade(
+                              scenario.id,
+                              entry.value.id,
+                              entry.value.isCorrect,
+                              entry.value.isCorrect
+                                  ? scenario.xpCorrect
+                                  : scenario.xpParticipation,
+                            )
+                        : null,
+                  );
+                }),
               ],
             ),
           ),
-          // Main content
-          LayoutBuilder(
-            builder: (context, constraints) => SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight - 40),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ScenarioRiskIndicator(riskLevel: scenario.riskLevel, large: true),
-                    const SizedBox(height: 20),
-                    _ScenarioEventCard(scenario: scenario),
-                    const SizedBox(height: 16),
-                    _StakesBar(
-                      xpCorrect: scenario.xpCorrect,
-                      xpParticipation: scenario.xpParticipation,
-                      streak: currentStreak,
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      'What would you do?',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    ...scenario.options.asMap().entries.map((entry) {
-                      final selected = selectedOptionId == entry.value.id;
-                      return _OptionCard(
-                        option: entry.value,
-                        index: entry.key,
-                        isSelected: selected,
-                        isLocked: selectedOptionId != null,
-                        wasCorrect: selected ? isCorrect : null,
-                        onTap: selectedOptionId == null
-                            ? () => dispatcher.onDecisionMade(
-                                  scenario.id,
-                                  entry.value.id,
-                                  entry.value.isCorrect,
-                                  entry.value.isCorrect
-                                      ? scenario.xpCorrect
-                                      : scenario.xpParticipation,
-                                )
-                            : null,
-                      );
-                    }),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -310,7 +214,6 @@ class _ScenarioEventCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.3),

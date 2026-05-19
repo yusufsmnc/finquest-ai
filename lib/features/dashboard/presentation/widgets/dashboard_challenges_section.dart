@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../dashboard_providers.dart';
 import '../../domain/dashboard_state.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../shared/widgets/animated_gradient_border.dart';
 
 class DashboardChallengesSection extends ConsumerWidget {
   const DashboardChallengesSection({super.key});
@@ -71,17 +72,13 @@ class _ChallengeCardState extends State<_ChallengeCard>
         animation: _scale,
         builder: (context, child) =>
             Transform.scale(scale: _scale.value, child: child),
-        child: Container(
+        child: AnimatedGradientBorder(
+          child: Container(
           width: 200,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: AppColors.surface,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: c.isComplete
-                  ? AppColors.success.withValues(alpha: 0.3)
-                  : c.color.withValues(alpha: 0.2),
-            ),
             boxShadow: [
               BoxShadow(
                 color: c.isComplete
@@ -177,6 +174,7 @@ class _ChallengeCardState extends State<_ChallengeCard>
             ],
           ),
         ),
+        ),  // AnimatedGradientBorder
       ),
     );
   }

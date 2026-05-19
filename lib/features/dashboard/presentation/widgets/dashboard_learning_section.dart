@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../dashboard_providers.dart';
 import '../../domain/dashboard_state.dart';
 import '../../../../shared/widgets/card_container.dart';
+import '../../../../shared/widgets/animated_gradient_border.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class DashboardLearningSection extends ConsumerWidget {
@@ -13,7 +14,8 @@ class DashboardLearningSection extends ConsumerWidget {
     final categories =
         ref.watch(dashboardNotifierProvider.select((s) => s.categories));
 
-    return CardContainer(
+    return AnimatedGradientBorder(
+      child: CardContainer(
       child: Column(
         children: List.generate(categories.length, (i) {
           return Column(
@@ -34,7 +36,8 @@ class DashboardLearningSection extends ConsumerWidget {
           );
         }),
       ),
-    );
+    ),    // CardContainer
+  );      // AnimatedGradientBorder
   }
 }
 

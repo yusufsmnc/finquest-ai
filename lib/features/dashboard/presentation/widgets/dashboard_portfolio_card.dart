@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../dashboard_providers.dart';
 import '../../../../shared/widgets/card_container.dart';
+import '../../../../shared/widgets/animated_gradient_border.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class DashboardPortfolioCard extends ConsumerWidget {
@@ -20,7 +21,8 @@ class DashboardPortfolioCard extends ConsumerWidget {
         : Icons.arrow_downward_rounded;
     final changeSign = portfolio.isPositive ? '+' : '';
 
-    return CardContainer(
+    return AnimatedGradientBorder(
+      child: CardContainer(
       glowColor: changeColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,7 +113,8 @@ class DashboardPortfolioCard extends ConsumerWidget {
           ),
         ],
       ),
-    );
+    ),    // CardContainer
+  );      // AnimatedGradientBorder
   }
 }
 

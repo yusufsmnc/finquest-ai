@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../dashboard_providers.dart';
 import '../../../../shared/widgets/xp_float_indicator.dart';
+import '../../../../shared/widgets/animated_gradient_border.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class DashboardXpHeroCard extends ConsumerWidget {
@@ -20,7 +21,9 @@ class DashboardXpHeroCard extends ConsumerWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        Container(
+        AnimatedGradientBorder(
+          borderRadius: 24,
+          child: Container(
           width: double.infinity,
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
@@ -35,9 +38,6 @@ class DashboardXpHeroCard extends ConsumerWidget {
               stops: [0.0, 0.55, 1.0],
             ),
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: AppColors.primaryLight.withValues(alpha: 0.35),
-            ),
             boxShadow: [
               BoxShadow(
                 color: AppColors.primary.withValues(alpha: 0.45),
@@ -136,6 +136,7 @@ class DashboardXpHeroCard extends ConsumerWidget {
             ],
           ),
         ),
+        ),  // AnimatedGradientBorder
         if (showFloat)
           Positioned(
             right: 24,

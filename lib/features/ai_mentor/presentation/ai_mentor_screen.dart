@@ -53,7 +53,7 @@ class _AiMentorScreenState extends ConsumerState<AiMentorScreen>
     final history = mentorState.messageHistory;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.transparent,
       body: FadeTransition(
         opacity: _fadeIn,
         child: CustomScrollView(
@@ -109,7 +109,7 @@ class _MentorAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.transparent,
       elevation: 0,
       scrolledUnderElevation: 0,
       pinned: true,
