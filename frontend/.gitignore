@@ -1,0 +1,21 @@
+# Flutter / Dart / Pub
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+**/doc/api/
+**/ios/Flutter/.last_build_id
+
+# Symbolication / obfuscation
+app.*.symbols
+app.*.map.json
+
+# Android build artifacts
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Web (generated)
+/web/

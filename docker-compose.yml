@@ -1,0 +1,31 @@
+# Faz 0: local PostgreSQL for development.
+# (Full multi-service compose — frontend + backend + db — arrives in Faz 4.)
+#
+# Usage:
+#   docker compose up -d db
+# Then in backend/.env set:
+#   DATABASE_URL=postgresql+psycopg://finquest:finquest@localhost:5432/finquest
+# and run: alembic upgrade head
+#
+# Credentials here are LOCAL DEV ONLY. Real environments inject these from a
+# Kubernetes Secret (Faz 5) — never bake them into an image or commit them.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: finquest-db
+    environment:
+      POSTGRES_USER: finquest
+      POSTGRES_PASSWORD: finquest
+      POSTGRES_DB: finquest
+    ports:
+      - "5432:5432"
+    volumes:
+      - finquest_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finquest -d finquest"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  finquest_pgdata:
