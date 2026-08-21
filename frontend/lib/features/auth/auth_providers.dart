@@ -4,6 +4,7 @@ import '../../data/api_client.dart';
 import '../../data/auth/auth_repository.dart';
 import '../../data/auth/token_storage.dart';
 import '../../data/dtos/progress_dto.dart';
+import '../../data/repositories/mentor_api_repository.dart';
 import '../../data/repositories/progress_repository.dart';
 import '../../data/repositories/scenario_api_repository.dart';
 import 'application/auth_notifier.dart';
@@ -35,6 +36,10 @@ final progressRepositoryProvider = Provider<ProgressRepository>((ref) {
 
 final scenarioApiRepositoryProvider = Provider<ScenarioApiRepository>((ref) {
   return ScenarioApiRepository(ref.read(apiClientProvider));
+});
+
+final mentorApiRepositoryProvider = Provider<MentorApiRepository>((ref) {
+  return MentorApiRepository(ref.read(apiClientProvider));
 });
 
 final authProvider =

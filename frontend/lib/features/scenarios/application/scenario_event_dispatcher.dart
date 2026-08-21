@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 
 import '../../../core/events/game_event.dart';
@@ -113,6 +115,24 @@ class ScenarioEventDispatcher {
         _dispatch(GameEvent.rewardUnlocked(rewardId: code));
       }
     }
+
+    // ── Mentor: exactly ONE request per decision ────────────────────────
+    // Deliberately after the event burst, so the four events above cost a
+    // single call. The events already painted a local placeholder; this
+    // replaces it when the backend answers. Not awaited — the feedback
+    // animation must not wait on the network.
+    unawaited(
+      _mentorNotifier.requestForDecision(
+        isCorrect: outcome.correct,
+        scenarioId: scenarioId,
+        category: _notifier.currentState.activeScenario?.category,
+        xp: outcome.newXp,
+        level: outcome.newLevel,
+        streak: outcome.newStreak,
+        leveledUp: outcome.newLevel > oldLevel,
+        unlockedAchievement: outcome.newAchievements.isNotEmpty,
+      ),
+    );
 
     await _finishToFeedback(scenarioId);
   }
