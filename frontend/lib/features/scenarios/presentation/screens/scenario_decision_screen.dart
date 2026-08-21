@@ -85,9 +85,6 @@ class ScenarioDecisionScreen extends ConsumerWidget {
                               scenario.id,
                               entry.value.id,
                               entry.value.isCorrect,
-                              entry.value.isCorrect
-                                  ? scenario.xpCorrect
-                                  : scenario.xpParticipation,
                             )
                         : null,
                   );

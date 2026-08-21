@@ -1,20 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../dashboard_providers.dart';
+import '../../../auth/auth_providers.dart';
+import '../../../../data/dtos/progress_dto.dart';
 import '../../../../shared/widgets/xp_float_indicator.dart';
 import '../../../../shared/widgets/animated_gradient_border.dart';
 import '../../../../core/theme/app_colors.dart';
+
+// Backend gamification model: one level per 100 XP (level = 1 + xp ~/ 100).
+const int _xpPerLevel = 100;
 
 class DashboardXpHeroCard extends ConsumerWidget {
   const DashboardXpHeroCard({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final level = ref.watch(dashboardNotifierProvider.select((s) => s.currentLevel));
-    final xp = ref.watch(dashboardNotifierProvider.select((s) => s.currentXP));
-    final xpMax = ref.watch(dashboardNotifierProvider.select((s) => s.xpToNextLevel));
-    final progress = ref.watch(dashboardNotifierProvider.select((s) => s.xpProgress));
-    final remaining = ref.watch(dashboardNotifierProvider.select((s) => s.xpRemaining));
+    // Authoritative XP/level/streak come from the backend via progressProvider;
+    // the UI only formats them (it never computes XP or level).
+    final progressData =
+        ref.watch(progressProvider).valueOrNull ?? ProgressDto.empty;
+    final level = progressData.level;
+    // XP earned within the current level (pure display derivation).
+    final xp = progressData.xp - (level - 1) * _xpPerLevel;
+    const xpMax = _xpPerLevel;
+    final progress = (xp / xpMax).clamp(0.0, 1.0);
+    final remaining = xpMax - xp;
     final showFloat = ref.watch(dashboardNotifierProvider.select((s) => s.showXpFloat));
     final lastXpGained = ref.watch(dashboardNotifierProvider.select((s) => s.lastXpGained));
 

@@ -151,4 +151,12 @@ class AchievementsRepository {
           rewardDescription: 'Elite status unlocked. The market holds no fear for you.',
         ),
       ];
+
+  /// Human-readable title for an achievement code (backend uses these codes).
+  static String? titleFor(String id) {
+    for (final a in all()) {
+      if (a.id == id) return a.title;
+    }
+    return null;
+  }
 }
