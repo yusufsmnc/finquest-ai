@@ -1,0 +1,45 @@
+name: frontend-tests
+
+# Fast, hermetic lane: no backend, no database, no browser. Everything under
+# frontend/test/ runs against fake repositories, so it is safe to gate merges on.
+# The browser E2E (frontend/integration_test/) needs a live backend +
+# chromedriver and is deliberately NOT part of this workflow.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-tests.yml'
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend-tests.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.9'
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Verify formatting of test sources
+        run: dart format --output=none --set-exit-if-changed test/
+
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+
+      - name: Run tests
+        run: flutter test --reporter expanded
