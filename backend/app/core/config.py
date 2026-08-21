@@ -23,8 +23,10 @@ class Settings(BaseSettings):
     environment: str = "development"
     log_level: str = "info"
     api_base_url: str = "http://localhost:8000"
-    frontend_origin: str = "http://localhost:8080"
     ai_model: str = "claude-opus-4-8"
+    # Comma-separated list of allowed frontend origins (CORS). ConfigMap-style.
+    # Default covers the Flutter web dev port (5000) and an nginx prod port.
+    cors_origins: str = "http://localhost:5000,http://localhost:8080"
 
     # ── Secret-style ────────────────────────────────────────────────────
     # Default is a local SQLite file so the backend can boot with zero
@@ -38,8 +40,8 @@ class Settings(BaseSettings):
     anthropic_api_key: str = ""
 
     @property
-    def cors_origins(self) -> list[str]:
-        return [self.frontend_origin]
+    def cors_origin_list(self) -> list[str]:
+        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
 
 
 @lru_cache
