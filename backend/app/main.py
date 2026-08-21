@@ -4,7 +4,7 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import auth, progress, scenarios
+from app.api import auth, mentor, progress, scenarios
 from app.core.config import settings
 
 app = FastAPI(
@@ -27,6 +27,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(progress.router)
 app.include_router(scenarios.router)
+app.include_router(mentor.router)
 
 
 @app.get("/health", tags=["system"])
