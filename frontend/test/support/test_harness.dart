@@ -12,7 +12,9 @@ import 'package:finquest_ai/data/api_client.dart';
 import 'package:finquest_ai/data/auth/token_storage.dart';
 import 'package:finquest_ai/data/dtos/achievement_dto.dart';
 import 'package:finquest_ai/data/dtos/decision_result_dto.dart';
+import 'package:finquest_ai/data/dtos/mentor_dto.dart';
 import 'package:finquest_ai/data/dtos/progress_dto.dart';
+import 'package:finquest_ai/data/repositories/mentor_api_repository.dart';
 import 'package:finquest_ai/data/repositories/progress_repository.dart';
 import 'package:finquest_ai/data/repositories/scenario_api_repository.dart';
 import 'package:finquest_ai/features/achievements/achievements_providers.dart';
@@ -50,6 +52,32 @@ class FakeScenarioApi extends ScenarioApiRepository {
   }) async {
     calls.add((scenarioId: scenarioId, choice: choice, correct: correct));
     return result;
+  }
+}
+
+/// Canned `POST /mentor`. Counts calls so tests can prove the mentor is hit
+/// once per decision rather than once per emitted event.
+class FakeMentorApi extends MentorApiRepository {
+  FakeMentorApi(
+      {this.message = 'Nice work — keep that habit going.', this.error})
+      : super(fakeApiClient());
+
+  String message;
+
+  /// When set, every call throws it (simulates our backend being unreachable).
+  Object? error;
+
+  final List<MentorRequestDto> calls = [];
+
+  @override
+  Future<MentorResponseDto> fetchMessage(MentorRequestDto request) async {
+    calls.add(request);
+    if (error != null) throw error!;
+    return MentorResponseDto(
+      message: message,
+      context: request.context,
+      source: 'ai',
+    );
   }
 }
 
@@ -114,6 +142,7 @@ List<Override> testOverrides({
   bool spyEvents = false,
   FakeProgressRepo? progressRepo,
   FakeScenarioApi? scenarioApi,
+  FakeMentorApi? mentorApi,
 }) {
   return [
     authProvider.overrideWith(FakeAuthNotifier.new),
@@ -126,6 +155,7 @@ List<Override> testOverrides({
     ),
     scenarioApiRepositoryProvider
         .overrideWithValue(scenarioApi ?? FakeScenarioApi(decisionResult)),
+    mentorApiRepositoryProvider.overrideWithValue(mentorApi ?? FakeMentorApi()),
     if (spyEvents)
       scenarioNotifierProvider.overrideWith(SpyScenarioNotifier.new),
   ];
@@ -139,6 +169,7 @@ ProviderContainer testContainer({
   bool spyEvents = false,
   FakeProgressRepo? progressRepo,
   FakeScenarioApi? scenarioApi,
+  FakeMentorApi? mentorApi,
 }) {
   return ProviderContainer(
     overrides: testOverrides(
@@ -148,6 +179,7 @@ ProviderContainer testContainer({
       spyEvents: spyEvents,
       progressRepo: progressRepo,
       scenarioApi: scenarioApi,
+      mentorApi: mentorApi,
     ),
   );
 }
