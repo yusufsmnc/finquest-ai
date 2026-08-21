@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'features/onboarding/application/onboarding_notifier.dart';
-import 'features/onboarding/presentation/onboarding_navigator.dart';
+import 'features/auth/presentation/auth_gate.dart';
 import 'features/gamification/presentation/gamification_overlay_manager.dart';
 import 'features/ai_mentor/presentation/ai_mentor_overlay_wrapper.dart';
 import 'core/routing/app_router.dart';
@@ -44,8 +44,9 @@ class FinQuestApp extends StatelessWidget {
       title: 'FinQuest AI',
       debugShowCheckedModeBanner: false,
       theme: _buildTheme(),
-      initialRoute: skipOnboarding ? AppRouter.dashboard : null,
-      home: skipOnboarding ? null : const OnboardingNavigator(),
+      // The AuthGate is the single entry point: it validates the session and
+      // shows login / onboarding / dashboard accordingly.
+      home: AuthGate(onboardingDone: skipOnboarding),
       onGenerateRoute: AppRouter.generateRoute,
       builder: (context, child) => GamificationOverlayManager(
         child: AiMentorOverlayWrapper(

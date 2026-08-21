@@ -13,13 +13,15 @@ app = FastAPI(
     description="REST API + persistence for FinQuest AI (Faz 0–1).",
 )
 
-# CORS: only the known frontend origin is allowed (CLAUDE.md).
+# CORS: only the explicitly listed frontend origins are allowed (never "*"),
+# read from env (CORS_ORIGINS). Authorization must be an allowed header so the
+# Flutter client can send the Bearer token.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origins=settings.cors_origin_list,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 app.include_router(auth.router)
