@@ -12,16 +12,11 @@ class GamificationOverlayNotifier
   void applyEvent(GameEvent event) {
     switch (event.type) {
       case GameEventType.xpGained:
+        // XP total is authoritative on the backend; the overlay no longer
+        // derives level here. Level-ups arrive as an explicit LEVEL_UP event
+        // emitted from the backend diff (see ScenarioEventDispatcher).
         final amount = event.payload['amount'] as int;
-        final newXp = state.trackedXp + amount;
-        final newLevel = GamificationOverlayState.levelForXp(newXp);
-        final didLevelUp = newLevel > state.trackedLevel;
-        state = state.copyWith(
-          trackedXp: newXp,
-          trackedLevel: newLevel,
-          showLevelUp: didLevelUp ? true : state.showLevelUp,
-          levelUpValue: didLevelUp ? newLevel : state.levelUpValue,
-        );
+        state = state.copyWith(trackedXp: state.trackedXp + amount);
 
       case GameEventType.xpLost:
         final amount = event.payload['amount'] as int;

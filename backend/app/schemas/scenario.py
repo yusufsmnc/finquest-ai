@@ -19,3 +19,5 @@ class DecisionResponse(BaseModel):
     xp_delta: int
     events: list[str]
     progress: ProgressOut
+    # Achievement codes newly unlocked by this decision (authoritative).
+    new_achievements: list[str] = []

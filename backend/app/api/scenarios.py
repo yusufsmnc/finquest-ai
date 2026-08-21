@@ -10,7 +10,9 @@ from app.models.progress import Progress
 from app.models.scenario_history import ScenarioHistory
 from app.models.user import User
 from app.schemas.scenario import DecisionRequest, DecisionResponse
+from app.services.achievements import sync_achievements
 from app.services.gamification import apply_decision
+from app.services.progress_stats import build_progress_out, count_decisions
 
 router = APIRouter(prefix="/scenarios", tags=["scenarios"])
 
@@ -39,6 +41,21 @@ def make_decision(
             xp_delta=outcome.xp_delta,
         )
     )
+    # Flush so this decision is counted before evaluating achievements.
+    db.flush()
+
+    decisions = count_decisions(db, user.id)
+    new_achievements = sync_achievements(
+        db,
+        user_id=user.id,
+        xp=progress.xp,
+        level=progress.level,
+        streak=progress.streak_count,
+        decisions=decisions,
+    )
+    if new_achievements:
+        outcome.events.append("REWARD_UNLOCKED")
+
     db.commit()
     db.refresh(progress)
 
@@ -46,5 +63,6 @@ def make_decision(
         result=outcome.result,
         xp_delta=outcome.xp_delta,
         events=outcome.events,
-        progress=progress,
+        progress=build_progress_out(db, progress),
+        new_achievements=new_achievements,
     )

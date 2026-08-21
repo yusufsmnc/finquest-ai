@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'application/scenario_event_dispatcher.dart';
 import 'application/scenario_notifier.dart';
 import 'domain/scenario_state.dart';
+import '../auth/auth_providers.dart';
 import '../gamification/gamification_providers.dart';
 import '../achievements/achievements_providers.dart';
 import '../ai_mentor/ai_mentor_providers.dart';
@@ -18,6 +19,15 @@ final scenarioDispatcherProvider = Provider<ScenarioEventDispatcher>((ref) {
   final achievementsNotifier = ref.read(achievementsNotifierProvider.notifier);
   final mentorNotifier = ref.read(aiMentorProvider.notifier);
   final marketEventsNotifier = ref.read(marketEventsProvider.notifier);
+  final progressNotifier = ref.read(progressProvider.notifier);
+  final scenarioApi = ref.read(scenarioApiRepositoryProvider);
   return ScenarioEventDispatcher(
-      notifier, overlayNotifier, achievementsNotifier, mentorNotifier, marketEventsNotifier);
+    notifier,
+    overlayNotifier,
+    achievementsNotifier,
+    mentorNotifier,
+    marketEventsNotifier,
+    progressNotifier,
+    scenarioApi,
+  );
 });

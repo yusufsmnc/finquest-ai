@@ -13,6 +13,7 @@ from app.models.user import User
 from app.schemas.achievement import AchievementOut
 from app.schemas.progress import ProgressOut, ProgressUpdate
 from app.services.gamification import level_for_xp
+from app.services.progress_stats import build_progress_out
 
 router = APIRouter(prefix="/me", tags=["me"])
 
@@ -29,8 +30,8 @@ def _get_or_create_progress(db: Session, user: User) -> Progress:
 @router.get("/progress", response_model=ProgressOut)
 def get_progress(
     db: Session = Depends(get_db), user: User = Depends(get_current_user)
-) -> Progress:
-    return _get_or_create_progress(db, user)
+) -> ProgressOut:
+    return build_progress_out(db, _get_or_create_progress(db, user))
 
 
 @router.patch("/progress", response_model=ProgressOut)
@@ -38,7 +39,7 @@ def update_progress(
     payload: ProgressUpdate,
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
-) -> Progress:
+) -> ProgressOut:
     progress = _get_or_create_progress(db, user)
     if payload.xp is not None:
         progress.xp = payload.xp
@@ -50,7 +51,7 @@ def update_progress(
         progress.streak_count = payload.streak_count
     db.commit()
     db.refresh(progress)
-    return progress
+    return build_progress_out(db, progress)
 
 
 @router.get("/achievements", response_model=list[AchievementOut])

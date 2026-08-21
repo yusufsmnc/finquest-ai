@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../dashboard_providers.dart';
+import '../../data/dashboard_constants.dart';
 import '../../domain/dashboard_state.dart';
+import '../../../auth/auth_providers.dart';
+import '../../../../data/dtos/progress_dto.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../shared/widgets/animated_gradient_border.dart';
 
@@ -10,8 +12,13 @@ class DashboardChallengesSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final challenges =
-        ref.watch(dashboardNotifierProvider.select((s) => s.challenges));
+    // Mission progress is derived from authoritative backend counts (no UI
+    // computation of unlocks): daily = decisions today, streak = streak_count,
+    // risk = total decisions. Definitions/visuals stay in the frontend.
+    final p = ref.watch(progressProvider).valueOrNull ?? ProgressDto.empty;
+    final challenges = DashboardConstants.seedChallenges()
+        .map((c) => c.copyWith(progress: challengeProgressFor(c.id, p)))
+        .toList();
 
     return SizedBox(
       height: 152,
@@ -24,6 +31,21 @@ class DashboardChallengesSection extends ConsumerWidget {
             _ChallengeCard(challenge: challenges[index]),
       ),
     );
+  }
+}
+
+/// Derives a mission/challenge's current progress from authoritative backend
+/// counts (kept public + pure so it is directly unit-testable).
+int challengeProgressFor(String challengeId, ProgressDto p) {
+  switch (challengeId) {
+    case 'daily_decision':
+      return p.decisionsToday;
+    case 'streak_master':
+      return p.streakCount;
+    case 'risk_analyst':
+      return p.decisionsMade;
+    default:
+      return 0;
   }
 }
 
