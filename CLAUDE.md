@@ -11,7 +11,7 @@ This project is being evolved from a **frontend-only Flutter app** into a
 2. **Backend** — FastAPI (Python) REST API + persistence
 3. **Database** — PostgreSQL
 
-Plus a **real AI mentor** (Claude / LLM API, called only from the backend) and
+Plus a **real AI mentor** (OpenAI LLM API, called only from the backend) and
 **Kubernetes** deployment with configuration and secrets kept fully separate from
 the application code.
 
@@ -58,7 +58,7 @@ Rules:
 - **Frontend:** Flutter + Dart, Riverpod (NotifierProvider), served by nginx in prod
 - **Backend:** FastAPI, SQLAlchemy, Alembic (migrations), JWT auth
 - **Database:** PostgreSQL (with a persistent volume)
-- **AI:** Claude / LLM API — **called only from the backend**
+- **AI:** OpenAI Chat Completions (small/cheap model) — **called only from the backend**
 - **DevOps:** Docker (multi-stage), Kubernetes (minikube/kind for local)
 
 ---
@@ -72,7 +72,7 @@ The whole point of the Kubernetes phase is separating config from code.
 - **ConfigMap** = non-secret, environment-specific values:
   `ENVIRONMENT`, `API_BASE_URL`, `LOG_LEVEL`, `AI_MODEL`, `DB_HOST`, `DB_NAME`.
 - **Secret** = anything that causes harm if leaked:
-  `DB_USER`, `DB_PASSWORD`, `DATABASE_URL`, `JWT_SECRET`, `ANTHROPIC_API_KEY`.
+  `DB_USER`, `DB_PASSWORD`, `DATABASE_URL`, `JWT_SECRET`, `OPENAI_API_KEY`.
 - Rule of thumb: **if leaking it causes harm → Secret; if it just varies per
   environment → ConfigMap.**
 - The **AI API key lives only in the backend**, injected from a Secret. It must
@@ -346,7 +346,9 @@ The mentor is now a **real LLM call**, made only from the backend.
 
 Rules:
 - endpoint: `POST /mentor` — takes user context, returns a supportive message
-- integrate Claude (Anthropic) or OpenAI SDK
+- integrate the official OpenAI SDK (`openai`), model from `AI_MODEL` (ConfigMap-style)
+- guardrail: never produce specific investment advice (no buy/sell/hold, no named
+  assets) — keep it on learning behaviour and habits
 - prompt: turn the user's context (recent decisions, XP, level, streak) into
   personalized, non-technical guidance
 - **graceful fallback:** on error / rate limit / timeout, fall back to the existing

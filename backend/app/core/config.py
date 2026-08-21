@@ -23,10 +23,24 @@ class Settings(BaseSettings):
     environment: str = "development"
     log_level: str = "info"
     api_base_url: str = "http://localhost:8000"
-    ai_model: str = "claude-opus-4-8"
+    # Chat model for the mentor. ConfigMap-style: it only varies per
+    # environment, leaking it causes no harm. Kept deliberately small/cheap.
+    ai_model: str = "gpt-4o-mini"
     # Comma-separated list of allowed frontend origins (CORS). ConfigMap-style.
     # Default covers the Flutter web dev port (5000) and an nginx prod port.
     cors_origins: str = "http://localhost:5000,http://localhost:8080"
+
+    # ── Mentor cost controls (ConfigMap-style) ──────────────────────────
+    # Small ceiling: the mentor answers in 2-3 sentences, nothing longer.
+    mentor_max_tokens: int = 120
+    # Hard wall-clock limit on the LLM call; on expiry we fall back.
+    mentor_timeout_seconds: float = 8.0
+    # Identical context within this window reuses the previous answer
+    # instead of paying for another call.
+    mentor_cache_ttl_seconds: int = 300
+    # Floor on the gap between two LLM calls for the same user, regardless
+    # of context. Anything faster is served from the static messages.
+    mentor_min_interval_seconds: float = 3.0
 
     # ── Secret-style ────────────────────────────────────────────────────
     # Default is a local SQLite file so the backend can boot with zero
@@ -37,7 +51,10 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 1440
 
     # ── AI (Faz 3) — backend only, never exposed to the frontend ────────
-    anthropic_api_key: str = ""
+    # Read from the environment only. Empty is a valid state: the mentor
+    # falls back to its static messages instead of failing.
+    # NEVER log this, never include it in an error response.
+    openai_api_key: str = ""
 
     @property
     def cors_origin_list(self) -> list[str]:
