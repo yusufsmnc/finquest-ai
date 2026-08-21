@@ -10,6 +10,10 @@ class AiMentorState {
   final int trackedLevel;
   final int messageSelectIndex;
 
+  /// True while `POST /mentor` is in flight. The message shown meanwhile is a
+  /// local placeholder; the UI can surface a "thinking" cue from this.
+  final bool isMentorLoading;
+
   const AiMentorState({
     this.currentMessage,
     this.currentMood = MentorMood.calm,
@@ -19,6 +23,7 @@ class AiMentorState {
     this.trackedXp = 0,
     this.trackedLevel = 1,
     this.messageSelectIndex = 0,
+    this.isMentorLoading = false,
   });
 
   AiMentorState copyWith({
@@ -32,6 +37,7 @@ class AiMentorState {
     int? trackedXp,
     int? trackedLevel,
     int? messageSelectIndex,
+    bool? isMentorLoading,
   }) {
     return AiMentorState(
       currentMessage: clearCurrentMessage
@@ -46,6 +52,7 @@ class AiMentorState {
       trackedXp: trackedXp ?? this.trackedXp,
       trackedLevel: trackedLevel ?? this.trackedLevel,
       messageSelectIndex: messageSelectIndex ?? this.messageSelectIndex,
+      isMentorLoading: isMentorLoading ?? this.isMentorLoading,
     );
   }
 }

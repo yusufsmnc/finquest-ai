@@ -84,6 +84,29 @@ extension MentorContextExt on MentorContext {
     }
   }
 
+  /// snake_case name sent to / received from `POST /mentor`. Must stay in sync
+  /// with the backend's `MentorContext` enum values.
+  String get wireName {
+    switch (this) {
+      case MentorContext.idle:              return 'idle';
+      case MentorContext.decisionCorrect:   return 'decision_correct';
+      case MentorContext.decisionWrong:     return 'decision_wrong';
+      case MentorContext.levelUp:           return 'level_up';
+      case MentorContext.streakMilestone:   return 'streak_milestone';
+      case MentorContext.achievementUnlock: return 'achievement_unlock';
+      case MentorContext.categoryBudgeting: return 'category_budgeting';
+      case MentorContext.categoryInvesting: return 'category_investing';
+      case MentorContext.categorySavings:   return 'category_savings';
+      case MentorContext.categoryRisk:      return 'category_risk';
+      case MentorContext.nextStep:          return 'next_step';
+      case MentorContext.onboarding:        return 'onboarding';
+      case MentorContext.newUser:           return 'new_user';
+      case MentorContext.firstWin:          return 'first_win';
+      case MentorContext.streakHigh:        return 'streak_high';
+      case MentorContext.highAccuracy:      return 'high_accuracy';
+    }
+  }
+
   static MentorContext fromCategory(String category) {
     switch (category.toLowerCase()) {
       case 'budgeting':  return MentorContext.categoryBudgeting;
