@@ -35,6 +35,13 @@ def get_progress(
     return build_progress_out(db, _get_or_create_progress(db, user))
 
 
+# TODO(Faz 6): restrict client-writable authoritative fields.
+# As it stands a client can PATCH its own xp / level / streak_count to any
+# value, which contradicts "the backend owns authoritative state" (CLAUDE.md).
+# The endpoint exists so the frontend can sync locally-earned progress, but the
+# write should be narrowed (server-side reconciliation, or an append-only
+# delta) rather than trusted verbatim. Documented as a known gap and covered by
+# an xfail test in tests/test_progress_api.py — deliberately NOT fixed here.
 @router.patch("/progress", response_model=ProgressOut)
 def update_progress(
     payload: ProgressUpdate,

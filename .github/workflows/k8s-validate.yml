@@ -1,0 +1,108 @@
+name: k8s-validate
+
+# Infrastructure-only PRs used to land with no checks at all: frontend-tests is
+# filtered to frontend/**, so a change under k8s/ was ungated. This is that gate.
+# It needs no cluster and no credentials — validation only.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'k8s/**'
+      - '.github/workflows/k8s-validate.yml'
+  pull_request:
+    paths:
+      - 'k8s/**'
+      - '.github/workflows/k8s-validate.yml'
+
+env:
+  KUBECONFORM_VERSION: v0.6.7
+  # The API version the manifests are validated against; bump deliberately.
+  KUBERNETES_VERSION: '1.31.0'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Secret hygiene
+        # The whole point of Faz 5 is that no credential lives in the repo.
+        # This asserts it mechanically instead of trusting a reviewer's eye.
+        run: |
+          set -euo pipefail
+
+          if git ls-files --error-unmatch k8s/secret.yaml >/dev/null 2>&1; then
+            echo "::error::k8s/secret.yaml is tracked by git — it must stay ignored"
+            exit 1
+          fi
+
+          if ! git check-ignore -q k8s/secret.yaml; then
+            echo "::error::.gitignore no longer ignores k8s/secret.yaml"
+            exit 1
+          fi
+
+          # Placeholders only in the committed template.
+          for key in POSTGRES_USER POSTGRES_PASSWORD JWT_SECRET; do
+            if ! grep -qE "^  ${key}: \"REPLACE_ME\"" k8s/secret.example.yaml; then
+              echo "::error::secret.example.yaml: ${key} is not a REPLACE_ME placeholder"
+              exit 1
+            fi
+          done
+          if ! grep -qE '^  OPENAI_API_KEY: ""' k8s/secret.example.yaml; then
+            echo "::error::secret.example.yaml: OPENAI_API_KEY must be empty"
+            exit 1
+          fi
+
+          # No real credential shapes anywhere in the tracked tree. Lines that
+          # label themselves as fixtures pass: the key-scrub tests need a
+          # realistic-looking fake to prove the redaction works, and a genuinely
+          # leaked key does not arrive annotated as "not-a-real".
+          git grep -nIE '(sk-[A-Za-z0-9_-]{20,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----)' -- . ':(exclude).github/workflows/k8s-validate.yml' \
+            | grep -vEi '(not-a-real|fake|dummy|placeholder|example|REPLACE_ME)' \
+            > /tmp/credential-hits || true
+
+          if [ -s /tmp/credential-hits ]; then
+            echo "::error::a credential-shaped string is committed"
+            cat /tmp/credential-hits
+            exit 1
+          fi
+
+          echo "secret hygiene: ok"
+
+      - name: Confirm the real secret is absent
+        # Everything below must validate using secret.example.yaml alone. With a
+        # filled-in secret.yaml present the run would prove nothing.
+        run: |
+          test ! -f k8s/secret.yaml
+          echo "validating against placeholders only"
+
+      - uses: azure/setup-kubectl@v4
+
+      - name: kubectl dry-run (client)
+        # Parses and validates every manifest without contacting a cluster.
+        run: kubectl apply --dry-run=client -f k8s/
+
+      - name: Install kubeconform
+        run: |
+          set -euo pipefail
+          curl -sSLo /tmp/kubeconform.tar.gz \
+            "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz"
+          sudo tar -xzf /tmp/kubeconform.tar.gz -C /usr/local/bin kubeconform
+          kubeconform -v
+
+      - name: kubeconform (strict schema validation)
+        # Stricter than the dry-run: rejects unknown or duplicated fields, which
+        # is how a silently-ignored typo in a manifest gets caught.
+        run: |
+          kubeconform -strict -summary \
+            -kubernetes-version "${KUBERNETES_VERSION}" \
+            k8s/
+
+      - name: Check ConfigMap / Secret key references
+        # A missing key does not fail at apply time — it fails much later, in
+        # the pod, as CreateContainerConfigError.
+        run: |
+          pip install --quiet pyyaml
+          python k8s/scripts/check-env-keys.py
