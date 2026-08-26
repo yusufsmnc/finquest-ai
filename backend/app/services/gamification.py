@@ -33,19 +33,25 @@ def apply_decision(progress: Progress, correct: bool) -> DecisionOutcome:
     """Mutate ``progress`` in place for a scenario decision and return events."""
     events: list[str] = ["DECISION_MADE"]
     old_level = progress.level
+    old_xp = progress.xp
 
     if correct:
-        xp_delta = XP_CORRECT
-        progress.xp = max(0, progress.xp + xp_delta)
+        progress.xp = max(0, progress.xp + XP_CORRECT)
         progress.streak_count += 1
         events += ["DECISION_CORRECT", "XP_GAINED", "STREAK_UPDATED"]
         result = "DECISION_CORRECT"
     else:
-        xp_delta = XP_WRONG
-        progress.xp = max(0, progress.xp + xp_delta)
+        progress.xp = max(0, progress.xp + XP_WRONG)
         progress.streak_count = 0
         events += ["DECISION_WRONG", "XP_LOST", "STREAK_UPDATED"]
         result = "DECISION_WRONG"
+
+    # The delta the client animates is the change that was actually applied,
+    # not the nominal reward: XP is clamped at zero, so a wrong answer at 5 XP
+    # costs 5, not XP_WRONG's 10. The frontend derives its XP_LOST/XP_GAINED
+    # amount from this value whenever it has no previous snapshot to diff
+    # against, so a nominal delta would animate XP the user never had.
+    xp_delta = progress.xp - old_xp
 
     new_level = level_for_xp(progress.xp)
     if new_level != old_level:
