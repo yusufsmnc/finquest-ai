@@ -17,8 +17,8 @@ on:
 
 env:
   KUBECONFORM_VERSION: v0.6.7
-  # The API version the manifests are validated against; bump deliberately.
-  KUBERNETES_VERSION: '1.31.0'
+  # The cluster this deploys to runs v1.36.x — validate against what we ship on.
+  KUBERNETES_VERSION: '1.36.0'
 
 jobs:
   validate:
@@ -78,12 +78,6 @@ jobs:
           test ! -f k8s/secret.yaml
           echo "validating against placeholders only"
 
-      - uses: azure/setup-kubectl@v4
-
-      - name: kubectl dry-run (client)
-        # Parses and validates every manifest without contacting a cluster.
-        run: kubectl apply --dry-run=client -f k8s/
-
       - name: Install kubeconform
         run: |
           set -euo pipefail
@@ -92,17 +86,23 @@ jobs:
           sudo tar -xzf /tmp/kubeconform.tar.gz -C /usr/local/bin kubeconform
           kubeconform -v
 
-      - name: kubeconform (strict schema validation)
-        # Stricter than the dry-run: rejects unknown or duplicated fields, which
-        # is how a silently-ignored typo in a manifest gets caught.
+      - name: Schema validation (kubeconform, strict)
+        # kubeconform rather than `kubectl --dry-run`: every `kubectl -f` form
+        # has to reach an API server to map a kind onto a resource, so none of
+        # them runs on a cluster-less runner. `--dry-run=client` still downloads
+        # the server's OpenAPI to validate, and `--validate=false` only trades
+        # that failure for `unable to recognize`. kubeconform validates against
+        # published schemas offline, and `-strict` also rejects unknown or
+        # duplicated fields — which is how a silently-ignored typo gets caught.
         run: |
           kubeconform -strict -summary \
             -kubernetes-version "${KUBERNETES_VERSION}" \
             k8s/
 
-      - name: Check ConfigMap / Secret key references
-        # A missing key does not fail at apply time — it fails much later, in
-        # the pod, as CreateContainerConfigError.
+      - name: Structural validation
+        # What a schema cannot see: a ConfigMap/Secret key reference with no
+        # target (which surfaces only in the pod, as CreateContainerConfigError),
+        # a Service whose selector matches no pod template, duplicate objects.
         run: |
           pip install --quiet pyyaml
-          python k8s/scripts/check-env-keys.py
+          python k8s/scripts/validate-manifests.py
