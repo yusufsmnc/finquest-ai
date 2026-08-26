@@ -1,0 +1,37 @@
+# ── ConfigMap: non-secret, environment-specific values ─────────────────────
+#
+# The rule (CLAUDE.md): if leaking it causes harm → Secret. If it merely varies
+# per environment → here. Everything below is safe to commit, and this file IS
+# committed on purpose: it is the environment's shape, in git. The matching
+# credentials are not (see secret.example.yaml).
+#
+# ⚠️  Changing this ConfigMap does NOT restart the pods that consume it as env
+#     vars — env is injected once, at container start. After `kubectl apply`:
+#         kubectl rollout restart deployment/backend
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: finquest-config
+  labels:
+    app.kubernetes.io/part-of: finquest
+data:
+  ENVIRONMENT: "development"
+  LOG_LEVEL: "info"
+
+  # Mentor chat model. The model *name* is not a secret; the API *key* is.
+  AI_MODEL: "gpt-4o-mini"
+
+  # Database coordinates. Host/port/name are not secrets — the user, the
+  # password and the assembled connection string are, and live in the Secret.
+  # DB_HOST is the Postgres Service name; in-cluster DNS resolves it.
+  DB_HOST: "postgres"
+  DB_PORT: "5432"
+  DB_NAME: "finquest"
+
+  # Origin the backend accepts CORS requests from: the frontend's LoadBalancer
+  # port on the host. The browser sends this Origin header, not a cluster name.
+  CORS_ORIGINS: "http://localhost:8080"
+
+  # Informational for the backend; the value the BROWSER actually uses was
+  # compiled into the Flutter bundle at build time (--build-arg API_BASE_URL).
+  API_BASE_URL: "http://localhost:8000"

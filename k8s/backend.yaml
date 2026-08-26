@@ -1,0 +1,124 @@
+# ── Tier 2: FastAPI backend ────────────────────────────────────────────────
+# The point of this file: the image contains ZERO environment-specific values.
+# Every setting arrives at runtime from the ConfigMap (non-secret) or the
+# Secret (credentials + AI key). Rebuild nothing to change an environment.
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  labels:
+    app.kubernetes.io/part-of: finquest
+    app.kubernetes.io/component: backend
+spec:
+  # LoadBalancer: the BROWSER calls this API directly — the compiled Flutter JS
+  # runs on the user's machine, outside the cluster network — so it has to be
+  # reachable from the host. Docker Desktop maps a LoadBalancer straight onto
+  # localhost, so this lands on http://localhost:8000, exactly the URL that was
+  # compiled into the frontend bundle. Faz 6 replaces this with an Ingress.
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: backend
+  ports:
+    - name: http
+      port: 8000
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app.kubernetes.io/part-of: finquest
+    app.kubernetes.io/component: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: backend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: backend
+        app.kubernetes.io/part-of: finquest
+    spec:
+      containers:
+        - name: backend
+          image: finquest-backend:local
+          # The image is built locally and Docker Desktop's Kubernetes shares
+          # that image store, so there is no registry to pull from. Without
+          # IfNotPresent the kubelet would try Docker Hub → ImagePullBackOff.
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8000
+          envFrom:
+            # Bulk-inject everything that needs no assembly. Keys the app does
+            # not recognise are ignored (pydantic-settings extra="ignore").
+            - configMapRef:
+                name: finquest-config
+            - secretRef:
+                name: finquest-secrets
+          env:
+            # These four are declared explicitly — NOT because envFrom missed
+            # them, but because $(VAR) expansion below can only reference names
+            # present in this `env` list. envFrom values are not expandable.
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: finquest-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: finquest-secrets
+                  key: POSTGRES_PASSWORD
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: finquest-config
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: finquest-config
+                  key: DB_PORT
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: finquest-config
+                  key: DB_NAME
+            # The connection string is COMPOSED here from the secret half and
+            # the non-secret half, so the password exists in exactly one place
+            # (the Secret) and never in a committed manifest.
+            # `+psycopg` selects the psycopg 3 driver the backend ships with.
+            - name: DATABASE_URL
+              value: postgresql+psycopg://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)
+          # The entrypoint runs `alembic upgrade head` before uvicorn starts, so
+          # migrations happen on pod startup. If Postgres is not up yet the pod
+          # exits and Kubernetes restarts it until it succeeds — the startup
+          # probe below gives that loop room without the liveness probe killing
+          # a slow-but-healthy migration.
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 5
+            failureThreshold: 30   # up to ~150s for migrations + boot
+          readinessProbe:
+            # Gates Service traffic: no request is routed here until /health
+            # answers, so the frontend never hits a half-migrated backend.
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 3
+          livenessProbe:
+            # Restarts a wedged process. Deliberately slower and more forgiving
+            # than readiness — a blip should drain traffic, not kill the pod.
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3

@@ -1,0 +1,66 @@
+# ── Tier 1: Flutter web + nginx ────────────────────────────────────────────
+# Pure static assets. This tier holds NO configuration at runtime and receives
+# NO Secret of any kind: API_BASE_URL was compiled into the JavaScript bundle
+# at build time and is therefore public to every visitor by definition. That is
+# the whole reason the AI key lives only in the backend (CLAUDE.md).
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    app.kubernetes.io/part-of: finquest
+    app.kubernetes.io/component: frontend
+spec:
+  # LoadBalancer → Docker Desktop publishes it on localhost:8080, which is the
+  # origin listed in CORS_ORIGINS in the ConfigMap. The two must agree or the
+  # browser will block every API call.
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: frontend
+  ports:
+    - name: http
+      port: 8080      # host-facing
+      targetPort: http  # nginx listens on 80 in the container
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app.kubernetes.io/part-of: finquest
+    app.kubernetes.io/component: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: frontend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: frontend
+        app.kubernetes.io/part-of: finquest
+    spec:
+      containers:
+        - name: frontend
+          image: finquest-frontend:local
+          # Local image, no registry — same reason as the backend.
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+          readinessProbe:
+            # /healthz is the cheap endpoint nginx.conf already serves.
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3

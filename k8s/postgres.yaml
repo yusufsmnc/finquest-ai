@@ -1,0 +1,114 @@
+# ── Tier 3: PostgreSQL ─────────────────────────────────────────────────────
+# PersistentVolumeClaim + ClusterIP Service + Deployment.
+#
+# The PVC is the K8s equivalent of the compose named volume. Without it a pod
+# restart would wipe every user's XP: a pod's own filesystem dies with the pod,
+# the claim outlives it and is re-attached to whatever pod replaces it.
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-data
+  labels:
+    app.kubernetes.io/part-of: finquest
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  # No storageClassName on purpose: use the cluster's default provisioner
+  # (Docker Desktop ships `hostpath`). Pinning one would break portability.
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  labels:
+    app.kubernetes.io/part-of: finquest
+    app.kubernetes.io/component: database
+spec:
+  # ClusterIP: reachable only from inside the cluster. The database is
+  # deliberately NOT published to the host — only the backend talks to it.
+  # This Service name is what DB_HOST in the ConfigMap points at.
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: postgres
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: postgres
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  labels:
+    app.kubernetes.io/part-of: finquest
+    app.kubernetes.io/component: database
+spec:
+  replicas: 1
+  strategy:
+    # Recreate, not RollingUpdate: a ReadWriteOnce volume can be mounted by one
+    # pod at a time, so a rolling second pod would hang waiting for the claim.
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: postgres
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: postgres
+        app.kubernetes.io/part-of: finquest
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          ports:
+            - name: postgres
+              containerPort: 5432
+          env:
+            # Credentials from the Secret...
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: finquest-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: finquest-secrets
+                  key: POSTGRES_PASSWORD
+            # ...database name is not secret, so it comes from the ConfigMap.
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: finquest-config
+                  key: DB_NAME
+            # Postgres refuses to initialise into a non-empty directory and a
+            # freshly provisioned volume can contain `lost+found`. Pointing
+            # PGDATA at a subdirectory sidesteps that.
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+          readinessProbe:
+            # "Accepting connections", not merely "process started" — this is
+            # what stops the backend's migration step from racing the DB boot.
+            exec:
+              command: ["sh", "-c", "pg_isready -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\""]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+          livenessProbe:
+            exec:
+              command: ["sh", "-c", "pg_isready -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\""]
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: postgres-data
