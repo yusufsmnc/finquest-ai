@@ -1,0 +1,3 @@
+# Shell scripts must keep LF endings — a CRLF shebang breaks the Linux
+# container ("exec format error" / "no such file or directory").
+*.sh text eol=lf

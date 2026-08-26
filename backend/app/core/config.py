@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -56,9 +57,38 @@ class Settings(BaseSettings):
     # NEVER log this, never include it in an error response.
     openai_api_key: str = ""
 
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def _default_database_url(cls, value: object) -> object:
+        """An empty ``DATABASE_URL`` means "no database configured".
+
+        Treat it as unset so the SQLite fallback applies, rather than handing
+        SQLAlchemy an empty string. docker-compose / K8s always supply a real
+        PostgreSQL URL, so this only ever affects local host runs.
+        """
+        if value is None or (isinstance(value, str) and not value.strip()):
+            return "sqlite:///./finquest.db"
+        return value
+
+    @field_validator("jwt_secret", mode="before")
+    @classmethod
+    def _require_jwt_secret(cls, value: object) -> object:
+        """Never sign tokens with a blank key."""
+        if value is None or (isinstance(value, str) and not value.strip()):
+            return "dev-insecure-change-me"
+        return value
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+
+    @property
+    def database_backend(self) -> str:
+        """Engine name only (``postgresql`` / ``sqlite``).
+
+        Safe to log — the credentials in ``database_url`` are not.
+        """
+        return self.database_url.split(":", 1)[0].split("+", 1)[0]
 
 
 @lru_cache
