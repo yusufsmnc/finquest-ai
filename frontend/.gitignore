@@ -17,5 +17,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Web (generated)
-/web/
+# NOTE: `web/` is SOURCE (index.html, manifest, icons) and must stay tracked —
+# `flutter build web` needs it, so the Docker build fails without it.
+# The generated output is `build/`, already covered above.

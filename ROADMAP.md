@@ -108,11 +108,11 @@ olmayan her şey ConfigMap'e.
 ### Faz 4 — Containerization (Docker)
 **Hedef:** Her katmanı image'a al, üçünü `docker-compose` ile birlikte çalıştır.
 
-- [ ] Frontend Dockerfile (multi-stage: `flutter build web` → nginx)
-- [ ] Backend Dockerfile (python-slim)
-- [ ] `docker-compose.yml`: frontend + backend + postgres
-- [ ] DB için volume (veri kalıcılığı)
-- [ ] Değişkenleri `.env` üzerinden compose'a geçir
+- [x] Frontend Dockerfile (multi-stage: `flutter build web` → nginx)
+- [x] Backend Dockerfile (python-slim)
+- [x] `docker-compose.yml`: frontend + backend + postgres
+- [x] DB için volume (veri kalıcılığı)
+- [x] Değişkenleri `.env` üzerinden compose'a geçir
 
 **Kavramlar:** image, multi-stage build, container network, volume, env injection
 **Bitti kriteri:** `docker compose up` ile üç servis birlikte kalkıyor.

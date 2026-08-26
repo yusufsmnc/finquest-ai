@@ -1,31 +1,102 @@
-# Faz 0: local PostgreSQL for development.
-# (Full multi-service compose — frontend + backend + db — arrives in Faz 4.)
+# ── FinQuest AI — full three-tier stack (Faz 4) ────────────────────────────
+#
+#   Browser ──:8080──> frontend (Flutter web + nginx)
+#                          │
+#                          └──:8000──> backend (FastAPI) ──:5432──> db (Postgres)
+#
+# The browser talks to the backend over the HOST port (localhost:8000) because
+# the compiled JS runs outside the container network. The backend talks to the
+# database over the COMPOSE network, by service name (`db`).
+#
+# CONFIG DISCIPLINE (CLAUDE.md): every credential below is interpolated from
+# the git-ignored `./.env` — nothing is baked into an image, nothing secret is
+# committed. Faz 5 replaces this block with a ConfigMap + a Secret.
 #
 # Usage:
-#   docker compose up -d db
-# Then in backend/.env set:
-#   DATABASE_URL=postgresql+psycopg://finquest:finquest@localhost:5432/finquest
-# and run: alembic upgrade head
-#
-# Credentials here are LOCAL DEV ONLY. Real environments inject these from a
-# Kubernetes Secret (Faz 5) — never bake them into an image or commit them.
+#   cp .env.example .env      # then fill in the values
+#   docker compose up --build
 services:
+  # ── Tier 3: PostgreSQL ──────────────────────────────────────────────────
   db:
     image: postgres:16-alpine
     container_name: finquest-db
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: finquest
-      POSTGRES_PASSWORD: finquest
-      POSTGRES_DB: finquest
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required (see .env.example)}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required (see .env.example)}
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required (see .env.example)}
     ports:
-      - "5432:5432"
+      # Published only for local inspection (psql from the host). The backend
+      # does NOT use this — it connects over the compose network instead.
+      - "${POSTGRES_HOST_PORT:-5432}:5432"
     volumes:
+      # Named volume = the data outlives `docker compose down`. Without it,
+      # every restart would wipe the users' progress.
       - finquest_pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U finquest -d finquest"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # ── Tier 2: FastAPI backend ─────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+    container_name: finquest-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        # Wait for a DB that actually accepts connections, not just a started
+        # container — otherwise `alembic upgrade head` races the DB boot.
+        condition: service_healthy
+    environment:
+      # ── ConfigMap-style (non-secret) ────────────────────────────────────
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      API_BASE_URL: ${API_BASE_URL:-http://localhost:8000}
+      # The browser's origin, i.e. the frontend's published port.
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080,http://localhost:5000}
+      AI_MODEL: ${AI_MODEL:-gpt-4o-mini}
+      # ── Secret-style (injected at runtime, never in the image) ──────────
+      # Single source of truth: assembled from the same credentials the db
+      # service uses, pointed at the compose service name `db`.
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required (see .env.example)}
+      # Empty is valid: the mentor then serves its pre-seeded static messages.
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    ports:
+      - "8000:8000"
+    healthcheck:
+      # python-slim has no curl/wget — use the interpreter that is already here.
+      test: ["CMD", "python", "-c",
+             "import urllib.request,sys; sys.exit(0) if urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3).status == 200 else sys.exit(1)"]
+      interval: 10s
+      timeout: 5s
       retries: 5
+      start_period: 20s
+
+  # ── Tier 1: Flutter web + nginx ─────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Baked in at BUILD time (it becomes part of the JS bundle) and
+        # therefore public by definition — only ever a non-secret URL.
+        API_BASE_URL: ${API_BASE_URL:-http://localhost:8000}
+    container_name: finquest-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
 
 volumes:
   finquest_pgdata:

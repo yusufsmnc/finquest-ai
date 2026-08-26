@@ -1,0 +1,20 @@
+# ── Secrets: must NEVER enter the build context ────────────────────────────
+.env
+*.env
+!.env.example
+
+# ── Build outputs & local tooling (rebuilt inside the image) ───────────────
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.idea/
+*.iml
+.vscode/
+coverage/
+test/
+integration_test/
+test_driver/
+Dockerfile
+.dockerignore

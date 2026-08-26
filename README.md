@@ -195,9 +195,41 @@ All game logic flows through a deterministic event contract:
 
 ## Running the App
 
+### Full stack with Docker (Faz 4)
+
+All three tiers — Flutter/nginx, FastAPI, PostgreSQL — come up together:
+
 ```bash
-flutter pub get
-flutter run -d edge
+cp .env.example .env      # then fill in POSTGRES_*, JWT_SECRET, OPENAI_API_KEY
+docker compose up --build
 ```
 
-Requires Flutter 3.x and Chrome/Edge browser for web target.
+| Service  | URL                     | Notes                                  |
+|----------|-------------------------|----------------------------------------|
+| frontend | http://localhost:8080   | Flutter web build served by nginx       |
+| backend  | http://localhost:8000   | FastAPI; `/health`, `/docs`             |
+| db       | localhost:5432          | PostgreSQL, data in a named volume      |
+
+Notes:
+- The backend container runs `alembic upgrade head` on startup, so the schema
+  is always current before the API accepts traffic.
+- Progress survives `docker compose down && docker compose up` — the database
+  lives in the `finquest_pgdata` volume. Use `down -v` only when you *want* to
+  wipe it.
+- `API_BASE_URL` is compiled into the web bundle at build time, so it must be a
+  **host-reachable** URL (`http://localhost:8000`), not the `backend` service
+  name — the JS runs in the browser, outside the compose network.
+- No secret is ever baked into an image: `.env` is excluded from both build
+  contexts and every credential is injected as a runtime env var. Faz 5 swaps
+  `.env` for a Kubernetes ConfigMap + Secret without touching the images.
+
+### Frontend only (dev loop)
+
+```bash
+cd frontend
+flutter pub get
+flutter run -d edge --dart-define=API_BASE_URL=http://localhost:8000
+```
+
+Requires Flutter 3.x and Chrome/Edge browser for web target, plus a backend
+running on the given URL (see `backend/README.md`).
