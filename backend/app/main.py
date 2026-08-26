@@ -1,4 +1,5 @@
 """FastAPI entrypoint for the FinQuest AI backend."""
+
 from __future__ import annotations
 
 import logging

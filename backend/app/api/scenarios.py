@@ -1,4 +1,5 @@
 """Scenario decision endpoint — applies authoritative gamification."""
+
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends

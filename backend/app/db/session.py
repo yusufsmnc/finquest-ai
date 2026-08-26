@@ -1,4 +1,5 @@
 """Engine + session factory, driven entirely by ``DATABASE_URL`` from env."""
+
 from __future__ import annotations
 
 from collections.abc import Generator
@@ -11,9 +12,7 @@ from app.core.config import settings
 # SQLite (local zero-infra fallback) needs this flag when used with FastAPI's
 # threadpool; PostgreSQL ignores it.
 _connect_args = (
-    {"check_same_thread": False}
-    if settings.database_url.startswith("sqlite")
-    else {}
+    {"check_same_thread": False} if settings.database_url.startswith("sqlite") else {}
 )
 
 engine = create_engine(

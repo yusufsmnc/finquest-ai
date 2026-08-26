@@ -1,0 +1,50 @@
+# Backend tooling config. There is no build here — the service runs from
+# source in a container — so this file carries only tool settings.
+
+# ── pytest ─────────────────────────────────────────────────────────────────
+# `pythonpath` is the fix for a real trap: without it only `python -m pytest`
+# worked (it injects the CWD), while a bare `pytest` died with
+# "ModuleNotFoundError: No module named 'app'". CI runs the bare binary.
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q --strict-markers"
+
+# ── ruff ───────────────────────────────────────────────────────────────────
+# `required-version` pins the tool itself: a newer ruff whose formatter changed
+# its mind refuses to run instead of silently failing `ruff format --check` on
+# untouched code. CI installs this exact version (requirements-dev.txt).
+[tool.ruff]
+required-version = "==0.16.4"
+line-length = 88
+target-version = "py312"   # matches the runtime image, not the local venv
+extend-exclude = [".venv"]
+
+[tool.ruff.lint]
+# A deliberately small core: pycodestyle errors, pyflakes, import order,
+# bugbear, pyupgrade. Not `ALL` — the goal is consistency, not nitpicks.
+select = ["E", "F", "I", "B", "UP"]
+ignore = [
+    # Line width is the formatter's job; E501 would only nag about long prose
+    # in comments and docstrings, which the formatter deliberately leaves alone.
+    "E501",
+    # `class X(str, Enum)` -> `StrEnum`. Correct in the abstract, but these
+    # enums are the wire contract with the frontend; swapping the base class is
+    # a behaviour decision, not a formatting cleanup.
+    "UP042",
+]
+
+[tool.ruff.lint.flake8-bugbear]
+# `x = Depends(...)` in a signature default is the FastAPI idiom, not the B008
+# mutable-default bug the rule is looking for.
+extend-immutable-calls = [
+    "fastapi.Depends",
+    "fastapi.Query",
+    "fastapi.Path",
+    "fastapi.Body",
+    "fastapi.Header",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Alembic revisions are generated; their identifier style is not ours to fix.
+"alembic/versions/*" = ["E501"]

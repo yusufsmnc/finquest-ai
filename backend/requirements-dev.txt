@@ -1,0 +1,6 @@
+# Dev/CI-only dependencies. The runtime image installs requirements.txt alone.
+-r requirements.txt
+
+# Pinned exactly: `[tool.ruff] required-version` in pyproject.toml refuses to
+# run any other version, so the two must move together, deliberately.
+ruff==0.16.4

@@ -4,6 +4,7 @@ Import this module (not ``app.db.base``) whenever you need the complete schema
 — e.g. Alembic autogenerate. Keeping the model imports here avoids the circular
 import between models and the declarative base.
 """
+
 from __future__ import annotations
 
 from app.db.base import Base
