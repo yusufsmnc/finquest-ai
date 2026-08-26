@@ -120,11 +120,11 @@ olmayan her şey ConfigMap'e.
 ### Faz 5 — Kubernetes (asıl proje)
 **Hedef:** docker-compose'u K8s'e taşı, tüm config'i ConfigMap/Secret ile koddan ayır.
 
-- [ ] Lokal cluster (minikube ya da kind)
-- [ ] Her katman için Deployment + Service
-- [ ] ConfigMap (ortam ayarları) + Secret (şifre, AI anahtarı)
-- [ ] env'leri ConfigMap/Secret'tan pod'a bağla
-- [ ] ConfigMap değişince pod'un otomatik yenilenmediğini gözlemle → `kubectl rollout restart`
+- [x] Lokal cluster (minikube ya da kind)
+- [x] Her katman için Deployment + Service
+- [x] ConfigMap (ortam ayarları) + Secret (şifre, AI anahtarı)
+- [x] env'leri ConfigMap/Secret'tan pod'a bağla
+- [x] ConfigMap değişince pod'un otomatik yenilenmediğini gözlemle → `kubectl rollout restart`
 
 **Kavramlar:** Pod, Deployment, Service, ConfigMap, Secret, rollout
 **Bitti kriteri:** Sistem tamamen K8s'te çalışıyor, hiçbir credential koda/manifest'e gömülü değil.
