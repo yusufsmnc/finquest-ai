@@ -4,6 +4,7 @@ Always answers 200 with a usable message: when the LLM is unavailable the
 service degrades to the pre-seeded messages (see ``services/mentor.py``). No
 provider error, and certainly no API key, is ever surfaced to the client.
 """
+
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends

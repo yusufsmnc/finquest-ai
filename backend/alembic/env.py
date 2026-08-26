@@ -3,14 +3,16 @@
 Reads the DB URL from the app settings (which read the environment), so the
 connection string is never hardcoded in a committed file.
 """
+
 from __future__ import annotations
 
 import os
 import sys
 from logging.config import fileConfig
 
-from alembic import context
 from sqlalchemy import engine_from_config, pool
+
+from alembic import context
 
 # Make the `app` package importable when alembic runs from backend/.
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

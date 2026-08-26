@@ -1,4 +1,5 @@
 """Progress + achievements for the authenticated user."""
+
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends
@@ -59,7 +60,5 @@ def list_achievements(
     db: Session = Depends(get_db), user: User = Depends(get_current_user)
 ) -> list[Achievement]:
     return list(
-        db.scalars(
-            select(Achievement).where(Achievement.user_id == user.id)
-        ).all()
+        db.scalars(select(Achievement).where(Achievement.user_id == user.id)).all()
     )

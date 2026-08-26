@@ -8,6 +8,7 @@ render-only layer and never has to decide what to say.
 Selection is deterministic (context + a rotating index), never random, so the
 same request produces the same message.
 """
+
 from __future__ import annotations
 
 from enum import Enum

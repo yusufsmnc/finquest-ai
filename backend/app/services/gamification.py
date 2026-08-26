@@ -4,10 +4,11 @@ The frontend only *renders* XP/level/streak; the backend owns the numbers
 (CLAUDE.md: "NO computation in UI"). Events emitted here reuse the immutable
 frontend event contract so the client can drive its animations directly.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from app.models.progress import Progress
 
@@ -52,5 +53,5 @@ def apply_decision(progress: Progress, correct: bool) -> DecisionOutcome:
         if new_level > old_level:
             events.append("LEVEL_UP")
 
-    progress.last_active = datetime.now(timezone.utc)
+    progress.last_active = datetime.now(UTC)
     return DecisionOutcome(result=result, xp_delta=xp_delta, events=events)

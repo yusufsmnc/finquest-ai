@@ -3,6 +3,7 @@
 The OpenAI client is always mocked — these tests never make a network call and
 never need a key, so they are safe to run in CI.
 """
+
 from __future__ import annotations
 
 import logging
@@ -18,7 +19,9 @@ from app.services import mentor
 from app.services.mentor_messages import messages_for, total_message_count
 
 FAKE_KEY = "sk-test-not-a-real-key-000000000000"
-AI_TEXT = "You handled that trade-off calmly. Keep practising that pause before deciding."
+AI_TEXT = (
+    "You handled that trade-off calmly. Keep practising that pause before deciding."
+)
 
 
 # ── Test doubles ───────────────────────────────────────────────────────────
@@ -40,7 +43,7 @@ class _FakeCompletion:
 
 
 class _FakeCompletions:
-    def __init__(self, owner: "_FakeOpenAI") -> None:
+    def __init__(self, owner: _FakeOpenAI) -> None:
         self._owner = owner
 
     def create(self, **kwargs):
@@ -53,7 +56,7 @@ class _FakeCompletions:
 class _FakeOpenAI:
     """Stands in for ``openai.OpenAI``; records calls, or raises on demand."""
 
-    instances: list["_FakeOpenAI"] = []
+    instances: list[_FakeOpenAI] = []
 
     def __init__(self, content: str | None = AI_TEXT, error: Exception | None = None):
         self.content = content
@@ -274,9 +277,7 @@ def test_key_never_appears_in_the_response_or_logs(monkeypatch, caplog):
     assert "***REDACTED***" in caplog.text
 
 
-def test_partially_masked_key_in_a_provider_error_is_also_redacted(
-    monkeypatch, caplog
-):
+def test_partially_masked_key_in_a_provider_error_is_also_redacted(monkeypatch, caplog):
     """OpenAI's 401 body echoes the key masked, e.g. ``sk-inval*****only``.
 
     That still exposes the head and tail of the real key, so a plain substring

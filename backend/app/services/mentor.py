@@ -11,6 +11,7 @@ Contract with the rest of the system (CLAUDE.md):
 * Cost is bounded three ways: a small ``max_tokens``, a per-user minimum
   interval between calls, and a short-lived cache keyed by the exact context.
 """
+
 from __future__ import annotations
 
 import logging
@@ -64,10 +65,10 @@ _last_call_at: dict[str, float] = {}  # user key -> monotonic timestamp
 
 def _context_key(user_key: str, req: MentorRequest) -> str:
     """Identity of a mentor request: same situation → same cache entry."""
-    decisions = ",".join(
-        f"{d.scenario_id}:{d.result}" for d in req.recent_decisions
+    decisions = ",".join(f"{d.scenario_id}:{d.result}" for d in req.recent_decisions)
+    return (
+        f"{user_key}|{req.context.value}|{req.xp}|{req.level}|{req.streak}|{decisions}"
     )
-    return f"{user_key}|{req.context.value}|{req.xp}|{req.level}|{req.streak}|{decisions}"
 
 
 def _scrub(text: str) -> str:

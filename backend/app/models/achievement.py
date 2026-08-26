@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 from sqlalchemy import DateTime, ForeignKey, String, UniqueConstraint
@@ -25,8 +25,8 @@ class Achievement(Base):
     code: Mapped[str] = mapped_column(String(64), nullable=False)
     unlocked_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
         nullable=False,
     )
 
-    user: Mapped["User"] = relationship(back_populates="achievements")
+    user: Mapped[User] = relationship(back_populates="achievements")

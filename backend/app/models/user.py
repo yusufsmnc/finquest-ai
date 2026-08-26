@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 from sqlalchemy import DateTime, String
@@ -15,25 +15,27 @@ if TYPE_CHECKING:
 
 
 def _utcnow() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
+    email: Mapped[str] = mapped_column(
+        String(255), unique=True, index=True, nullable=False
+    )
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=_utcnow, nullable=False
     )
 
-    progress: Mapped["Progress"] = relationship(
+    progress: Mapped[Progress] = relationship(
         back_populates="user", uselist=False, cascade="all, delete-orphan"
     )
-    achievements: Mapped[list["Achievement"]] = relationship(
+    achievements: Mapped[list[Achievement]] = relationship(
         back_populates="user", cascade="all, delete-orphan"
     )
-    scenario_history: Mapped[list["ScenarioHistory"]] = relationship(
+    scenario_history: Mapped[list[ScenarioHistory]] = relationship(
         back_populates="user", cascade="all, delete-orphan"
     )

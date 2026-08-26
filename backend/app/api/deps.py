@@ -1,4 +1,5 @@
 """Shared FastAPI dependencies (auth, current user)."""
+
 from __future__ import annotations
 
 from fastapi import Depends, HTTPException, status
@@ -27,7 +28,9 @@ def get_current_user(
     try:
         user_id = int(subject)
     except (TypeError, ValueError):
-        raise credentials_error
+        # `from None`: the malformed subject is the client's problem, not an
+        # internal fault — no ValueError chain belongs in the traceback.
+        raise credentials_error from None
     user = db.get(User, user_id)
     if user is None:
         raise credentials_error

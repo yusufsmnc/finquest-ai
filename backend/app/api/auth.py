@@ -1,4 +1,5 @@
 """Auth endpoints: register + login (JWT)."""
+
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, status

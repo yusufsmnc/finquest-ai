@@ -6,6 +6,7 @@ authoritative state (xp / level / streak / total decisions) and persisted to the
 code is never removed and never inserted twice (guarded by the unique
 ``user_id + code`` constraint and an explicit existence check).
 """
+
 from __future__ import annotations
 
 from sqlalchemy import select
@@ -68,9 +69,7 @@ def sync_achievements(
         return []
 
     existing = set(
-        db.scalars(
-            select(Achievement.code).where(Achievement.user_id == user_id)
-        )
+        db.scalars(select(Achievement.code).where(Achievement.user_id == user_id))
     )
     new_codes = sorted(earned - existing)
     for code in new_codes:

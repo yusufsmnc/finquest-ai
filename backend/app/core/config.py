@@ -4,6 +4,7 @@ All values are read from the environment (or a git-ignored ``.env`` for local
 dev). Nothing here is hardcoded per-environment — in Kubernetes these come from
 a ConfigMap (non-secret) and a Secret (secret). See CLAUDE.md / ROADMAP.md.
 """
+
 from __future__ import annotations
 
 from functools import lru_cache
