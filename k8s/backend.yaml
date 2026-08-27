@@ -42,6 +42,49 @@ spec:
         app.kubernetes.io/name: backend
         app.kubernetes.io/part-of: finquest
     spec:
+      # ── Faz 6c1: wait for the database before the app container starts ──
+      # Without this the entrypoint runs `alembic upgrade head` against a
+      # Postgres that may not be accepting connections yet, the process exits,
+      # and Kubernetes restarts the pod until it succeeds. That produced exactly
+      # one restart on every fresh deploy — harmless, but noise that would hide
+      # a real crash. The init container turns the race into an ordered wait.
+      #
+      # postgres:16-alpine is used purely as a toolbox: it is the only image
+      # here that ships pg_isready, and it is already in the local image store.
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$POSTGRES_USER" -d "$DB_NAME"; do
+                echo "waiting for postgres at $DB_HOST:$DB_PORT ..."
+                sleep 2
+              done
+              echo "postgres is accepting connections"
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: finquest-config
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: finquest-config
+                  key: DB_PORT
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: finquest-config
+                  key: DB_NAME
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: finquest-secrets
+                  key: POSTGRES_USER
       containers:
         - name: backend
           image: finquest-backend:local
@@ -106,16 +149,32 @@ spec:
             periodSeconds: 5
             failureThreshold: 30   # up to ~150s for migrations + boot
           readinessProbe:
-            # Gates Service traffic: no request is routed here until /health
-            # answers, so the frontend never hits a half-migrated backend.
-            httpGet:
-              path: /health
-              port: http
+            # Gates Service traffic, and deliberately NOT an httpGet on /health.
+            # /health answers from configuration alone — it never touches the
+            # database — so with Postgres stopped it still returns 200 while
+            # every real request 500s. A readiness probe that cannot fail is
+            # worse than none: it looks like a guarantee and is not one.
+            #
+            # This opens a real connection and runs SELECT 1, using the psycopg
+            # already installed in the image, so no rebuild is needed. The
+            # `+psycopg` dialect suffix is SQLAlchemy's, not libpq's, hence the
+            # replace. When the database goes away the pod goes NotReady and
+            # drops out of the Service endpoints instead of serving errors.
+            exec:
+              command:
+                - python
+                - -c
+                - 'import os, psycopg; psycopg.connect(os.environ["DATABASE_URL"].replace("+psycopg", ""), connect_timeout=3).execute("SELECT 1")'
             periodSeconds: 10
-            timeoutSeconds: 3
+            timeoutSeconds: 5
+            failureThreshold: 3
           livenessProbe:
-            # Restarts a wedged process. Deliberately slower and more forgiving
-            # than readiness — a blip should drain traffic, not kill the pod.
+            # Restarts a wedged process. Stays on /health precisely because
+            # /health ignores the database: liveness must answer "is this
+            # process still working", not "is its dependency up". Pointing it
+            # at the database would turn a Postgres outage into a crashloop
+            # across every backend replica, which is the classic way to turn a
+            # recoverable incident into an outage.
             httpGet:
               path: /health
               port: http
