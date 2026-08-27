@@ -5,6 +5,8 @@ from __future__ import annotations
 from conftest import DEFAULT_PASSWORD
 from fastapi.testclient import TestClient
 
+from app.schemas.auth import BCRYPT_MAX_PASSWORD_BYTES
+
 
 def _register(client: TestClient, email: str, password: str = DEFAULT_PASSWORD):
     return client.post("/auth/register", json={"email": email, "password": password})
@@ -61,10 +63,90 @@ def test_short_password_is_rejected(client: TestClient):
     assert response.json()["detail"][0]["loc"] == ["body", "password"]
 
 
-def test_overlong_password_is_rejected(client: TestClient):
-    response = _register(client, "long@example.com", password="x" * 129)
+# ── The bcrypt byte limit (Faz 6a) ─────────────────────────────────────────
+#
+# bcrypt hashes at most 72 *bytes*. Anything longer used to sail through
+# validation and raise inside hash_password, so a password the schema accepted
+# produced a 500. It is a 422 now — and the check counts bytes, because a
+# character count would still let multi-byte input through.
+
+
+def test_a_password_at_the_byte_limit_is_accepted(client: TestClient):
+    at_limit = "p" * BCRYPT_MAX_PASSWORD_BYTES
+
+    assert _register(client, "atlimit@example.com", at_limit).status_code == 201
+
+
+def test_a_password_one_byte_over_the_limit_is_refused(client: TestClient):
+    response = _register(
+        client, "overlimit@example.com", "p" * (BCRYPT_MAX_PASSWORD_BYTES + 1)
+    )
+
+    assert response.status_code == 422, "must be a validation error, never a 500"
+    assert response.json()["detail"][0]["loc"] == ["body", "password"]
+
+
+def test_a_multibyte_password_is_measured_in_bytes(client: TestClient):
+    """30 characters, 120 bytes — a character-based limit would admit this."""
+    thirty_emoji = "🔐" * 30
+    assert len(thirty_emoji) < BCRYPT_MAX_PASSWORD_BYTES
+
+    response = _register(client, "emoji@example.com", thirty_emoji)
 
     assert response.status_code == 422
+    assert response.json()["detail"][0]["loc"] == ["body", "password"]
+
+
+def test_accented_characters_count_double(client: TestClient):
+    """Turkish text is 2 bytes per accented character in UTF-8."""
+    password = "şifreçöğü" * 6  # 54 characters, 84 bytes
+
+    assert len(password) < BCRYPT_MAX_PASSWORD_BYTES
+    assert len(password.encode("utf-8")) > BCRYPT_MAX_PASSWORD_BYTES
+    assert _register(client, "turkce@example.com", password).status_code == 422
+
+
+def test_a_multibyte_password_within_the_limit_works_end_to_end(client: TestClient):
+    """The limit must not lock out non-ASCII passwords that do fit."""
+    password = "şifreçöğü1"  # 10 characters, 15 bytes
+    assert len(password.encode("utf-8")) <= BCRYPT_MAX_PASSWORD_BYTES
+
+    assert _register(client, "gecerli@example.com", password).status_code == 201
+    login = client.post(
+        "/auth/login", json={"email": "gecerli@example.com", "password": password}
+    )
+
+    assert login.status_code == 200, "a valid multi-byte password must round-trip"
+
+
+def test_login_refuses_an_over_long_password_too(client: TestClient):
+    _register(client, "loginlimit@example.com")
+
+    response = client.post(
+        "/auth/login",
+        json={
+            "email": "loginlimit@example.com",
+            "password": "p" * (BCRYPT_MAX_PASSWORD_BYTES + 1),
+        },
+    )
+
+    assert response.status_code == 422
+    assert response.json()["detail"][0]["loc"] == ["body", "password"]
+
+
+def test_the_byte_limit_does_not_shadow_a_normal_wrong_password(client: TestClient):
+    """A password that fits but is wrong still gets 401, not 422."""
+    _register(client, "stillwrong@example.com")
+
+    response = client.post(
+        "/auth/login",
+        json={
+            "email": "stillwrong@example.com",
+            "password": "p" * BCRYPT_MAX_PASSWORD_BYTES,
+        },
+    )
+
+    assert response.status_code == 401
 
 
 def test_malformed_email_is_rejected(client: TestClient):
