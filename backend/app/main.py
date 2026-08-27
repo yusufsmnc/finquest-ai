@@ -11,6 +11,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import auth, mentor, progress, scenarios
 from app.core.config import settings
+from app.core.logging import configure_logging
+
+# Before anything logs. uvicorn configures logging first and then imports this
+# module, so running here is what makes LOG_LEVEL from the ConfigMap actually
+# take effect rather than being overwritten.
+configure_logging()
 
 logger = logging.getLogger("finquest")
 
