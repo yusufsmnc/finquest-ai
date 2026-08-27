@@ -186,6 +186,33 @@ sorusunu değil — aksi halde bir DB kesintisi tüm replikaları crashloop'a so
 **Bitti:** Readiness gate'li — backend, Postgres hazır olmadan Service'ten
 trafik almıyor; tam redeploy sonrası backend `RESTARTS = 0`.
 
+#### 6c5 — Deploy doğruluğu
+Kabul testinde çıkan iki **sessiz** tuzak. İkisi de hata vermiyor, yanlış şeyi
+çalıştırıyor — bu yüzden 6c2'den önce.
+
+**Image propagation:** node kendi containerd'sini çalıştırıyor; aynı tag'le
+yeniden build edilen image node'a hiç ulaşmıyor ve `imagePullPolicy:
+IfNotPresent` kubelet'e "bu tag zaten var" dedirtiyor. Sonuç: rebuild sonrası
+pod **önceki** kodu çalıştırmaya devam ediyor, hiçbir yerde hata yok. Kabul
+testinde düzeltilmiş bir 500'ün hâlâ 500 dönmesiyle yakalandı.
+
+**Placeholder Secret:** `kubectl apply -f k8s/`, dizindeki her `*.yaml`'ı
+uyguluyor — `secret.example.yaml` dahil. İkisi de aynı `metadata.name`'i
+taşıdığı için hangisinin kazandığını alfabetik dosya sırası belirliyor; şablonun
+adı `secret.template.yaml` olsaydı cluster'a `REPLACE_ME` giderdi.
+
+- [x] `scripts/deploy-local.(sh|ps1)`: commit başına tag → node'a load →
+      manifest tag'ini render et → apply + rollout
+- [x] `imagePullPolicy: Never` — eksik image sessizce eskiye düşmek yerine
+      `ErrImageNeverPull` ile görünür şekilde patlasın
+- [x] `k8s/README.md`'deki yanlış "no side-loading needed" iddiasını düzelt
+- [x] Şablonu apply taramasının dışına al (`k8s/examples/`)
+- [x] `validate-manifests.py` apply yolunda placeholder Secret'ı reddetsin
+
+**Bitti:** Backend'de bir kod değişikliği deploy sonrası pod'da gerçekten
+çalışıyor (tag + digest + davranışla kanıtlı); temiz bir apply yalnızca gerçek
+Secret'ı uyguluyor.
+
 #### 6c2 — Sealed Secrets
 Controller + `kubeseal`. Secret şifreli bir `SealedSecret`'a dönüşür ve git'e
 commit'lenebilir hale gelir.

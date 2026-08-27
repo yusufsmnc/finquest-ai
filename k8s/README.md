@@ -15,7 +15,7 @@ Browser ──:8080──> frontend Pod ──REST──> backend Pod ──SQL�
 | File | What it is |
 |---|---|
 | `configmap.yaml` | non-secret env: `ENVIRONMENT`, `LOG_LEVEL`, `AI_MODEL`, `DB_HOST/PORT/NAME`, `CORS_ORIGINS` |
-| `secret.example.yaml` | **placeholders only** — the committed template |
+| `examples/secret.example.yaml` | **placeholders only** — the committed template. It sits outside this directory on purpose: `kubectl apply -f k8s/` would otherwise apply it too, and which Secret won would come down to alphabetical filename order |
 | `secret.yaml` | the real values. **git-ignored**, generated from `./.env` |
 | `postgres.yaml` | PVC + ClusterIP Service + Deployment |
 | `backend.yaml` | LoadBalancer Service (8000) + Deployment |
@@ -31,15 +31,41 @@ Kubernetes* → Apply & Restart), then:
 kubectl get nodes        # docker-desktop must be Ready
 ```
 
-Docker Desktop's Kubernetes shares the local image store, so **no registry and
-no image side-loading are needed** — a locally built tag is directly usable.
-
-## 1. Build the images
+## 1. Deploy
 
 ```bash
-docker build -t finquest-backend:local ./backend
-docker build -t finquest-frontend:local --build-arg API_BASE_URL=http://localhost:8000 ./frontend
+sh k8s/scripts/gen-secret.sh      # once, or whenever ./.env changes
+sh scripts/deploy-local.sh        # or: powershell -File scripts\deploy-local.ps1
 ```
+
+That is the whole flow. Use the script rather than a bare `docker build` —
+**a rebuilt image does not reach the cluster on its own.**
+
+> ### Why a script, and not `docker build` + `rollout restart`
+>
+> An earlier version of this file claimed Docker Desktop's Kubernetes shares
+> the local image store, so no registry and no side-loading were needed. That
+> holds only for an image that has not changed. The node runs its **own**
+> containerd with its own copy of every image, and `imagePullPolicy:
+> IfNotPresent` tells the kubelet the tag is already present — so after a
+> rebuild under the same tag the pod comes back running the **previous** build,
+> with no error anywhere. It surfaced only because a fix failed to take effect:
+> an endpoint kept returning a 500 that had already been corrected in the code.
+>
+> Three things fix it, and none of them works alone:
+>
+> 1. **A per-build tag** — `finquest-backend:$(git rev-parse --short HEAD)`, so
+>    a tag names exactly one image. Uncommitted work gets a `-dirty.<time>`
+>    suffix, because editing a file does not move `HEAD`.
+> 2. **An explicit load into the node** — `kind load docker-image`, or
+>    `docker save | ctr -n k8s.io images import` for Docker Desktop's node.
+> 3. **`imagePullPolicy: Never`** — a missing image then fails visibly with
+>    `ErrImageNeverPull` instead of silently falling back to a cached one.
+>
+> The manifests carry `finquest-backend:UNSET`; the script renders the real tag
+> into a temporary copy, so a deploy never leaves the tree modified. Applying
+> `k8s/` by hand without substituting a tag is therefore expected to fail —
+> loudly, which is the point.
 
 > **`API_BASE_URL` is a build arg for the frontend, not a runtime env var.**
 > Flutter web compiles to JavaScript that runs in the *browser*, so it must
@@ -48,16 +74,20 @@ docker build -t finquest-frontend:local --build-arg API_BASE_URL=http://localhos
 > LoadBalancer maps to `localhost:8000`, so the compiled URL stays correct.
 > Change that URL → rebuild the frontend image.
 
-Both Deployments set `imagePullPolicy: IfNotPresent`. Without it the kubelet
-would try to pull `finquest-backend:local` from Docker Hub → `ImagePullBackOff`.
+## 2. What the script does, by hand
 
-## 2. Config first, then secret, then workloads
+Only needed when debugging the deploy itself.
 
 ```bash
 sh k8s/scripts/gen-secret.sh          # or: powershell -File k8s\scripts\gen-secret.ps1
 
-kubectl apply -f k8s/configmap.yaml -f k8s/secret.yaml -f k8s/postgres.yaml \
-              -f k8s/backend.yaml -f k8s/frontend.yaml
+TAG=$(git rev-parse --short HEAD)
+docker build -t finquest-backend:$TAG ./backend
+docker save finquest-backend:$TAG |
+  docker exec -i desktop-control-plane ctr -n k8s.io images import --all-platforms -
+
+sed "s|finquest-backend:UNSET|finquest-backend:$TAG|" k8s/backend.yaml | kubectl apply -f -
+kubectl apply -f k8s/configmap.yaml -f k8s/secret.yaml -f k8s/postgres.yaml
 kubectl get pods,svc
 ```
 

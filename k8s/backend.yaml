@@ -87,11 +87,18 @@ spec:
                   key: POSTGRES_USER
       containers:
         - name: backend
-          image: finquest-backend:local
-          # The image is built locally and Docker Desktop's Kubernetes shares
-          # that image store, so there is no registry to pull from. Without
-          # IfNotPresent the kubelet would try Docker Hub → ImagePullBackOff.
-          imagePullPolicy: IfNotPresent
+          # Deliberately not a real tag. scripts/deploy-local rewrites this to
+          # the commit the image was built from, because a fixed tag like
+          # `:local` is the whole problem: the node's containerd keeps its own
+          # copy, and `IfNotPresent` means the kubelet reuses whatever that tag
+          # already pointed at — silently running yesterday's code after a
+          # rebuild. A per-build tag makes the image unambiguous.
+          image: finquest-backend:UNSET
+          # Never, not IfNotPresent: this image only ever arrives by being
+          # loaded into the node, never pulled. If it is missing the pod fails
+          # visibly with ErrImageNeverPull instead of quietly starting a stale
+          # one — the failure mode we actually want.
+          imagePullPolicy: Never
           ports:
             - name: http
               containerPort: 8000

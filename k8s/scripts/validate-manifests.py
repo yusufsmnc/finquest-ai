@@ -12,10 +12,17 @@ cluster-less CI job can still find:
    nowhere.
 3. **A malformed document** — missing ``apiVersion``/``kind``/``metadata.name``,
    or two objects of the same kind sharing a name.
+4. **A placeholder in the apply path.** ``kubectl apply -f k8s/`` applies every
+   ``*.yaml`` sitting directly in that directory. A template with the same
+   ``metadata.name`` as the real Secret therefore gets applied too, and which
+   one wins is decided by alphabetical filename order — rename the template and
+   the cluster silently receives ``REPLACE_ME`` as its database password. The
+   template lives in ``k8s/examples/`` to keep it out of that scan, and the
+   check below makes sure it stays out.
 
-The Secret is read from ``secret.example.yaml`` (placeholders), because the real
-``secret.yaml`` is git-ignored and never exists on a runner. Only key *names*
-matter here, so the placeholders are exactly as good as the real values.
+The Secret's key names are read from ``examples/secret.example.yaml``, because
+the real ``secret.yaml`` is git-ignored and never exists on a runner. Only key
+*names* matter here, so the placeholders are exactly as good as real values.
 """
 
 from __future__ import annotations
@@ -33,12 +40,20 @@ K8S_DIR = Path(__file__).resolve().parent.parent
 #: environments identical — and means this never reads a real credential.
 IGNORED = {"secret.yaml"}
 
+#: Documentation, deliberately outside the `kubectl apply -f k8s/` scan.
+TEMPLATE_DIR = K8S_DIR / "examples"
+
+PLACEHOLDER = "REPLACE_ME"
+
+
+def _apply_set() -> list:
+    """The files `kubectl apply -f k8s/` would actually send to the cluster."""
+    return [p for p in sorted(K8S_DIR.glob("*.yaml")) if p.name not in IGNORED]
+
 
 def _documents() -> list[dict]:
     docs: list[dict] = []
-    for path in sorted(K8S_DIR.glob("*.yaml")):
-        if path.name in IGNORED:
-            continue
+    for path in _apply_set() + sorted(TEMPLATE_DIR.glob("*.yaml")):
         with path.open(encoding="utf-8") as handle:
             docs += [
                 doc | {"__file__": path.name}
@@ -160,10 +175,31 @@ def _check_service_selectors(docs: list[dict], problems: list[str]) -> int:
     return checked
 
 
+def _check_no_placeholder_in_apply_path(problems: list[str]) -> int:
+    """The template must never be reachable by `kubectl apply -f k8s/`."""
+    checked = 0
+    for path in _apply_set():
+        checked += 1
+        with path.open(encoding="utf-8") as handle:
+            for doc in yaml.safe_load_all(handle):
+                if not isinstance(doc, dict) or doc.get("kind") != "Secret":
+                    continue
+                values = {**doc.get("data", {}), **doc.get("stringData", {})}
+                placeholders = sorted(k for k, v in values.items() if v == PLACEHOLDER)
+                if placeholders:
+                    problems.append(
+                        f"{path.name}: a placeholder Secret sits in the apply "
+                        f"path ({', '.join(placeholders)} = {PLACEHOLDER!r}); "
+                        f"move it to {TEMPLATE_DIR.name}/"
+                    )
+    return checked
+
+
 def main() -> int:
     docs = _documents()
     problems: list[str] = []
 
+    applied = _check_no_placeholder_in_apply_path(problems)
     _check_structure(docs, problems)
     env_refs = _check_env_references(docs, problems)
     selectors = _check_service_selectors(docs, problems)
@@ -172,7 +208,7 @@ def main() -> int:
         print(f"error: {problem}", file=sys.stderr)
 
     print(
-        f"checked {len(docs)} manifests: "
+        f"checked {len(docs)} manifests ({applied} in the apply path): "
         f"{env_refs} env key references, {selectors} service selectors"
     )
     return 1 if problems else 0
