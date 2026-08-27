@@ -213,6 +213,31 @@ adı `secret.template.yaml` olsaydı cluster'a `REPLACE_ME` giderdi.
 çalışıyor (tag + digest + davranışla kanıtlı); temiz bir apply yalnızca gerçek
 Secret'ı uyguluyor.
 
+#### 6c6 — Logging yapılandırması
+`LOG_LEVEL` Faz 5'ten beri ConfigMap'te, Faz 1'den beri `Settings`'te — ama
+hiçbir yerde **okunmuyordu**. Hiçbir handler kurulmadığı için root logger
+varsayılan WARNING'de kalıyor, uygulamanın her `logger.info`'su hiçbir yere
+gitmiyordu. `main.py`'deki açılış tanı satırı — backend'in hangi ortama, hangi
+veritabanına bağlandığını ve mentor'un anahtarı olup olmadığını söyleyen tek
+satır — Faz 5 boyunca `kubectl logs`'ta görünmedi. 6c5'te bir deploy kanıtı
+`logger.info` ile yazıldığında fark edildi: satır image'ın içindeydi, sadece
+sessizdi.
+
+- [x] `configure_logging()`: `LOG_LEVEL`'ı oku, stdout'a handler kur
+- [x] Geçersiz bir seviye pod'u düşürmesin, INFO'ya insin
+- [x] uvicorn logger'ları aynı handler'ı paylaşsın (tek format, tek satır)
+- [x] Açılış tanı satırı gerçekten emit edilsin
+- [x] Testler: info/debug/warning davranışı ve açılış satırı
+- [x] Üçüncü parti logger'lar (openai, httpx/httpcore ve vendor'lanmış
+      httpx2/httpcore2) WARNING'e sabit — `LOG_LEVEL: debug` uygulama
+      debug'ını açsa bile OpenAI SDK mentor prompt'unu, yani öğrencinin
+      bağlamını (xp, level, streak, son kararlar) log'a dökmesin
+
+**Bitti:** ConfigMap'te `LOG_LEVEL: debug` → `rollout restart` sonrası pod
+DEBUG satırları basıyor; `info`'da basmıyor. Açılış satırı `kubectl logs`'ta
+görünüyor ve hiçbir credential içermiyor. DEBUG'da üçüncü parti kütüphaneler
+susuyor: prompt ve öğrenci bağlamı log'a hiç girmiyor.
+
 #### 6c2 — Sealed Secrets
 Controller + `kubeseal`. Secret şifreli bir `SealedSecret`'a dönüşür ve git'e
 commit'lenebilir hale gelir.
