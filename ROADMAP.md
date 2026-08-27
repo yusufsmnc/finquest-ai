@@ -131,8 +131,27 @@ olmayan her şey ConfigMap'e.
 
 ### Faz 6 — Sağlamlaştırma
 **Hedef:** Prod'a yakın pratikler. Faz 5 sistemi ayağa kaldırdı; bu faz onu
-güvenilir hale getirir. Sıra bağlayıcıdır: 6b koddan bir açığı kapatır, 6c
-altyapıyı sağlamlaştırır.
+güvenilir hale getirir. Sıra bağlayıcıdır: 6a ve 6b koddaki iki açığı kapatır,
+6c altyapıyı sağlamlaştırır.
+
+#### 6a — Uzun parola 500 döndürüyor
+`hash_password`, bcrypt'in 72 byte sınırının üstünde `ValueError` fırlatıyor
+(bcrypt 4.x eski sürümlerdeki sessiz kırpmayı kaldırdı). `RegisterRequest` ise
+128 karaktere izin veriyor; arada kalan 73–128 karakterlik bir parola
+`POST /auth/register` üzerinde **500** dönüyor. Şemanın kabul ettiği bir girdi
+sunucuyu patlatıyor — yani doğrulama hatası olması gereken şey iç hataya
+dönüşüyor.
+
+**Öneri:** parola `max_length`'ini bcrypt'in gerçek sınırına indir; istek 422
+ile reddedilsin. (Alternatifler: 72 byte'a kırp, ya da SHA-256 ile ön-hash'le —
+ikisi de parola semantiğini değiştirdiği için ürün kararı.)
+
+- [ ] `max_length`'i bcrypt sınırıyla hizala
+- [ ] Uzun parola 500 değil 422 dönsün
+- [ ] `test_security.py`'deki iki `strict` xfail'i gerçek teste çevir
+
+**Bitti:** 73+ byte parolayla register 422 dönüyor; `hash_password` hiçbir
+geçerli girdide fırlatmıyor ve xfail işaretleri kalkmış.
 
 #### 6b — `PATCH /me/progress` kısıtlaması
 Otoriter alanlar (`xp`, `level`, `streak_count`, `last_active`) istemciden
