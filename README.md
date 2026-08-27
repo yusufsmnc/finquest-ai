@@ -1,235 +1,237 @@
 # FinQuest AI
 
-A gamified financial literacy simulation app built with Flutter. Users face real-world financial scenarios, make decisions, earn XP, and learn from an AI mentor — all in a clean, fast, reward-driven interface.
+A gamified financial-literacy simulation: users work through realistic money
+scenarios, earn XP and streaks, and get coaching from a real LLM mentor — built
+as a three-tier system (Flutter web · FastAPI · PostgreSQL) that runs on
+Kubernetes with every setting and credential injected at runtime rather than
+baked into the code.
+
+[![backend-tests](https://github.com/yusufsmnc/finquest-ai/actions/workflows/backend-tests.yml/badge.svg)](https://github.com/yusufsmnc/finquest-ai/actions/workflows/backend-tests.yml)
+[![frontend-tests](https://github.com/yusufsmnc/finquest-ai/actions/workflows/frontend-tests.yml/badge.svg)](https://github.com/yusufsmnc/finquest-ai/actions/workflows/frontend-tests.yml)
+[![k8s-validate](https://github.com/yusufsmnc/finquest-ai/actions/workflows/k8s-validate.yml/badge.svg)](https://github.com/yusufsmnc/finquest-ai/actions/workflows/k8s-validate.yml)
 
 ---
 
-## Tech Stack
+## What it does
 
-| Layer | Technology |
-|---|---|
-| Framework | Flutter 3.41.9 / Dart 3.11.5 |
-| State Management | Riverpod 2.x (NotifierProvider) |
-| Architecture | Feature-first, event-driven |
-| Event Contract | Global immutable GameEvent system |
-| Target | Web (Edge), Mobile-ready |
+**Gamification, owned by the backend.** A correct decision is +20 XP, a wrong
+one −10 (floored at zero), and a level is every 100 XP. Streaks extend on a
+correct answer and reset on a wrong one. Fourteen achievements unlock across
+four metrics — streak, cumulative XP, decisions made, level reached — and once
+earned they are permanent. None of this is computed in the UI: the frontend
+posts a decision to `POST /scenarios/{id}/decision` and renders the events the
+server returns.
+
+**A real AI mentor, with a floor under it.** `POST /mentor` turns the user's
+context into a short, non-technical message through the OpenAI API, under a
+guardrail that forbids specific investment advice. On any error, timeout or
+rate limit it falls back to 72 pre-written messages chosen deterministically
+per context, so the app never breaks and never blocks on the network. Identical
+context inside the cache window is not billed twice, and a burst of events
+costs one call.
+
+**Progress that survives.** Users, progress, achievements and scenario history
+live in PostgreSQL behind Alembic migrations, on a persistent volume in the
+cluster. Close the app, delete the database pod — the XP is still there.
 
 ---
 
 ## Architecture
 
 ```
-lib/
-├── core/
-│   ├── events/          # Global GameEvent contract (immutable)
-│   └── routing/         # AppRouter
-├── shared/
-│   └── widgets/         # Reusable components
-├── features/
-│   ├── onboarding/      # ✅ Implemented
-│   ├── dashboard/       # ✅ Implemented
-│   ├── scenarios/       # ✅ Implemented
-│   ├── gamification/    # ✅ Implemented
-│   ├── achievements/    # ✅ Implemented
-│   ├── profile/         # ✅ Implemented
-│   ├── ai_mentor/       # ✅ Implemented
-│   └── market_events/   # ✅ Implemented
-└── main.dart
+                        ┌───────────────────────────┐
+  Browser ──:8080─────► │ frontend (Flutter + nginx)│
+     │                  └───────────────────────────┘
+     │                     static assets only,
+     │                     no config, no secrets
+     │
+     └────:8000───────► ┌───────────────────────────┐ ──SQL──► ┌────────────┐
+        REST, from the  │ backend (FastAPI)         │          │ PostgreSQL │
+        browser itself  └───────────────────────────┘          │  (+ PVC)   │
+                            │            │                     └────────────┘
+                            │            └──HTTPS──► OpenAI API
+                            │
+                  ┌─────────┴─────────┐
+                  │                   │
+              ConfigMap            Secret
+        (environment settings)  (credentials + AI key)
 ```
 
-Every interaction follows a strict pipeline:
-
-```
-User Action → UI Event → State Update → Gamification Engine → Animation Trigger → UI Update
-```
+The browser talks to both tiers directly: the compiled Flutter bundle runs on
+the user's machine, so it cannot resolve an in-cluster Service name. The AI key
+exists only in the backend — a Flutter web build is fully readable by anyone
+who opens developer tools.
 
 ---
 
-## Features
+## Stack
 
-### ✅ Onboarding
-- 5-step gamified introduction flow
-- XP reveal animation on first launch
-- Decision-making intro (first taste of the scenario system)
-- Level-up screen with animated progression
-- Mentor introduction
-
-### ✅ Dashboard
-- XP hero card with animated progress bar
-- Level indicator + streak counter
-- Active challenges section
-- Portfolio simulation with sparkline chart
-- Learning progress by category
-- Achievements showcase
-- AI Mentor card (reactive — shows live mentor mood + current message, navigates to AI Mentor screen)
-- XP float animation on earn
-- Reward toast on unlock
-
-### ✅ Scenario Decision System
-- Scenario list with category filter (Investing / Savings / Budgeting)
-- Risk level indicator (Low / Medium / High) with bar visual
-- Financial event card with full scenario description
-- Multiple choice decision (A/B options, locks on tap)
-- Feedback screen: result banner, XP summary, mentor explanation
-- Correct decision bonus (+50 XP)
-- Streak tracking with pulse animation
-- Reward toast every 3 correct decisions
-- Money Lottie overlay (coins + bills animation) on correct decision / XP_GAINED event
-- AnimatedSwitcher phase transitions (list → decision → feedback)
-
-### ✅ Profile System
-- Gamification identity card — dark gradient, avatar bubble, tier badge (Novice → Elite Investor), 3 key stats
-- Editable display name (inline tap-to-edit field on the identity card)
-- Avatar picker modal — 8 color+icon identity options (Investor, Saver, Strategist, etc.)
-- XP Progress section — level badge, progress bar, total XP from global overlay tracker
-- Streak card — current streak, best streak, 7-flame visual indicator
-- Accuracy card — correct decision rate with color-coded progress bar
-- Achievements showcase — top 4 unlocked bubbles + "View All" shortcut to achievements screen
-- Learning Progress — 4 category bars (Budgeting, Investing, Savings, Risk Management)
-- Activity Timeline — unlocked achievements as timestamped vertical timeline ("Just now / Xm ago")
-- Purely read-only from existing providers — no new events, no new dispatchers
-- `ProfileNotifier` tracks `bestStreak` reactively via `ref.listen` on dashboard streak
-- Accessible from Dashboard via person FAB (black)
-
-### ✅ Achievements System
-- 14 collectible achievements across 4 categories (Streak / XP / Decisions / Level)
-- Rarity system: Common · Rare · Epic · Legendary with distinct color palettes
-- 2-column grid with rarity-styled cards (locked/unlocked states, progress bars)
-- Achievement detail modal — progress section, reward preview, unlock date
-- Category filter bar (animated chips)
-- Gradient stats header with per-category breakdown
-- Fully event-driven unlock detection (XP_GAINED, STREAK_UPDATED, DECISION_CORRECT, LEVEL_UP)
-- Penta-dispatch pipeline: feature notifier → overlay → achievements → ai mentor → market events notifier
-- Auto-triggers `AchievementUnlockOverlay` on new unlock via global overlay system
-- Progress bars update incrementally on locked achievements
-- Navigable from Dashboard via trophy FAB
-
-### ✅ AI Mentor System
-- Full mentor screen: mood app bar, hero gradient card, category insights carousel (4 horizontal cards), recent insights history, next-steps action panel
-- `MentorMood` system: 6 moods (calm / happy / encouraging / excited / proud / thinking) — each with gradient palette and icon
-- `MentorContext` system: 12 contexts (correct, wrong, levelUp, streak, achievement, 4 categories, nextStep, idle, onboarding)
-- Pre-seeded message repository — 80+ contextual messages, deterministic rotation via `messageSelectIndex` (no randomness)
-- `AiMentorNotifier` reacts to game events: `xpGained` (level detect), `decisionCorrect`, `decisionWrong`, `streakUpdated` (≥3), `rewardUnlocked`, `levelUp`
-- Category guidance: scenario selection sets targeted category tips via `setCategoryGuidance()`
-- `MentorNotificationPrompt` — slide-up notification overlay, 3.5s auto-dismiss, manual X dismiss
-- `AiMentorOverlayWrapper` — global wrapper in `main.dart`, shows notifications on any screen below the gamification layer
-- `MentorGuidancePanel` — animated panel injected into scenario flow for real-time guidance
-- Dashboard mentor card upgraded: live mood avatar, live message via `AnimatedSwitcher`, direct navigation to mentor screen
-- Render-only: NO AI computation, NO backend, NO fake LLM — all messages are externally provided data
-
-### ✅ Market Events System
-- 12 seeded real-world financial events across 4 categories (Investing / Budgeting / Savings / Risk Management)
-- 3-tier impact system: Low (green) · Medium (amber) · High (red) with color-coded left accent border on cards
-- Dashboard "Market Events" feed — horizontal scroll of up to 4 active event cards, disappears when all resolved
-- `MarketEventCard` — impact badge, category chip, headline, scale press animation, "Act Now" button
-- `MarketEventDetailModal` — full description, "Why This Matters" analysis section, "Practice This Scenario" CTA
-- `MarketEventsScreen` — full screen with active events list + resolved events section
-- "Act Now" flow: sets active event → pre-filters scenario screen to matching category via route arguments
-- `ScenarioFlow` upgraded to `ConsumerStatefulWidget` — reads route arguments in `didChangeDependencies`, applies category filter once via `_categoryApplied` guard
-- After making a scenario decision, the linked market event auto-resolves (resolved state = greyed card + "Decision made" label)
-- `MarketEventsRepository`: 12 events with rich descriptions, seeded fresh per session via `DateTime.now()` subtraction
-- Penta-dispatch: `MarketEventsNotifier.applyEvent` receives `DECISION_MADE` event to auto-resolve the active event
-
-### ✅ Gamification Overlay System
-- **Level Up Modal** — full-screen celebration with 12 confetti dots, fires every 200 XP
-- **Streak Feedback Overlay** — scale-bounce animation on 2+ day streaks
-- **XP Lost Overlay** — red shake banner slides in from top
-- **Achievement Unlock Overlay** — slides in from bottom, gold badge, 2.5s auto-dismiss
-- **Gamification Toast Queue** — sequential toast system, auto-advances every 2s
-- **Global Overlay Manager** — wraps entire app, overlays appear on any screen
-- All overlays are purely event-driven via the GameEvent contract
-
----
-
-## Gamification System
-
-All game logic flows through a deterministic event contract:
-
-| Event | Trigger | Effect |
-|---|---|---|
-| `DECISION_MADE` | User taps an option | Records selection, increments total decisions |
-| `DECISION_CORRECT` | Correct option chosen | Increments correct count, sets isCorrect |
-| `DECISION_WRONG` | Wrong option chosen | Sets isCorrect false |
-| `XP_GAINED` | Any decision | Adds XP, shows float indicator, detects level-up |
-| `XP_LOST` | Penalty (future) | Shows red shake banner |
-| `LEVEL_UP` | Every 200 XP | Full-screen level-up modal with confetti |
-| `STREAK_UPDATED` | After each decision | Updates streak, triggers bounce animation |
-| `REWARD_UNLOCKED` | Every 3 correct answers | Shows toast in global queue |
-
----
-
-## Shared Widget Library
-
-| Widget | Description |
+| Tier | Technology |
 |---|---|
-| `AuroraBackground` | Animated aurora: deep navy radial gradient + 3 drifting color blobs (9s / 13s / 17s cycles). Used as bottom layer on all screens. |
-| `AnimatedGradientBorder` | Rotating SweepGradient border (indigo → cyan → purple). Applied to unlocked achievements and active scenarios. |
-| `XPFloatIndicator` | Floats up 40px when XP is earned |
-| `RewardToast` | Slides in from bottom on reward unlock |
-| `XPProgressBar` | Animated fill bar |
-| `RiskIndicator` | 3-bar visual (compact + large variants) |
-| `AchievementBadge` | Badge with locked/unlocked state |
-| `StreakCounter` | Flame icon + count |
-| `LevelIndicator` | Current level display |
-| `MentorChatBubble` | AI mentor message bubble |
-| `AchievementCard` | Rarity-styled card with locked/unlocked states |
-| `AchievementDetailModal` | Bottom sheet with progress, reward preview, unlock date |
-| `AchievementsStatsHeader` | Gradient header with completion % and category breakdown |
-| `AchievementsFilterBar` | Animated category filter chips |
+| Frontend | Flutter 3.41.9 · Riverpod · served by nginx |
+| Backend | FastAPI · SQLAlchemy 2 · Alembic · JWT · Python 3.12 |
+| Database | PostgreSQL 16 |
+| AI | OpenAI Chat Completions (`gpt-4o-mini` by default), backend-only |
+| DevOps | Docker (multi-stage) · Kubernetes · GitHub Actions |
+
+```
+finquest-ai/
+├── frontend/           Flutter web app (feature-first, event-driven)
+├── backend/            FastAPI service, Alembic migrations, tests
+├── k8s/                manifests, examples/, gen-secret + validate scripts
+├── scripts/            deploy-local.sh / deploy-local.ps1
+├── .github/workflows/  three CI lanes
+├── docker-compose.yml  local multi-service dev
+├── ROADMAP.md          the phase plan this was built against
+└── CLAUDE.md           architecture rules and layer boundaries
+```
+
+`ROADMAP.md` records the phases and their done criteria; `CLAUDE.md` holds the
+non-negotiable rules — the event contract, the layer boundaries, and the
+config/secret policy below.
 
 ---
 
-## Visual Design System
+## Running it
 
-| Component | Detail |
-|---|---|
-| Background | `AuroraBackground` on all 5 tabs + all standalone routes |
-| Card borders | `AnimatedGradientBorder` on unlocked achievements and active (non-completed) scenarios |
-| Reward animation | `Money.json` Lottie (coins + bills) plays on correct decision |
-| Level-up | Full-screen confetti burst (`confetti.json`) every 200 XP |
-| Achievement unlock | `trophy.json` Lottie + slide-in overlay |
-| XP earn | Float indicator (+XP chip animates upward) |
-| Tab bar | Sliding pill indicator with per-tab accent color |
+### Prerequisites
 
----
-
-## Running the App
-
-### Full stack with Docker (Faz 4)
-
-All three tiers — Flutter/nginx, FastAPI, PostgreSQL — come up together:
+Docker Desktop with Kubernetes enabled (Settings → Kubernetes → *Enable
+Kubernetes*), and `kubectl` on your PATH.
 
 ```bash
-cp .env.example .env      # then fill in POSTGRES_*, JWT_SECRET, OPENAI_API_KEY
+kubectl get nodes        # the node must report Ready
+```
+
+### Local development — Docker Compose
+
+```bash
+cp .env.example .env     # then fill in POSTGRES_PASSWORD, JWT_SECRET, OPENAI_API_KEY
 docker compose up --build
 ```
 
-| Service  | URL                     | Notes                                  |
-|----------|-------------------------|----------------------------------------|
-| frontend | http://localhost:8080   | Flutter web build served by nginx       |
-| backend  | http://localhost:8000   | FastAPI; `/health`, `/docs`             |
-| db       | localhost:5432          | PostgreSQL, data in a named volume      |
+Frontend on <http://localhost:8080>, API on <http://localhost:8000>, interactive
+docs at <http://localhost:8000/docs>. `.env` is git-ignored. `OPENAI_API_KEY`
+may be left empty — the mentor then serves its static messages and everything
+else works normally.
 
-Notes:
-- The backend container runs `alembic upgrade head` on startup, so the schema
-  is always current before the API accepts traffic.
-- Progress survives `docker compose down && docker compose up` — the database
-  lives in the `finquest_pgdata` volume. Use `down -v` only when you *want* to
-  wipe it.
-- `API_BASE_URL` is compiled into the web bundle at build time, so it must be a
-  **host-reachable** URL (`http://localhost:8000`), not the `backend` service
-  name — the JS runs in the browser, outside the compose network.
-- No secret is ever baked into an image: `.env` is excluded from both build
-  contexts and every credential is injected as a runtime env var. Faz 5 swaps
-  `.env` for a Kubernetes ConfigMap + Secret without touching the images.
-
-### Frontend only (dev loop)
+To run the Flutter app directly against that API, without rebuilding its image:
 
 ```bash
 cd frontend
-flutter pub get
-flutter run -d edge --dart-define=API_BASE_URL=http://localhost:8000
+flutter run -d chrome --web-port 5000 --dart-define=API_BASE_URL=http://localhost:8000
 ```
 
-Requires Flutter 3.x and Chrome/Edge browser for web target, plus a backend
-running on the given URL (see `backend/README.md`).
+Port 5000 is already in the backend's default `CORS_ORIGINS`.
+
+### Kubernetes
+
+```bash
+sh k8s/scripts/gen-secret.sh      # builds k8s/secret.yaml from ./.env
+sh scripts/deploy-local.sh        # or: powershell -File scripts/deploy-local.ps1
+```
+
+Then open <http://localhost:8080>. Compose and the cluster both bind 8000 and
+8080, so run one at a time.
+
+**Why a deploy script rather than `docker build` + `kubectl apply`.** The node
+runs its own containerd with its own copy of every image, so a rebuild under an
+unchanged tag never reaches it and the pod silently comes back running the
+previous build. The script tags each build from the commit it came from, loads
+that image into the node explicitly, and renders the tag into a temporary copy
+of the manifests; `imagePullPolicy: Never` then turns a missing image into a
+visible failure instead of a stale success. `k8s/README.md` has the long
+version.
+
+### The API
+
+| Method | Path | Auth | |
+|---|---|:--:|---|
+| `POST` | `/auth/register` | – | create an account |
+| `POST` | `/auth/login` | – | returns a JWT |
+| `GET` | `/me/progress` | ✓ | XP, level, streak, decision counts |
+| `GET` | `/me/achievements` | ✓ | unlocked achievements |
+| `POST` | `/scenarios/{id}/decision` | ✓ | apply a decision, persist it, return events |
+| `POST` | `/mentor` | ✓ | a mentor message for the user's context |
+| `GET` | `/health` | – | liveness probe |
+
+There is deliberately no write endpoint for progress: authoritative state moves
+only through the decision endpoint.
+
+---
+
+## Configuration and secrets
+
+The point of the Kubernetes phase, and the rule the codebase is arranged
+around: **if leaking it causes harm it is a Secret; if it merely varies per
+environment it is a ConfigMap.** Nothing environment-specific is baked into an
+image, and no credential exists in the repository.
+
+| | |
+|---|---|
+| **ConfigMap** `finquest-config` | `ENVIRONMENT`, `LOG_LEVEL`, `AI_MODEL`, `DB_HOST`, `DB_PORT`, `DB_NAME`, `CORS_ORIGINS`, `API_BASE_URL` |
+| **Secret** `finquest-secrets` | `POSTGRES_USER`, `POSTGRES_PASSWORD`, `JWT_SECRET`, `OPENAI_API_KEY` |
+
+`DATABASE_URL` is composed in `k8s/backend.yaml` from the secret half and the
+non-secret half, so the password exists in exactly one place.
+
+Three consequences worth stating plainly:
+
+- **A Kubernetes Secret is base64-encoded, not encrypted.** Anyone who can run
+  `kubectl get secret finquest-secrets -o yaml` can decode every value.
+  `k8s/secret.yaml` is therefore git-ignored and generated from `./.env`. The
+  committed `k8s/examples/secret.example.yaml` holds placeholders only, and
+  lives outside `k8s/` so that `kubectl apply -f k8s/` cannot apply it by
+  accident.
+- **The AI key reaches the backend and nowhere else.** The frontend receives no
+  Secret at all — its bundle is public by construction.
+- **Config is injected once, at container start.** Editing a ConfigMap restarts
+  nothing; `kubectl rollout restart deployment/backend` is what applies it.
+  `LOG_LEVEL` is the easiest way to see this: set it to `debug` and the pod
+  keeps logging at `info` until it is restarted.
+
+---
+
+## Tests and CI
+
+Three lanes, each gating its own part of the tree.
+
+| Lane | Triggers on | What it runs |
+|---|---|---|
+| `backend-tests` | `backend/**` | ruff format + lint, `alembic upgrade head` against a PostgreSQL service container, then 188 tests |
+| `frontend-tests` | `frontend/**` | `dart format --set-exit-if-changed`, `flutter analyze`, 34 tests |
+| `k8s-validate` | `k8s/**` | secret hygiene, `kubeconform -strict` against Kubernetes 1.36, and a structural pass over the manifests |
+
+The backend suite runs against real PostgreSQL rather than SQLite, and each
+test is wrapped in a transaction that is rolled back afterwards — so the
+migration itself is exercised on every run and no test can see another's rows.
+`k8s-validate` also checks what a schema cannot: that every `configMapKeyRef`
+and `secretKeyRef` resolves, that every Service selector matches a pod
+template, and that no placeholder Secret has crept into the apply path.
+
+```bash
+cd backend && pytest                            # 188 passed
+cd frontend && flutter test                     # 34 passed
+pip install pyyaml                              # the validator's only dependency
+python k8s/scripts/validate-manifests.py
+```
+
+---
+
+## Known limits
+
+- **Secrets are not encrypted at rest in git.** `k8s/secret.yaml` stays local
+  and is regenerated from `.env`, so a fresh clone cannot deploy without that
+  file. Sealed Secrets would let an encrypted Secret live in the repository;
+  it is planned, not done.
+- **One entry point per tier.** Frontend and backend each publish their own
+  LoadBalancer rather than sitting behind a single Ingress, which is why
+  `CORS_ORIGINS` has to name the frontend's origin explicitly.
+- **Single replica, no autoscaling.** The backend runs one pod. Scaling out
+  needs an HPA, resource requests, and the Alembic migration moved out of the
+  pod entrypoint into a Job so it does not run once per replica.
+- **Local cluster only.** Everything here is verified against Docker Desktop's
+  Kubernetes; there is no cloud deployment or image registry in this
+  repository.
+
+See `ROADMAP.md` for what comes next and why it is ordered that way.
