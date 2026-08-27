@@ -167,14 +167,21 @@ state'in sahibi" diyor, bu endpoint bugün onu deliyor.
 notu kalkmış.
 
 #### 6c1 — Probe'lar
-Backend liveness/readiness (`/health`), postgres `pg_isready`, frontend
-`/healthz`.
+Backend startup + liveness (`/health`) ve DB'ye duyarlı readiness; postgres
+`pg_isready`; frontend `/healthz`.
 
-- [ ] Üç katmanda da probe'lar tanımlı
-- [ ] Readiness gerçekten trafiği kapıda tutuyor
+`/health` yalnızca config'ten cevap veriyor — DB'ye hiç dokunmuyor — bu yüzden
+readiness için elverişsiz: Postgres kapalıyken bile 200 döner. Readiness bunun
+yerine `exec` ile gerçek bir `SELECT 1` koşar. Liveness kasten `/health`'te
+kalır: "süreç çalışıyor mu" sorusunu cevaplamalı, "bağımlılığı ayakta mı"
+sorusunu değil — aksi halde bir DB kesintisi tüm replikaları crashloop'a sokar.
+
+- [x] Üç katmanda da probe'lar tanımlı
+- [x] Readiness gerçekten trafiği kapıda tutuyor
+- [x] initContainer ile Postgres beklenir (deploy'daki tek restart kalkar)
 
 **Bitti:** Readiness gate'li — backend, Postgres hazır olmadan Service'ten
-trafik almıyor.
+trafik almıyor; tam redeploy sonrası backend `RESTARTS = 0`.
 
 #### 6c2 — Sealed Secrets
 Controller + `kubeseal`. Secret şifreli bir `SealedSecret`'a dönüşür ve git'e
