@@ -13,6 +13,7 @@ from app.core.security import (
     hash_password,
     verify_password,
 )
+from app.schemas.auth import BCRYPT_MAX_PASSWORD_BYTES
 
 # ── Hashing ────────────────────────────────────────────────────────────────
 
@@ -44,44 +45,35 @@ def test_verify_against_a_malformed_hash_returns_false_instead_of_raising():
     assert verify_password("anything", "not-a-bcrypt-hash") is False
 
 
-@pytest.mark.xfail(
-    raises=ValueError,
-    strict=True,
-    reason="KNOWN ISSUE - bcrypt>=4 raises above 72 bytes instead of truncating",
-)
-def test_password_longer_than_bcrypts_72_byte_limit_can_be_hashed():
-    """KNOWN ISSUE - a password the API accepts cannot actually be hashed.
+def test_a_password_at_the_bcrypt_limit_hashes_and_verifies():
+    at_limit = "p" * BCRYPT_MAX_PASSWORD_BYTES
 
-    ``RegisterRequest`` allows up to 128 characters, but bcrypt 4.x dropped the
-    silent truncation older versions did and raises instead, so anything over
-    72 bytes explodes inside ``hash_password``. Left failing on purpose: the
-    fix is a product decision (truncate to 72 bytes, pre-hash with SHA-256, or
-    lower the schema limit), not a formatting cleanup. ``strict=True`` so this
-    marker cannot outlive the bug.
+    assert verify_password(at_limit, hash_password(at_limit)) is True
+
+
+def test_the_declared_limit_is_the_one_bcrypt_actually_enforces():
+    """Ties the schema's constant to the library's real behaviour.
+
+    bcrypt 4.x raises above 72 bytes rather than truncating the way older
+    versions did. If someone raises ``BCRYPT_MAX_PASSWORD_BYTES`` to a
+    friendlier-looking number, the validation would start admitting passwords
+    that blow up inside ``hash_password`` again — this fails first.
     """
-    long_password = "p" * 100
+    hash_password("p" * BCRYPT_MAX_PASSWORD_BYTES)  # must not raise
 
-    hashed = hash_password(long_password)
+    with pytest.raises(ValueError):
+        hash_password("p" * (BCRYPT_MAX_PASSWORD_BYTES + 1))
 
-    assert verify_password(long_password, hashed) is True
 
+def test_the_limit_is_counted_in_bytes_not_characters():
+    """The reason Pydantic's ``max_length`` cannot express this constraint."""
+    thirty_emoji = "🔐" * 30
 
-@pytest.mark.xfail(
-    raises=ValueError,
-    strict=True,
-    reason="KNOWN ISSUE - registering with a 73..128 char password returns 500",
-)
-def test_registering_with_a_long_password_does_not_500(client: TestClient):
-    """KNOWN ISSUE - the same defect, seen from the outside.
+    assert len(thirty_emoji) == 30
+    assert len(thirty_emoji.encode("utf-8")) == 120
 
-    The schema accepts the input, so this is a plain 500 on a valid request
-    rather than a 422. See the unit test above.
-    """
-    response = client.post(
-        "/auth/register", json={"email": "long@example.com", "password": "p" * 100}
-    )
-
-    assert response.status_code == 201
+    with pytest.raises(ValueError):
+        hash_password(thirty_emoji)
 
 
 # ── Tokens ─────────────────────────────────────────────────────────────────

@@ -134,24 +134,27 @@ olmayan her şey ConfigMap'e.
 güvenilir hale getirir. Sıra bağlayıcıdır: 6a ve 6b koddaki iki açığı kapatır,
 6c altyapıyı sağlamlaştırır.
 
-#### 6a — Uzun parola 500 döndürüyor
+#### 6a — Uzun parola 500 döndürüyordu
 `hash_password`, bcrypt'in 72 byte sınırının üstünde `ValueError` fırlatıyor
 (bcrypt 4.x eski sürümlerdeki sessiz kırpmayı kaldırdı). `RegisterRequest` ise
-128 karaktere izin veriyor; arada kalan 73–128 karakterlik bir parola
-`POST /auth/register` üzerinde **500** dönüyor. Şemanın kabul ettiği bir girdi
-sunucuyu patlatıyor — yani doğrulama hatası olması gereken şey iç hataya
-dönüşüyor.
+128 karaktere izin veriyordu; arada kalan 73–128 karakterlik bir parola
+`POST /auth/register` üzerinde **500** dönüyordu. Şemanın kabul ettiği bir
+girdi sunucuyu patlatıyordu — doğrulama hatası olması gereken şey iç hataya
+dönüşüyordu.
 
-**Öneri:** parola `max_length`'ini bcrypt'in gerçek sınırına indir; istek 422
-ile reddedilsin. (Alternatifler: 72 byte'a kırp, ya da SHA-256 ile ön-hash'le —
-ikisi de parola semantiğini değiştirdiği için ürün kararı.)
+**Çözüm:** parola doğrulaması bcrypt'in gerçek sınırına, **byte** cinsinden
+bağlandı; istek 422 ile reddediliyor. Pydantic'in `max_length`'i karakter
+saydığı için yetmezdi: "şifreçöğü" 9 karakter ama 14 byte, emoji 4 byte —
+karakter sayan bir sınır bunları geçirir, sonra hash içinde patlarlardı.
+(Alternatif olan SHA-256 ön-hash limiti tamamen kaldırırdı ama `security.py`'yi
+değiştirip mevcut hash'leri geçersiz kılardı; bu fazda byte limiti yeterli.)
 
-- [ ] `max_length`'i bcrypt sınırıyla hizala
-- [ ] Uzun parola 500 değil 422 dönsün
-- [ ] `test_security.py`'deki iki `strict` xfail'i gerçek teste çevir
+- [x] Doğrulamayı bcrypt sınırıyla byte bazında hizala
+- [x] Uzun parola 500 değil 422 dönsün (register **ve** login)
+- [x] `test_security.py`'deki iki `strict` xfail'i gerçek teste çevir
 
-**Bitti:** 73+ byte parolayla register 422 dönüyor; `hash_password` hiçbir
-geçerli girdide fırlatmıyor ve xfail işaretleri kalkmış.
+**Bitti:** 73+ byte parolayla register/login 422 dönüyor; `hash_password`
+hiçbir geçerli girdide fırlatmıyor ve suite'te hiç xfail kalmadı.
 
 #### 6b — `PATCH /me/progress` kısıtlaması
 Otoriter alanlar (`xp`, `level`, `streak_count`, `last_active`) istemciden
