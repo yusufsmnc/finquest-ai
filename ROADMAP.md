@@ -129,17 +129,73 @@ olmayan her şey ConfigMap'e.
 **Kavramlar:** Pod, Deployment, Service, ConfigMap, Secret, rollout
 **Bitti kriteri:** Sistem tamamen K8s'te çalışıyor, hiçbir credential koda/manifest'e gömülü değil.
 
-### Faz 6 — Sağlamlaştırma (opsiyonel, ileri seviye)
-**Hedef:** Prod'a yakın pratikler.
+### Faz 6 — Sağlamlaştırma
+**Hedef:** Prod'a yakın pratikler. Faz 5 sistemi ayağa kaldırdı; bu faz onu
+güvenilir hale getirir. Sıra bağlayıcıdır: 6b koddan bir açığı kapatır, 6c
+altyapıyı sağlamlaştırır.
 
-- [ ] liveness / readiness probe'lar
-- [ ] Resource limits (CPU / bellek)
-- [ ] Ingress ile tek giriş noktası
-- [ ] Replica + HPA (otomatik ölçekleme)
-- [ ] Sealed Secrets / harici secret yönetimi + basit CI
+#### 6b — `PATCH /me/progress` kısıtlaması
+Otoriter alanlar (`xp`, `level`, `streak_count`, `last_active`) istemciden
+yazılamaz; yalnızca decision akışıyla değişir. CLAUDE.md "backend otoriter
+state'in sahibi" diyor, bu endpoint bugün onu deliyor.
 
-**Kavramlar:** health checks, autoscaling, ingress, GitOps
-**Bitti kriteri:** Sistem yeniden başlatmalara ve yüke karşı dayanıklı.
+- [ ] Endpoint'in meşru kullanımını tespit et (frontend + başka çağıran var mı)
+- [ ] Otoriter alanları istemci yazımına kapat
+- [ ] Frontend'i kırmadığını doğrula
+
+**Bitti:** `test_client_cannot_overwrite_authoritative_progress` xfail olmaktan
+çıkıp gerçek bir kısıtlama testi olarak yeşil geçiyor; koddaki `TODO(Faz 6)`
+notu kalkmış.
+
+#### 6c1 — Probe'lar
+Backend liveness/readiness (`/health`), postgres `pg_isready`, frontend
+`/healthz`.
+
+- [ ] Üç katmanda da probe'lar tanımlı
+- [ ] Readiness gerçekten trafiği kapıda tutuyor
+
+**Bitti:** Readiness gate'li — backend, Postgres hazır olmadan Service'ten
+trafik almıyor.
+
+#### 6c2 — Sealed Secrets
+Controller + `kubeseal`. Secret şifreli bir `SealedSecret`'a dönüşür ve git'e
+commit'lenebilir hale gelir.
+
+- [ ] Cluster'a sealed-secrets controller'ı kur
+- [ ] `secret.yaml` → `sealedsecret.yaml` (kubeseal ile şifrele)
+- [ ] Controller'ın SealedSecret'tan Secret ürettiğini doğrula
+
+**Bitti:** Gerçek credential repo'da **şifreli** duruyor; düz `secret.yaml`
+git-ignored kalmaya devam ediyor.
+
+#### 6c3 — Ingress *(opsiyonel)*
+`ingress-nginx` ile tek giriş noktası; iki LoadBalancer yerine tek host.
+
+- [ ] ingress-nginx controller
+- [ ] Ingress kaynağı: `/` → frontend, `/api` → backend
+- [ ] Frontend `/api` yoluna göre yeniden build edilir (`API_BASE_URL` build arg)
+
+**Bitti:** Tek adresten hem uygulama hem API çalışıyor; CORS tek origin'e iner.
+
+#### 6c4 — HPA *(opsiyonel)*
+`metrics-server` + backend için CPU tabanlı otomatik ölçekleme.
+
+- [ ] metrics-server kurulumu
+- [ ] Resource requests/limits (CPU/bellek) — HPA'nın ön koşulu
+- [ ] Backend HPA (CPU hedefi)
+- [ ] Migration'ı Job/initContainer'a taşı — çok replikada `alembic upgrade head`
+      her pod'da koşmamalı
+
+**Bitti:** Backend yük altında replika sayısını artırıyor, migration tek yerden
+koşuyor.
+
+**Kavramlar:** health checks, readiness gating, secret encryption, ingress,
+autoscaling, GitOps
+**Bitti kriteri:** Sistem yeniden başlatmalara ve yüke karşı dayanıklı; hiçbir
+credential repo'da düz metin değil.
+
+> Eski listedeki "basit CI" maddesi Faz 5 sonrasında tamamlandı: `backend-tests`,
+> `frontend-tests` ve `k8s-validate` lane'leri merge'e gate oluyor.
 
 ---
 
