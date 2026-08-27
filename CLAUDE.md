@@ -321,8 +321,7 @@ scenario_history(id, user_id, scenario_id, choice, result, created_at)
 ```
 POST  /auth/register
 POST  /auth/login
-GET   /me/progress
-PATCH /me/progress
+GET   /me/progress          # read-only
 GET   /me/achievements
 POST  /scenarios/{id}/decision
 POST  /mentor
@@ -330,6 +329,8 @@ GET   /health
 ```
 
 Rules:
+- authoritative state (xp / level / streak / last_active) is never client-writable;
+  it moves only through `POST /scenarios/{id}/decision`
 - validate all input with Pydantic
 - never change the DB schema by hand → use Alembic migrations (avoids config drift)
 - read all config from environment variables (never hardcode)

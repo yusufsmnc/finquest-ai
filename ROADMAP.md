@@ -139,9 +139,9 @@ Otoriter alanlar (`xp`, `level`, `streak_count`, `last_active`) istemciden
 yazılamaz; yalnızca decision akışıyla değişir. CLAUDE.md "backend otoriter
 state'in sahibi" diyor, bu endpoint bugün onu deliyor.
 
-- [ ] Endpoint'in meşru kullanımını tespit et (frontend + başka çağıran var mı)
-- [ ] Otoriter alanları istemci yazımına kapat
-- [ ] Frontend'i kırmadığını doğrula
+- [x] Endpoint'in meşru kullanımını tespit et (frontend + başka çağıran var mı)
+- [x] Otoriter alanları istemci yazımına kapat
+- [x] Frontend'i kırmadığını doğrula
 
 **Bitti:** `test_client_cannot_overwrite_authoritative_progress` xfail olmaktan
 çıkıp gerçek bir kısıtlama testi olarak yeşil geçiyor; koddaki `TODO(Faz 6)`
@@ -215,8 +215,7 @@ scenario_history(id, user_id, scenario_id, choice, result, created_at)
 POST  /auth/register
 POST  /auth/login
 # ilerleme
-GET   /me/progress
-PATCH /me/progress
+GET   /me/progress          # salt okunur (Faz 6b)
 GET   /me/achievements
 # oyun + mentor
 POST  /scenarios/{id}/decision

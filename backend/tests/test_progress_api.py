@@ -1,10 +1,10 @@
-"""``/me/progress`` and ``/me/achievements``.
+"""``/me/progress`` and ``/me/achievements`` — both read-only.
 
-Read the ``KNOWN ISSUE`` test at the bottom before the rest: ``PATCH`` accepts
-whatever the client sends for xp / level / streak. The tests in the middle of
-this file describe how that write behaves *today* so a change is visible in the
-diff — they are not an endorsement of it. Narrowing the endpoint is Faz 6, and
-the gap is recorded as a strict xfail rather than quietly passing.
+``PATCH /me/progress`` used to accept whatever a client sent for xp, level and
+streak_count. It was removed in Faz 6b (nothing called it; the Flutter client
+only reads this path), so the tests below assert the endpoint is *closed* rather
+than describing how its write behaved. Progress moves through
+``POST /scenarios/{id}/decision`` and nowhere else.
 """
 
 from __future__ import annotations
@@ -44,82 +44,91 @@ def test_users_see_only_their_own_progress(client: TestClient, register):
     assert client.get("/me/progress", headers=idle).json()["xp"] == 0
 
 
-# ── PATCH: how the write behaves today ─────────────────────────────────────
+# ── PATCH is closed (Faz 6b) ───────────────────────────────────────────────
 
 
-def test_patch_requires_authentication(client: TestClient):
-    assert client.patch("/me/progress", json={"xp": 10}).status_code == 401
+def test_patch_is_not_allowed(client: TestClient, auth):
+    """The path answers GET only, so a write is rejected at the routing layer."""
+    response = client.patch("/me/progress", json={"xp": 9999}, headers=auth)
+
+    assert response.status_code == 405
 
 
-def test_patch_xp_recomputes_the_level(client: TestClient, auth):
-    """XP and level are kept consistent rather than drifting apart."""
-    body = client.patch("/me/progress", json={"xp": 250}, headers=auth).json()
-
-    assert body["xp"] == 250
-    assert body["level"] == 3
-
-
-def test_an_explicit_level_overrides_the_recomputed_one(client: TestClient, auth):
-    body = client.patch(
-        "/me/progress", json={"xp": 250, "level": 9}, headers=auth
-    ).json()
-
-    assert body["xp"] == 250
-    assert body["level"] == 9
-
-
-def test_patch_streak_count(client: TestClient, auth):
+def test_put_is_not_allowed(client: TestClient, auth):
     assert (
-        client.patch("/me/progress", json={"streak_count": 6}, headers=auth).json()[
-            "streak_count"
-        ]
-        == 6
+        client.put("/me/progress", json={"xp": 9999}, headers=auth).status_code == 405
     )
-
-
-def test_patch_is_partial_and_leaves_other_fields_alone(client: TestClient, auth):
-    client.patch("/me/progress", json={"xp": 250, "streak_count": 4}, headers=auth)
-
-    body = client.patch("/me/progress", json={"streak_count": 7}, headers=auth).json()
-
-    assert body["xp"] == 250, "xp must survive a streak-only update"
-    assert body["level"] == 3
-    assert body["streak_count"] == 7
-
-
-def test_an_empty_patch_changes_nothing(client: TestClient, auth):
-    before = client.patch("/me/progress", json={"xp": 120}, headers=auth).json()
-
-    after = client.patch("/me/progress", json={}, headers=auth).json()
-
-    assert after == before
-
-
-def test_patch_persists_across_requests(client: TestClient, auth):
-    client.patch("/me/progress", json={"xp": 340}, headers=auth)
-
-    assert client.get("/me/progress", headers=auth).json()["xp"] == 340
 
 
 @pytest.mark.parametrize(
     "payload",
     [
-        pytest.param({"xp": -1}, id="negative_xp"),
-        pytest.param({"level": 0}, id="level_below_one"),
-        pytest.param({"streak_count": -3}, id="negative_streak"),
-        pytest.param({"xp": "lots"}, id="non_numeric_xp"),
+        pytest.param({"xp": 9999}, id="xp"),
+        pytest.param({"level": 99}, id="level"),
+        pytest.param({"streak_count": 365}, id="streak_count"),
+        pytest.param({"last_active": "2030-01-01T00:00:00Z"}, id="last_active"),
+        pytest.param({"xp": 9999, "level": 99, "streak_count": 365}, id="all_at_once"),
     ],
 )
-def test_patch_rejects_out_of_range_values(client: TestClient, auth, payload):
-    assert client.patch("/me/progress", json=payload, headers=auth).status_code == 422
+def test_no_authoritative_field_can_be_written_by_a_client(
+    client: TestClient, auth, payload
+):
+    before = client.get("/me/progress", headers=auth).json()
+
+    forged = client.patch("/me/progress", json=payload, headers=auth)
+
+    assert forged.status_code == 405
+    assert client.get("/me/progress", headers=auth).json() == before
 
 
-def test_patch_does_not_touch_another_user(client: TestClient, register):
-    mine, theirs = register(), register()
+def test_a_forged_write_cannot_move_earned_progress(client: TestClient, auth):
+    """The scenario in the old KNOWN ISSUE test, now asserting the fix."""
+    client.post(
+        "/scenarios/budget/decision",
+        json={"choice": "save", "correct": True},
+        headers=auth,
+    )
 
-    client.patch("/me/progress", json={"xp": 500}, headers=mine)
+    forged = client.patch(
+        "/me/progress",
+        json={"xp": 999_999, "level": 99, "streak_count": 365},
+        headers=auth,
+    )
 
-    assert client.get("/me/progress", headers=theirs).json()["xp"] == 0
+    assert forged.status_code == 405
+    after = client.get("/me/progress", headers=auth).json()
+    assert after["xp"] == 20, "the decision's 20 XP, not the 999999 that was posted"
+    assert after["level"] == 1
+    assert after["streak_count"] == 1
+
+
+def test_progress_moves_only_through_the_decision_flow(client: TestClient, auth):
+    """Two correct decisions are worth 40 XP; no request can shortcut that."""
+    for _ in range(2):
+        client.post(
+            "/scenarios/budget/decision",
+            json={"choice": "save", "correct": True},
+            headers=auth,
+        )
+    client.patch("/me/progress", json={"xp": 5000}, headers=auth)
+
+    assert client.get("/me/progress", headers=auth).json()["xp"] == 40
+
+
+def test_the_api_no_longer_advertises_a_write(client: TestClient):
+    """Guards against the route being reintroduced by accident."""
+    paths = client.get("/openapi.json").json()["paths"]
+
+    assert set(paths["/me/progress"]) == {"get"}
+
+
+def test_a_rejected_write_is_not_an_authentication_oracle(client: TestClient):
+    """405 comes from routing, before auth — the same answer with or without a
+    token. That is correct here: it leaks nothing, because the method does not
+    exist for any caller."""
+    without_token = client.patch("/me/progress", json={"xp": 1})
+
+    assert without_token.status_code == 405
 
 
 # ── Achievements ───────────────────────────────────────────────────────────
@@ -157,41 +166,3 @@ def test_achievements_are_per_user(client: TestClient, register):
     )
 
     assert client.get("/me/achievements", headers=newcomer).json() == []
-
-
-# ── KNOWN ISSUE ────────────────────────────────────────────────────────────
-
-
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        "KNOWN ISSUE - Faz 6: restrict client-writable authoritative fields. "
-        "PATCH /me/progress trusts the client's xp/level/streak verbatim."
-    ),
-)
-def test_client_cannot_overwrite_authoritative_progress(client: TestClient, auth):
-    """KNOWN ISSUE - a client can award itself any amount of XP.
-
-    CLAUDE.md puts authoritative gamification state in the backend precisely so
-    the frontend cannot compute it. This endpoint hands that back: a plain PATCH
-    sets XP, level and streak to whatever was posted, with no reconciliation
-    against what the user actually earned.
-
-    Asserting the behaviour we want, marked ``strict`` so the day the endpoint
-    is narrowed this test starts passing and forces the marker to be removed.
-    See the TODO(Faz 6) note in ``app/api/progress.py``.
-    """
-    client.post(
-        "/scenarios/budget/decision",
-        json={"choice": "save", "correct": True},
-        headers=auth,
-    )
-
-    forged = client.patch(
-        "/me/progress",
-        json={"xp": 999_999, "level": 99, "streak_count": 365},
-        headers=auth,
-    )
-
-    assert forged.status_code in (403, 422), "the server should refuse this write"
-    assert client.get("/me/progress", headers=auth).json()["xp"] == 20
