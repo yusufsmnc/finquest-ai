@@ -60,8 +60,7 @@ API docs: http://localhost:8000/docs
 | GET | `/health` | – | liveness probe |
 | POST | `/auth/register` | – | create user (seeds zeroed progress) |
 | POST | `/auth/login` | – | returns JWT |
-| GET | `/me/progress` | ✓ | read authoritative XP/level/streak |
-| PATCH | `/me/progress` | ✓ | update progress (level kept consistent with XP) |
+| GET | `/me/progress` | ✓ | read authoritative XP/level/streak (read-only: no client write, Faz 6b) |
 | GET | `/me/achievements` | ✓ | list unlocked achievements |
 | POST | `/scenarios/{id}/decision` | ✓ | apply a decision, persist history, return events |
 

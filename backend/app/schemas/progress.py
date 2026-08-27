@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict
 
 
 class ProgressOut(BaseModel):
@@ -16,11 +16,3 @@ class ProgressOut(BaseModel):
     # Used by the frontend to render mission/achievement progress bars.
     decisions_made: int = 0
     decisions_today: int = 0
-
-
-class ProgressUpdate(BaseModel):
-    """Partial update of authoritative progress (PATCH /me/progress)."""
-
-    xp: int | None = Field(default=None, ge=0)
-    level: int | None = Field(default=None, ge=1)
-    streak_count: int | None = Field(default=None, ge=0)
