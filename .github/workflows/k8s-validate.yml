@@ -45,12 +45,12 @@ jobs:
 
           # Placeholders only in the committed template.
           for key in POSTGRES_USER POSTGRES_PASSWORD JWT_SECRET; do
-            if ! grep -qE "^  ${key}: \"REPLACE_ME\"" k8s/secret.example.yaml; then
+            if ! grep -qE "^  ${key}: \"REPLACE_ME\"" k8s/examples/secret.example.yaml; then
               echo "::error::secret.example.yaml: ${key} is not a REPLACE_ME placeholder"
               exit 1
             fi
           done
-          if ! grep -qE '^  OPENAI_API_KEY: ""' k8s/secret.example.yaml; then
+          if ! grep -qE '^  OPENAI_API_KEY: ""' k8s/examples/secret.example.yaml; then
             echo "::error::secret.example.yaml: OPENAI_API_KEY must be empty"
             exit 1
           fi
@@ -72,8 +72,8 @@ jobs:
           echo "secret hygiene: ok"
 
       - name: Confirm the real secret is absent
-        # Everything below must validate using secret.example.yaml alone. With a
-        # filled-in secret.yaml present the run would prove nothing.
+        # Everything below must validate using the placeholder template alone.
+        # With a filled-in secret.yaml present the run would prove nothing.
         run: |
           test ! -f k8s/secret.yaml
           echo "validating against placeholders only"

@@ -3,7 +3,7 @@
 # The rule (CLAUDE.md): if leaking it causes harm → Secret. If it merely varies
 # per environment → here. Everything below is safe to commit, and this file IS
 # committed on purpose: it is the environment's shape, in git. The matching
-# credentials are not (see secret.example.yaml).
+# credentials are not (see examples/secret.example.yaml).
 #
 # ⚠️  Changing this ConfigMap does NOT restart the pods that consume it as env
 #     vars — env is injected once, at container start. After `kubectl apply`:

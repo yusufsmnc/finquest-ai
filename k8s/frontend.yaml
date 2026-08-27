@@ -43,9 +43,9 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: finquest-frontend:local
-          # Local image, no registry — same reason as the backend.
-          imagePullPolicy: IfNotPresent
+          # Rewritten per build by scripts/deploy-local — see backend.yaml.
+          image: finquest-frontend:UNSET
+          imagePullPolicy: Never
           ports:
             - name: http
               containerPort: 80
