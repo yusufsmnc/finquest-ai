@@ -1,0 +1,72 @@
+name: docker-build
+
+# Proves the images still build. Nothing here is pushed anywhere and no cluster
+# is involved — the only question is whether a Dockerfile, a dependency pin or
+# a build step broke, which the other lanes cannot see: backend-tests runs the
+# code straight from the checkout, and frontend-tests runs `flutter test`, so
+# both stay green while an image fails to assemble.
+#
+# That failure otherwise surfaces at deploy time, which is the expensive place
+# to find it.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - '.github/workflows/docker-build.yml'
+  pull_request:
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - '.github/workflows/docker-build.yml'
+
+# A second push supersedes the first: these builds are the slowest lane, and
+# there is no value in finishing one for a commit nobody will merge.
+concurrency:
+  group: docker-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build the backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          # Never pushed: this lane is a compile check, not a release step. No
+          # registry, no credentials, nothing to leak.
+          push: false
+          # Not loaded into the local daemon either — nothing runs the image
+          # here, and skipping the export saves the slowest part of the job.
+          load: false
+          # Scoped per image so the two jobs do not evict each other's layers.
+          cache-from: type=gha,scope=backend
+          cache-to: type=gha,mode=max,scope=backend
+
+  frontend-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build the frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          push: false
+          load: false
+          # A placeholder. API_BASE_URL is compiled into the JavaScript bundle,
+          # so a real deploy passes the URL the browser will use — but this lane
+          # only asks whether the build succeeds, and it throws the image away.
+          build-args: |
+            API_BASE_URL=http://localhost:8000
+          cache-from: type=gha,scope=frontend
+          cache-to: type=gha,mode=max,scope=frontend
