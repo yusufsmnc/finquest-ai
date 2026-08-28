@@ -24,8 +24,9 @@ class ScenarioFeedbackScreen extends ConsumerWidget {
         ref.watch(scenarioNotifierProvider.select((s) => s.currentStreak));
     final dispatcher = ref.read(scenarioDispatcherProvider);
 
-    if (scenario == null || selectedOptionId == null)
+    if (scenario == null || selectedOptionId == null) {
       return const SizedBox.shrink();
+    }
 
     final selectedOption =
         scenario.options.where((o) => o.id == selectedOptionId).firstOrNull;
