@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_colors.dart';
 import 'widgets/profile_identity_card.dart';
+import 'widgets/profile_logout_button.dart';
 import 'widgets/profile_xp_section.dart';
 import 'widgets/profile_streak_section.dart';
 import 'widgets/profile_achievements_showcase.dart';
@@ -101,6 +102,7 @@ class _ProfileAppBar extends StatelessWidget {
           color: AppColors.textPrimary,
         ),
       ),
+      actions: const [ProfileLogoutButton()],
     );
   }
 }

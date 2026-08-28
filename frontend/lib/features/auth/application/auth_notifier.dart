@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/session/session_reset.dart';
 import '../auth_providers.dart';
 import '../domain/auth_state.dart';
 
@@ -50,15 +51,19 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
     });
   }
 
+  /// Ends the session. Nothing is revoked server-side: the JWT is stateless,
+  /// so signing out means dropping the token and everything derived from it.
   Future<void> logout() async {
     await ref.read(authRepositoryProvider).logout();
-    ref.invalidate(progressProvider);
+    resetSessionState(ref);
     state = const AsyncData(AuthState.unauthenticated());
   }
 
   /// Called by the API client's 401 interceptor (token already cleared there).
+  /// Takes the same path as an explicit sign-out, so an expired token cannot
+  /// leave one user's XP on screen for the next one.
   Future<void> markUnauthenticated() async {
-    ref.invalidate(progressProvider);
+    resetSessionState(ref);
     state = const AsyncData(AuthState.unauthenticated());
   }
 }
