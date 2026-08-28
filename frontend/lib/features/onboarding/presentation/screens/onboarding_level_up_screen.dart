@@ -92,8 +92,8 @@ class _OnboardingLevelUpScreenState
     _contentSlide = Tween<Offset>(
       begin: const Offset(0, 0.04),
       end: Offset.zero,
-    ).animate(
-        CurvedAnimation(parent: _contentController, curve: Curves.easeOutCubic));
+    ).animate(CurvedAnimation(
+        parent: _contentController, curve: Curves.easeOutCubic));
 
     _titleController = AnimationController(
       vsync: this,
@@ -348,8 +348,8 @@ class _XpLevelCard extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
                         colors: [AppColors.primary, AppColors.cyan],
@@ -371,8 +371,8 @@ class _XpLevelCard extends StatelessWidget {
                       size: 14, color: AppColors.textMuted),
                   const SizedBox(width: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: AppColors.surfaceHigh,
                       borderRadius: BorderRadius.circular(20),

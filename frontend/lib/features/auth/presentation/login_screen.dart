@@ -47,7 +47,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       final code = error.response?.statusCode;
       if (code == 401) return 'Incorrect email or password.';
       if (code == 409) return 'That email is already registered.';
-      if (code == 422) return 'Please enter a valid email and 8+ char password.';
+      if (code == 422)
+        return 'Please enter a valid email and 8+ char password.';
       if (error.type == DioExceptionType.connectionError ||
           error.type == DioExceptionType.connectionTimeout) {
         return 'Cannot reach the server. Is the backend running?';

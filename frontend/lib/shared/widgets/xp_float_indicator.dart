@@ -90,8 +90,7 @@ class XPFloatIndicatorState extends State<XPFloatIndicator>
           child: Opacity(
             opacity: _opacity.value.clamp(0.0, 1.0),
             child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
               decoration: BoxDecoration(
                 color: const Color(0xFFF59E0B),
                 borderRadius: BorderRadius.circular(20),
@@ -106,8 +105,7 @@ class XPFloatIndicatorState extends State<XPFloatIndicator>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.bolt_rounded,
-                      color: Colors.white, size: 16),
+                  const Icon(Icons.bolt_rounded, color: Colors.white, size: 16),
                   const SizedBox(width: 4),
                   Text(
                     '+${widget.amount} XP',

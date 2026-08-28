@@ -8,8 +8,10 @@ class ScenarioXpFloatOverlay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final showXpFloat = ref.watch(scenarioNotifierProvider.select((s) => s.showXpFloat));
-    final lastXpGained = ref.watch(scenarioNotifierProvider.select((s) => s.lastXpGained));
+    final showXpFloat =
+        ref.watch(scenarioNotifierProvider.select((s) => s.showXpFloat));
+    final lastXpGained =
+        ref.watch(scenarioNotifierProvider.select((s) => s.lastXpGained));
 
     return XPFloatOverlay(
       xpAmount: lastXpGained,

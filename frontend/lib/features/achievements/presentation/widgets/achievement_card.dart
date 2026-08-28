@@ -90,7 +90,8 @@ class AchievementCard extends StatelessWidget {
     );
 
     return unlocked
-        ? AnimatedGradientBorder(borderRadius: 16, borderWidth: 2.0, child: card)
+        ? AnimatedGradientBorder(
+            borderRadius: 16, borderWidth: 2.0, child: card)
         : card;
   }
 }
@@ -208,7 +209,8 @@ class _ProgressRow extends StatelessWidget {
             value: fraction,
             minHeight: 4,
             backgroundColor: AppColors.surfaceHigh,
-            valueColor: const AlwaysStoppedAnimation<Color>(AppColors.textMuted),
+            valueColor:
+                const AlwaysStoppedAnimation<Color>(AppColors.textMuted),
           ),
         ),
         const SizedBox(height: 4),

@@ -11,10 +11,14 @@ class ScenarioDecisionScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scenario = ref.watch(scenarioNotifierProvider.select((s) => s.activeScenario));
-    final selectedOptionId = ref.watch(scenarioNotifierProvider.select((s) => s.selectedOptionId));
-    final isCorrect = ref.watch(scenarioNotifierProvider.select((s) => s.isCorrect));
-    final currentStreak = ref.watch(scenarioNotifierProvider.select((s) => s.currentStreak));
+    final scenario =
+        ref.watch(scenarioNotifierProvider.select((s) => s.activeScenario));
+    final selectedOptionId =
+        ref.watch(scenarioNotifierProvider.select((s) => s.selectedOptionId));
+    final isCorrect =
+        ref.watch(scenarioNotifierProvider.select((s) => s.isCorrect));
+    final currentStreak =
+        ref.watch(scenarioNotifierProvider.select((s) => s.currentStreak));
     final dispatcher = ref.read(scenarioDispatcherProvider);
 
     if (scenario == null) return const SizedBox.shrink();
@@ -26,7 +30,8 @@ class ScenarioDecisionScreen extends ConsumerWidget {
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+          icon: const Icon(Icons.arrow_back_rounded,
+              color: AppColors.textPrimary),
           onPressed: () => dispatcher.onBackToList(),
         ),
         title: Text(
@@ -49,7 +54,8 @@ class ScenarioDecisionScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ScenarioRiskIndicator(riskLevel: scenario.riskLevel, large: true),
+                ScenarioRiskIndicator(
+                    riskLevel: scenario.riskLevel, large: true),
                 const SizedBox(height: 20),
                 AnimatedGradientBorder(
                   borderRadius: 20,
@@ -135,7 +141,8 @@ class _StakesBar extends StatelessWidget {
               color: AppColors.xpGold.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.bolt_rounded, color: AppColors.xpGold, size: 18),
+            child: const Icon(Icons.bolt_rounded,
+                color: AppColors.xpGold, size: 18),
           ),
           const SizedBox(width: 12),
           Column(
@@ -174,7 +181,8 @@ class _StakesBar extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.streakOrange.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.streakOrange.withValues(alpha: 0.2)),
+                border: Border.all(
+                    color: AppColors.streakOrange.withValues(alpha: 0.2)),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -443,8 +451,8 @@ class _OptionCardState extends State<_OptionCard>
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: AnimatedBuilder(
-        animation:
-            Listenable.merge([_pressController, _popController, _shakeController]),
+        animation: Listenable.merge(
+            [_pressController, _popController, _shakeController]),
         builder: (context, child) => Transform.translate(
           offset: Offset(_shakeAnim.value, 0),
           child: Transform.scale(

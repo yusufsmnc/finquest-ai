@@ -16,28 +16,28 @@ class DashboardLearningSection extends ConsumerWidget {
 
     return AnimatedGradientBorder(
       child: CardContainer(
-      child: Column(
-        children: List.generate(categories.length, (i) {
-          return Column(
-            children: [
-              _CategoryRow(
-                category: categories[i],
-                animationDelay: 400 + i * 120,
-              ),
-              if (i < categories.length - 1)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Container(
-                    height: 1,
-                    color: AppColors.border,
-                  ),
+        child: Column(
+          children: List.generate(categories.length, (i) {
+            return Column(
+              children: [
+                _CategoryRow(
+                  category: categories[i],
+                  animationDelay: 400 + i * 120,
                 ),
-            ],
-          );
-        }),
-      ),
-    ),    // CardContainer
-  );      // AnimatedGradientBorder
+                if (i < categories.length - 1)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Container(
+                      height: 1,
+                      color: AppColors.border,
+                    ),
+                  ),
+              ],
+            );
+          }),
+        ),
+      ), // CardContainer
+    ); // AnimatedGradientBorder
   }
 }
 

@@ -100,8 +100,8 @@ class MentorNextStepCard extends ConsumerWidget {
                   label: 'Scenarios',
                   icon: Icons.psychology_alt_rounded,
                   color: AppColors.primary,
-                  onTap: () =>
-                      ref.read(shellTabIndexProvider.notifier).state = ShellTab.scenarios,
+                  onTap: () => ref.read(shellTabIndexProvider.notifier).state =
+                      ShellTab.scenarios,
                 ),
               ),
               const SizedBox(width: 8),
@@ -110,8 +110,8 @@ class MentorNextStepCard extends ConsumerWidget {
                   label: 'Achievements',
                   icon: Icons.emoji_events_rounded,
                   color: AppColors.purple,
-                  onTap: () =>
-                      ref.read(shellTabIndexProvider.notifier).state = ShellTab.achievements,
+                  onTap: () => ref.read(shellTabIndexProvider.notifier).state =
+                      ShellTab.achievements,
                 ),
               ),
             ],

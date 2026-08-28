@@ -78,53 +78,53 @@ class _XpLostOverlayState extends State<XpLostOverlay>
       child: Material(
         color: Colors.transparent,
         child: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, child) => SlideTransition(
-          position: _slideIn,
-          child: FadeTransition(
-            opacity: _opacity,
-            child: Transform.translate(
-              offset: Offset(_shake.value, 0),
-              child: child,
+          animation: _controller,
+          builder: (context, child) => SlideTransition(
+            position: _slideIn,
+            child: FadeTransition(
+              opacity: _opacity,
+              child: Transform.translate(
+                offset: Offset(_shake.value, 0),
+                child: child,
+              ),
             ),
           ),
-        ),
-        child: Semantics(
-          label: '-${widget.amount} XP lost',
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-            decoration: BoxDecoration(
-              color: AppColors.error,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.error.withValues(alpha: 0.4),
-                  blurRadius: 16,
-                  offset: const Offset(0, 6),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.trending_down_rounded,
-                    color: Colors.white, size: 18),
-                const SizedBox(width: 8),
-                Text(
-                  '-${widget.amount} XP',
-                  style: const TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
+          child: Semantics(
+            label: '-${widget.amount} XP lost',
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+              decoration: BoxDecoration(
+                color: AppColors.error,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.error.withValues(alpha: 0.4),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
                   ),
-                ),
-              ],
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.trending_down_rounded,
+                      color: Colors.white, size: 18),
+                  const SizedBox(width: 8),
+                  Text(
+                    '-${widget.amount} XP',
+                    style: const TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ),
-  );
+    );
   }
 }

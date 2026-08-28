@@ -33,13 +33,18 @@ class _OnboardingDecisionScreenState
   void initState() {
     super.initState();
     _shakeController = OnboardingAnimationHandler.createShakeController(this);
-    _shakeAnim = OnboardingAnimationHandler.buildShakeAnimation(_shakeController);
+    _shakeAnim =
+        OnboardingAnimationHandler.buildShakeAnimation(_shakeController);
 
-    _correctController = OnboardingAnimationHandler.createCorrectController(this);
-    _correctScale = OnboardingAnimationHandler.buildCorrectScaleAnimation(_correctController);
+    _correctController =
+        OnboardingAnimationHandler.createCorrectController(this);
+    _correctScale = OnboardingAnimationHandler.buildCorrectScaleAnimation(
+        _correctController);
 
-    _redFlashController = OnboardingAnimationHandler.createRedFlashController(this);
-    _redFlash = OnboardingAnimationHandler.buildRedFlashAnimation(_redFlashController);
+    _redFlashController =
+        OnboardingAnimationHandler.createRedFlashController(this);
+    _redFlash =
+        OnboardingAnimationHandler.buildRedFlashAnimation(_redFlashController);
   }
 
   @override
@@ -102,23 +107,27 @@ class _OnboardingDecisionScreenState
                       _OptionButton(
                         optionId: OnboardingConstants.optionAId,
                         label: OnboardingConstants.optionAText,
-                        isSelected: _tappedOptionId == OnboardingConstants.optionAId,
+                        isSelected:
+                            _tappedOptionId == OnboardingConstants.optionAId,
                         isDisabled: state.decisionMade,
                         isCorrect: true,
                         onTap: state.decisionMade
                             ? null
-                            : () => _onOptionTapped(OnboardingConstants.optionAId),
+                            : () =>
+                                _onOptionTapped(OnboardingConstants.optionAId),
                       ),
                       const SizedBox(height: 12),
                       _OptionButton(
                         optionId: OnboardingConstants.optionBId,
                         label: OnboardingConstants.optionBText,
-                        isSelected: _tappedOptionId == OnboardingConstants.optionBId,
+                        isSelected:
+                            _tappedOptionId == OnboardingConstants.optionBId,
                         isDisabled: state.decisionMade,
                         isCorrect: false,
                         onTap: state.decisionMade
                             ? null
-                            : () => _onOptionTapped(OnboardingConstants.optionBId),
+                            : () =>
+                                _onOptionTapped(OnboardingConstants.optionBId),
                       ),
                       const Spacer(),
                       Container(
@@ -198,76 +207,77 @@ class _ScenarioCard extends StatelessWidget {
       ),
       child: AnimatedGradientBorder(
         child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.06),
-              blurRadius: 20,
-              offset: const Offset(0, 4),
-            ),
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.3),
-              blurRadius: 12,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: AppColors.xpGold.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                        color: AppColors.xpGold.withValues(alpha: 0.2)),
-                  ),
-                  child: const Text(
-                    '⚡ Tutorial',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.xpGold,
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withValues(alpha: 0.06),
+                blurRadius: 20,
+                offset: const Offset(0, 4),
+              ),
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.3),
+                blurRadius: 12,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppColors.xpGold.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                          color: AppColors.xpGold.withValues(alpha: 0.2)),
+                    ),
+                    child: const Text(
+                      '⚡ Tutorial',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.xpGold,
+                      ),
                     ),
                   ),
+                  const Spacer(),
+                  _RiskBadge(level: OnboardingConstants.riskLevel),
+                ],
+              ),
+              const SizedBox(height: 14),
+              Text(
+                OnboardingConstants.scenarioTitle,
+                style: const TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
                 ),
-                const Spacer(),
-                _RiskBadge(level: OnboardingConstants.riskLevel),
-              ],
-            ),
-            const SizedBox(height: 14),
-            Text(
-              OnboardingConstants.scenarioTitle,
-              style: const TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              OnboardingConstants.scenarioDescription,
-              style: const TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: AppColors.textSecondary,
-                height: 1.6,
+              const SizedBox(height: 8),
+              Text(
+                OnboardingConstants.scenarioDescription,
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.textSecondary,
+                  height: 1.6,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-      ),    // AnimatedGradientBorder
+      ), // AnimatedGradientBorder
     );
   }
 }
@@ -432,7 +442,9 @@ class _OptionButtonState extends State<_OptionButton>
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: widget.isSelected
-                        ? (widget.isCorrect ? AppColors.success : AppColors.error)
+                        ? (widget.isCorrect
+                            ? AppColors.success
+                            : AppColors.error)
                         : AppColors.surfaceHigh,
                   ),
                   child: Center(
@@ -464,7 +476,9 @@ class _OptionButtonState extends State<_OptionButton>
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       color: widget.isSelected
-                          ? (widget.isCorrect ? AppColors.success : AppColors.error)
+                          ? (widget.isCorrect
+                              ? AppColors.success
+                              : AppColors.error)
                           : AppColors.textPrimary,
                       height: 1.4,
                     ),

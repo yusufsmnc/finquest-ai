@@ -152,7 +152,6 @@ class _OnboardingPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) => const SizedBox.shrink();
 }
 
-
 class _NotFoundScreen extends StatelessWidget {
   const _NotFoundScreen();
 

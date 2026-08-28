@@ -25,8 +25,10 @@ class DashboardXpHeroCard extends ConsumerWidget {
     const xpMax = _xpPerLevel;
     final progress = (xp / xpMax).clamp(0.0, 1.0);
     final remaining = xpMax - xp;
-    final showFloat = ref.watch(dashboardNotifierProvider.select((s) => s.showXpFloat));
-    final lastXpGained = ref.watch(dashboardNotifierProvider.select((s) => s.lastXpGained));
+    final showFloat =
+        ref.watch(dashboardNotifierProvider.select((s) => s.showXpFloat));
+    final lastXpGained =
+        ref.watch(dashboardNotifierProvider.select((s) => s.lastXpGained));
 
     return Stack(
       clipBehavior: Clip.none,
@@ -34,119 +36,119 @@ class DashboardXpHeroCard extends ConsumerWidget {
         AnimatedGradientBorder(
           borderRadius: 24,
           child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppColors.indigoDeep,
-                AppColors.purpleDark,
-                AppColors.cyanDark,
+            width: double.infinity,
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.indigoDeep,
+                  AppColors.purpleDark,
+                  AppColors.cyanDark,
+                ],
+                stops: [0.0, 0.55, 1.0],
+              ),
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withValues(alpha: 0.45),
+                  blurRadius: 40,
+                  offset: const Offset(0, 10),
+                ),
+                BoxShadow(
+                  color: AppColors.cyan.withValues(alpha: 0.2),
+                  blurRadius: 60,
+                  spreadRadius: -8,
+                  offset: const Offset(0, 16),
+                ),
               ],
-              stops: [0.0, 0.55, 1.0],
             ),
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primary.withValues(alpha: 0.45),
-                blurRadius: 40,
-                offset: const Offset(0, 10),
-              ),
-              BoxShadow(
-                color: AppColors.cyan.withValues(alpha: 0.2),
-                blurRadius: 60,
-                spreadRadius: -8,
-                offset: const Offset(0, 16),
-              ),
-            ],
-          ),
-          child: Stack(
-            children: [
-              // Decorative watermark circle top-right
-              Positioned(
-                top: -40,
-                right: -40,
-                child: Container(
-                  width: 180,
-                  height: 180,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white.withValues(alpha: 0.05),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 10,
-                right: 10,
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white.withValues(alpha: 0.04),
-                  ),
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'YOUR LEVEL',
-                            style: TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white.withValues(alpha: 0.7),
-                              letterSpacing: 1.4,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          ShaderMask(
-                            shaderCallback: (bounds) => const LinearGradient(
-                              colors: [Colors.white, AppColors.skyLight],
-                            ).createShader(bounds),
-                            child: Text(
-                              'Level $level',
-                              style: const TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: 38,
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white,
-                                height: 1.1,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      _LevelBadge(level: level),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  _GlowXpBar(progress: progress, currentXP: xp, maxXP: xpMax),
-                  const SizedBox(height: 10),
-                  Text(
-                    '$remaining XP to Level ${level + 1}',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white.withValues(alpha: 0.6),
+            child: Stack(
+              children: [
+                // Decorative watermark circle top-right
+                Positioned(
+                  top: -40,
+                  right: -40,
+                  child: Container(
+                    width: 180,
+                    height: 180,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white.withValues(alpha: 0.05),
                     ),
                   ),
-                ],
-              ),
-            ],
+                ),
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white.withValues(alpha: 0.04),
+                    ),
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'YOUR LEVEL',
+                              style: TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white.withValues(alpha: 0.7),
+                                letterSpacing: 1.4,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            ShaderMask(
+                              shaderCallback: (bounds) => const LinearGradient(
+                                colors: [Colors.white, AppColors.skyLight],
+                              ).createShader(bounds),
+                              child: Text(
+                                'Level $level',
+                                style: const TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 38,
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
+                                  height: 1.1,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        _LevelBadge(level: level),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    _GlowXpBar(progress: progress, currentXP: xp, maxXP: xpMax),
+                    const SizedBox(height: 10),
+                    Text(
+                      '$remaining XP to Level ${level + 1}',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white.withValues(alpha: 0.6),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-        ),  // AnimatedGradientBorder
+        ), // AnimatedGradientBorder
         if (showFloat)
           Positioned(
             right: 24,

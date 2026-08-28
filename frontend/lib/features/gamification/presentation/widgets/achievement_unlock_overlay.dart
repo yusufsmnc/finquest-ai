@@ -34,11 +34,9 @@ class _AchievementUnlockOverlayState extends State<AchievementUnlockOverlay>
     _slideIn = Tween<Offset>(
       begin: const Offset(0, 1.5),
       end: Offset.zero,
-    ).animate(
-        CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
     _fade = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(
-          parent: _controller, curve: const Interval(0, 0.4)),
+      CurvedAnimation(parent: _controller, curve: const Interval(0, 0.4)),
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -74,75 +72,75 @@ class _AchievementUnlockOverlayState extends State<AchievementUnlockOverlay>
       child: Material(
         color: Colors.transparent,
         child: SlideTransition(
-        position: _slideIn,
-        child: FadeTransition(
-          opacity: _fade,
-          child: Semantics(
-            label: 'Achievement unlocked: ${widget.achievementName}',
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.35),
-                    blurRadius: 24,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 56,
-                    height: 56,
-                    child: Lottie.asset(
-                      'assets/animations/trophy.json',
-                      repeat: false,
+          position: _slideIn,
+          child: FadeTransition(
+            opacity: _fade,
+            child: Semantics(
+              label: 'Achievement unlocked: ${widget.achievementName}',
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.surface,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.35),
+                      blurRadius: 24,
+                      offset: const Offset(0, 8),
                     ),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Text(
-                          'Achievement Unlocked!',
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.xpGold,
-                            letterSpacing: 0.3,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          widget.achievementName,
-                          style: const TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 56,
+                      height: 56,
+                      child: Lottie.asset(
+                        'assets/animations/trophy.json',
+                        repeat: false,
+                      ),
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: _dismiss,
-                    child: const Icon(Icons.close_rounded,
-                        color: AppColors.textMuted, size: 18),
-                  ),
-                ],
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            'Achievement Unlocked!',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.xpGold,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            widget.achievementName,
+                            style: const TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: _dismiss,
+                      child: const Icon(Icons.close_rounded,
+                          color: AppColors.textMuted, size: 18),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
       ),
-    ),
-  );
+    );
   }
 }

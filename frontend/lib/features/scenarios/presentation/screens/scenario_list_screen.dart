@@ -13,12 +13,18 @@ class ScenarioListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scenarios = ref.watch(scenarioNotifierProvider.select((s) => s.filteredScenarios));
-    final completedIds = ref.watch(scenarioNotifierProvider.select((s) => s.completedIds));
-    final totalCount = ref.watch(scenarioNotifierProvider.select((s) => s.scenarios.length));
-    final selectedCategory = ref.watch(scenarioNotifierProvider.select((s) => s.selectedCategory));
-    final xpEarned = ref.watch(scenarioNotifierProvider.select((s) => s.xpEarned));
-    final accuracyRate = ref.watch(scenarioNotifierProvider.select((s) => s.accuracyRate));
+    final scenarios =
+        ref.watch(scenarioNotifierProvider.select((s) => s.filteredScenarios));
+    final completedIds =
+        ref.watch(scenarioNotifierProvider.select((s) => s.completedIds));
+    final totalCount =
+        ref.watch(scenarioNotifierProvider.select((s) => s.scenarios.length));
+    final selectedCategory =
+        ref.watch(scenarioNotifierProvider.select((s) => s.selectedCategory));
+    final xpEarned =
+        ref.watch(scenarioNotifierProvider.select((s) => s.xpEarned));
+    final accuracyRate =
+        ref.watch(scenarioNotifierProvider.select((s) => s.accuracyRate));
     final dispatcher = ref.read(scenarioDispatcherProvider);
 
     final allCompleted = totalCount > 0 && completedIds.length >= totalCount;
@@ -67,11 +73,13 @@ class ScenarioListScreen extends ConsumerWidget {
                       : ListView.separated(
                           padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
                           itemCount: scenarios.length,
-                          separatorBuilder: (_, __) => const SizedBox(height: 12),
+                          separatorBuilder: (_, __) =>
+                              const SizedBox(height: 12),
                           itemBuilder: (context, i) => _ScenarioCard(
                             scenario: scenarios[i],
                             isCompleted: completedIds.contains(scenarios[i].id),
-                            onTap: () => dispatcher.onScenarioSelected(scenarios[i].id),
+                            onTap: () =>
+                                dispatcher.onScenarioSelected(scenarios[i].id),
                           ),
                         ),
                 ),
@@ -129,7 +137,10 @@ class _CategoryFilter extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         children: [
-          _FilterChip(label: 'All', selected: selected == null, onTap: () => onSelected(null)),
+          _FilterChip(
+              label: 'All',
+              selected: selected == null,
+              onTap: () => onSelected(null)),
           ...categories.map((c) => _FilterChip(
                 label: c,
                 selected: selected == c,
@@ -146,7 +157,8 @@ class _FilterChip extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  const _FilterChip({required this.label, required this.selected, required this.onTap});
+  const _FilterChip(
+      {required this.label, required this.selected, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -161,9 +173,7 @@ class _FilterChip extends StatelessWidget {
           color: selected ? AppColors.primary : AppColors.surface,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: selected
-                ? AppColors.primary
-                : AppColors.border,
+            color: selected ? AppColors.primary : AppColors.border,
           ),
           boxShadow: selected
               ? [
@@ -216,7 +226,8 @@ class _ScenarioCard extends StatelessWidget {
 
     final card = Semantics(
       button: true,
-      label: '${scenario.title}, ${scenario.category}, ${scenario.riskLevel.label} risk',
+      label:
+          '${scenario.title}, ${scenario.category}, ${scenario.riskLevel.label} risk',
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
@@ -244,110 +255,115 @@ class _ScenarioCard extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(19),
             child: IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  width: 4,
-                  color: isCompleted ? AppColors.success : catColor,
-                ),
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [
-                          (isCompleted ? AppColors.success : catColor).withValues(alpha: 0.08),
-                          AppColors.surface,
-                        ],
-                        stops: const [0.0, 0.4],
-                      ),
-                    ),
-                    child: Padding(
-                    padding: const EdgeInsets.fromLTRB(14, 18, 18, 18),
-                    child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: catColor.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: catColor.withValues(alpha: 0.2)),
-                    ),
-                    child: Text(
-                      scenario.category,
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: catColor,
+                    width: 4,
+                    color: isCompleted ? AppColors.success : catColor,
+                  ),
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            (isCompleted ? AppColors.success : catColor)
+                                .withValues(alpha: 0.08),
+                            AppColors.surface,
+                          ],
+                          stops: const [0.0, 0.4],
+                        ),
                       ),
-                    ),
-                  ),
-                  const Spacer(),
-                  if (isCompleted)
-                    const _CompletedBadge()
-                  else
-                    ScenarioRiskIndicator(riskLevel: scenario.riskLevel),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Text(
-                scenario.title,
-                style: const TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                scenario.description,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 13,
-                  color: AppColors.textSecondary,
-                  height: 1.5,
-                ),
-              ),
-              const SizedBox(height: 14),
-              Row(
-                children: [
-                  const Icon(Icons.bolt_rounded, color: AppColors.xpGold, size: 14),
-                  const SizedBox(width: 4),
-                  Text(
-                    '+${scenario.xpCorrect} XP for correct',
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  const Spacer(),
-                  const Icon(Icons.arrow_forward_ios_rounded,
-                      size: 12, color: AppColors.textMuted),
-                ],
-              ),
-            ],
-          ),
-          ),    // Padding
-        ),      // Container (gradient bg)
-        ),      // Expanded
-      ],        // Row children
-    ),          // Row
-    ),          // IntrinsicHeight
-  ),            // ClipRRect
-        ),      // outer Container
-      ),        // GestureDetector
-    );          // card (Semantics)
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(14, 18, 18, 18),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: catColor.withValues(alpha: 0.12),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                        color: catColor.withValues(alpha: 0.2)),
+                                  ),
+                                  child: Text(
+                                    scenario.category,
+                                    style: TextStyle(
+                                      fontFamily: 'Inter',
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: catColor,
+                                    ),
+                                  ),
+                                ),
+                                const Spacer(),
+                                if (isCompleted)
+                                  const _CompletedBadge()
+                                else
+                                  ScenarioRiskIndicator(
+                                      riskLevel: scenario.riskLevel),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              scenario.title,
+                              style: const TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              scenario.description,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontFamily: 'Inter',
+                                fontSize: 13,
+                                color: AppColors.textSecondary,
+                                height: 1.5,
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+                            Row(
+                              children: [
+                                const Icon(Icons.bolt_rounded,
+                                    color: AppColors.xpGold, size: 14),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '+${scenario.xpCorrect} XP for correct',
+                                  style: const TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                                const Spacer(),
+                                const Icon(Icons.arrow_forward_ios_rounded,
+                                    size: 12, color: AppColors.textMuted),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ), // Padding
+                    ), // Container (gradient bg)
+                  ), // Expanded
+                ], // Row children
+              ), // Row
+            ), // IntrinsicHeight
+          ), // ClipRRect
+        ), // outer Container
+      ), // GestureDetector
+    ); // card (Semantics)
 
     return isCompleted
         ? card
@@ -407,7 +423,8 @@ class _EmptyState extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+                border:
+                    Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.primaryGlow(0.15),
@@ -449,11 +466,13 @@ class _EmptyState extends StatelessWidget {
               GestureDetector(
                 onTap: onClear,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.25)),
+                    border: Border.all(
+                        color: AppColors.primary.withValues(alpha: 0.25)),
                   ),
                   child: const Text(
                     'Show All Scenarios',
@@ -591,8 +610,10 @@ class _AllCompletedState extends ConsumerWidget {
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
-                  ref.read(shellTabIndexProvider.notifier).state = ShellTab.achievements;
-                  if (ModalRoute.of(context)?.settings.name == AppRoutes.scenarios) {
+                  ref.read(shellTabIndexProvider.notifier).state =
+                      ShellTab.achievements;
+                  if (ModalRoute.of(context)?.settings.name ==
+                      AppRoutes.scenarios) {
                     Navigator.of(context).pop();
                   }
                 },
@@ -637,8 +658,10 @@ class _AllCompletedState extends ConsumerWidget {
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
-                  ref.read(shellTabIndexProvider.notifier).state = ShellTab.dashboard;
-                  if (ModalRoute.of(context)?.settings.name == AppRoutes.scenarios) {
+                  ref.read(shellTabIndexProvider.notifier).state =
+                      ShellTab.dashboard;
+                  if (ModalRoute.of(context)?.settings.name ==
+                      AppRoutes.scenarios) {
                     Navigator.of(context).pop();
                   }
                 },

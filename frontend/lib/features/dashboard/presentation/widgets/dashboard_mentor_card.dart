@@ -15,151 +15,158 @@ class DashboardMentorCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final message = ref.watch(aiMentorProvider.select((s) => s.currentMessage));
-    final msgIndex = ref.watch(aiMentorProvider.select((s) => s.messageSelectIndex));
-    final streak = ref.watch(dashboardNotifierProvider.select((s) => s.currentStreak));
-    final level = ref.watch(dashboardNotifierProvider.select((s) => s.currentLevel));
-    final completedCount = ref.watch(dashboardNotifierProvider.select((s) => s.completedCount));
-    final totalDecisions = ref.watch(dashboardNotifierProvider.select((s) => s.totalDecisions));
-    final accuracyRate = ref.watch(dashboardNotifierProvider.select((s) => s.accuracyRate));
+    final msgIndex =
+        ref.watch(aiMentorProvider.select((s) => s.messageSelectIndex));
+    final streak =
+        ref.watch(dashboardNotifierProvider.select((s) => s.currentStreak));
+    final level =
+        ref.watch(dashboardNotifierProvider.select((s) => s.currentLevel));
+    final completedCount =
+        ref.watch(dashboardNotifierProvider.select((s) => s.completedCount));
+    final totalDecisions =
+        ref.watch(dashboardNotifierProvider.select((s) => s.totalDecisions));
+    final accuracyRate =
+        ref.watch(dashboardNotifierProvider.select((s) => s.accuracyRate));
 
-    final proactive = _proactiveContext(streak, level, completedCount, totalDecisions, accuracyRate, msgIndex);
+    final proactive = _proactiveContext(
+        streak, level, completedCount, totalDecisions, accuracyRate, msgIndex);
     final mood = message?.mood ?? proactive.mood;
     final text = message?.text ?? proactive.text;
 
     return AnimatedGradientBorder(
       child: Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF1A0A3A), Color(0xFF0D0D1A), Color(0xFF0A1020)],
-          stops: [0.0, 0.5, 1.0],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.purple.withValues(alpha: 0.2),
-            blurRadius: 28,
-            offset: const Offset(0, 8),
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF1A0A3A), Color(0xFF0D0D1A), Color(0xFF0A1020)],
+            stops: [0.0, 0.5, 1.0],
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              MentorAvatar(mood: mood, size: 44, animate: false),
-              const SizedBox(width: 12),
-              Column(
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.purple.withValues(alpha: 0.2),
+              blurRadius: 28,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                MentorAvatar(mood: mood, size: 44, animate: false),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'AI Mentor',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    Text(
+                      mood.label,
+                      style: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 11,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                MentorMoodChip(mood: mood),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.04),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: AppColors.purple.withValues(alpha: 0.15),
+                ),
+              ),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'AI Mentor',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  Text(
-                    mood.label,
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 11,
-                      color: AppColors.textSecondary,
+                  Icon(Icons.format_quote_rounded,
+                      color: AppColors.purple.withValues(alpha: 0.7), size: 16),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 350),
+                      child: Text(
+                        text,
+                        key: ValueKey(text),
+                        style: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 13,
+                          color: AppColors.textSecondary,
+                          height: 1.6,
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
-              const Spacer(),
-              MentorMoodChip(mood: mood),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.04),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: AppColors.purple.withValues(alpha: 0.15),
-              ),
             ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(Icons.format_quote_rounded,
-                    color: AppColors.purple.withValues(alpha: 0.7), size: 16),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 350),
-                    child: Text(
-                      text,
-                      key: ValueKey(text),
-                      style: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 13,
-                        color: AppColors.textSecondary,
-                        height: 1.6,
+            const SizedBox(height: 14),
+            SizedBox(
+              width: double.infinity,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => ref.read(shellTabIndexProvider.notifier).state =
+                    ShellTab.aiMentor,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [AppColors.purple, AppColors.primary],
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.purple.withValues(alpha: 0.4),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
                       ),
-                    ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 14),
-          SizedBox(
-            width: double.infinity,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () =>
-                  ref.read(shellTabIndexProvider.notifier).state = ShellTab.aiMentor,
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [AppColors.purple, AppColors.primary],
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.purple.withValues(alpha: 0.4),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.psychology_rounded,
-                        color: Colors.white, size: 15),
-                    SizedBox(width: 6),
-                    Text(
-                      'Open AI Mentor',
-                      style: TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.psychology_rounded,
+                          color: Colors.white, size: 15),
+                      SizedBox(width: 6),
+                      Text(
+                        'Open AI Mentor',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    ),    // Container
-  );      // AnimatedGradientBorder
+          ],
+        ),
+      ), // Container
+    ); // AnimatedGradientBorder
   }
 
   ({String text, MentorMood mood}) _proactiveContext(
@@ -190,7 +197,8 @@ class DashboardMentorCard extends ConsumerWidget {
     }
     if (streak >= 3) {
       return (
-        text: MentorRepository.pickMessage(MentorContext.streakMilestone, index),
+        text:
+            MentorRepository.pickMessage(MentorContext.streakMilestone, index),
         mood: MentorMood.proud,
       );
     }

@@ -34,7 +34,8 @@ class MarketEventsRepository {
       MarketEvent(
         id: 'evt_crypto_rally',
         title: 'Crypto Rally',
-        headline: 'Bitcoin surges 40% this week — institutional buying confirmed',
+        headline:
+            'Bitcoin surges 40% this week — institutional buying confirmed',
         description:
             'Major cryptocurrency assets have spiked sharply after three '
             'institutional investment funds disclosed large Bitcoin positions. '

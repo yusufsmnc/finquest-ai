@@ -26,8 +26,7 @@ class _MarketEventsScreenState extends ConsumerState<MarketEventsScreen>
       vsync: this,
       duration: const Duration(milliseconds: 420),
     );
-    _fadeIn =
-        CurvedAnimation(parent: _entryController, curve: Curves.easeOut);
+    _fadeIn = CurvedAnimation(parent: _entryController, curve: Curves.easeOut);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {

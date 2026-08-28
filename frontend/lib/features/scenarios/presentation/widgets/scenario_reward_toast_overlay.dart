@@ -8,7 +8,8 @@ class ScenarioRewardToastOverlay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final showRewardToast = ref.watch(scenarioNotifierProvider.select((s) => s.showRewardToast));
+    final showRewardToast =
+        ref.watch(scenarioNotifierProvider.select((s) => s.showRewardToast));
     final dispatcher = ref.read(scenarioDispatcherProvider);
 
     if (!showRewardToast) return const SizedBox.shrink();

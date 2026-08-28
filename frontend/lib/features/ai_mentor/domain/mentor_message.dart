@@ -24,12 +24,18 @@ enum MentorContext {
 extension MentorMoodExt on MentorMood {
   String get label {
     switch (this) {
-      case MentorMood.calm:        return 'Ready to guide';
-      case MentorMood.happy:       return 'Great decision!';
-      case MentorMood.encouraging: return 'Keep going';
-      case MentorMood.excited:     return 'Level up!';
-      case MentorMood.proud:       return 'Well earned';
-      case MentorMood.thinking:    return 'Analyzing...';
+      case MentorMood.calm:
+        return 'Ready to guide';
+      case MentorMood.happy:
+        return 'Great decision!';
+      case MentorMood.encouraging:
+        return 'Keep going';
+      case MentorMood.excited:
+        return 'Level up!';
+      case MentorMood.proud:
+        return 'Well earned';
+      case MentorMood.thinking:
+        return 'Analyzing...';
     }
   }
 
@@ -52,12 +58,18 @@ extension MentorMoodExt on MentorMood {
 
   IconData get icon {
     switch (this) {
-      case MentorMood.calm:        return Icons.psychology_rounded;
-      case MentorMood.happy:       return Icons.check_circle_rounded;
-      case MentorMood.encouraging: return Icons.favorite_rounded;
-      case MentorMood.excited:     return Icons.auto_awesome_rounded;
-      case MentorMood.proud:       return Icons.emoji_events_rounded;
-      case MentorMood.thinking:    return Icons.lightbulb_rounded;
+      case MentorMood.calm:
+        return Icons.psychology_rounded;
+      case MentorMood.happy:
+        return Icons.check_circle_rounded;
+      case MentorMood.encouraging:
+        return Icons.favorite_rounded;
+      case MentorMood.excited:
+        return Icons.auto_awesome_rounded;
+      case MentorMood.proud:
+        return Icons.emoji_events_rounded;
+      case MentorMood.thinking:
+        return Icons.lightbulb_rounded;
     }
   }
 }
@@ -65,22 +77,38 @@ extension MentorMoodExt on MentorMood {
 extension MentorContextExt on MentorContext {
   String get displayLabel {
     switch (this) {
-      case MentorContext.idle:             return 'Daily Insight';
-      case MentorContext.decisionCorrect:  return 'Correct Decision';
-      case MentorContext.decisionWrong:    return 'Learning Moment';
-      case MentorContext.levelUp:          return 'Level Up';
-      case MentorContext.streakMilestone:  return 'Streak';
-      case MentorContext.achievementUnlock:return 'Achievement';
-      case MentorContext.categoryBudgeting:return 'Budgeting';
-      case MentorContext.categoryInvesting:return 'Investing';
-      case MentorContext.categorySavings:  return 'Savings';
-      case MentorContext.categoryRisk:     return 'Risk';
-      case MentorContext.nextStep:         return 'Next Step';
-      case MentorContext.onboarding:       return 'Welcome';
-      case MentorContext.newUser:          return 'Getting Started';
-      case MentorContext.firstWin:         return 'First Win';
-      case MentorContext.streakHigh:       return 'On Fire';
-      case MentorContext.highAccuracy:     return 'Sharp Mind';
+      case MentorContext.idle:
+        return 'Daily Insight';
+      case MentorContext.decisionCorrect:
+        return 'Correct Decision';
+      case MentorContext.decisionWrong:
+        return 'Learning Moment';
+      case MentorContext.levelUp:
+        return 'Level Up';
+      case MentorContext.streakMilestone:
+        return 'Streak';
+      case MentorContext.achievementUnlock:
+        return 'Achievement';
+      case MentorContext.categoryBudgeting:
+        return 'Budgeting';
+      case MentorContext.categoryInvesting:
+        return 'Investing';
+      case MentorContext.categorySavings:
+        return 'Savings';
+      case MentorContext.categoryRisk:
+        return 'Risk';
+      case MentorContext.nextStep:
+        return 'Next Step';
+      case MentorContext.onboarding:
+        return 'Welcome';
+      case MentorContext.newUser:
+        return 'Getting Started';
+      case MentorContext.firstWin:
+        return 'First Win';
+      case MentorContext.streakHigh:
+        return 'On Fire';
+      case MentorContext.highAccuracy:
+        return 'Sharp Mind';
     }
   }
 
@@ -88,33 +116,54 @@ extension MentorContextExt on MentorContext {
   /// with the backend's `MentorContext` enum values.
   String get wireName {
     switch (this) {
-      case MentorContext.idle:              return 'idle';
-      case MentorContext.decisionCorrect:   return 'decision_correct';
-      case MentorContext.decisionWrong:     return 'decision_wrong';
-      case MentorContext.levelUp:           return 'level_up';
-      case MentorContext.streakMilestone:   return 'streak_milestone';
-      case MentorContext.achievementUnlock: return 'achievement_unlock';
-      case MentorContext.categoryBudgeting: return 'category_budgeting';
-      case MentorContext.categoryInvesting: return 'category_investing';
-      case MentorContext.categorySavings:   return 'category_savings';
-      case MentorContext.categoryRisk:      return 'category_risk';
-      case MentorContext.nextStep:          return 'next_step';
-      case MentorContext.onboarding:        return 'onboarding';
-      case MentorContext.newUser:           return 'new_user';
-      case MentorContext.firstWin:          return 'first_win';
-      case MentorContext.streakHigh:        return 'streak_high';
-      case MentorContext.highAccuracy:      return 'high_accuracy';
+      case MentorContext.idle:
+        return 'idle';
+      case MentorContext.decisionCorrect:
+        return 'decision_correct';
+      case MentorContext.decisionWrong:
+        return 'decision_wrong';
+      case MentorContext.levelUp:
+        return 'level_up';
+      case MentorContext.streakMilestone:
+        return 'streak_milestone';
+      case MentorContext.achievementUnlock:
+        return 'achievement_unlock';
+      case MentorContext.categoryBudgeting:
+        return 'category_budgeting';
+      case MentorContext.categoryInvesting:
+        return 'category_investing';
+      case MentorContext.categorySavings:
+        return 'category_savings';
+      case MentorContext.categoryRisk:
+        return 'category_risk';
+      case MentorContext.nextStep:
+        return 'next_step';
+      case MentorContext.onboarding:
+        return 'onboarding';
+      case MentorContext.newUser:
+        return 'new_user';
+      case MentorContext.firstWin:
+        return 'first_win';
+      case MentorContext.streakHigh:
+        return 'streak_high';
+      case MentorContext.highAccuracy:
+        return 'high_accuracy';
     }
   }
 
   static MentorContext fromCategory(String category) {
     switch (category.toLowerCase()) {
-      case 'budgeting':  return MentorContext.categoryBudgeting;
-      case 'investing':  return MentorContext.categoryInvesting;
-      case 'savings':    return MentorContext.categorySavings;
+      case 'budgeting':
+        return MentorContext.categoryBudgeting;
+      case 'investing':
+        return MentorContext.categoryInvesting;
+      case 'savings':
+        return MentorContext.categorySavings;
       case 'risk':
-      case 'risk management': return MentorContext.categoryRisk;
-      default:           return MentorContext.idle;
+      case 'risk management':
+        return MentorContext.categoryRisk;
+      default:
+        return MentorContext.idle;
     }
   }
 }

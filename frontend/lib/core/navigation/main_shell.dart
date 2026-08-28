@@ -47,10 +47,14 @@ class MainShell extends ConsumerWidget {
 
 const _kTabs = [
   _TabDef(Icons.home_rounded, Icons.home_outlined, 'Home', AppColors.primary),
-  _TabDef(Icons.psychology_alt_rounded, Icons.psychology_alt_outlined, 'Scenarios', AppColors.cyan),
-  _TabDef(Icons.auto_awesome_rounded, Icons.auto_awesome_outlined, 'Mentor', AppColors.purple),
-  _TabDef(Icons.emoji_events_rounded, Icons.emoji_events_outlined, 'Achievements', AppColors.xpGold),
-  _TabDef(Icons.person_rounded, Icons.person_outline_rounded, 'Profile', AppColors.primary),
+  _TabDef(Icons.psychology_alt_rounded, Icons.psychology_alt_outlined,
+      'Scenarios', AppColors.cyan),
+  _TabDef(Icons.auto_awesome_rounded, Icons.auto_awesome_outlined, 'Mentor',
+      AppColors.purple),
+  _TabDef(Icons.emoji_events_rounded, Icons.emoji_events_outlined,
+      'Achievements', AppColors.xpGold),
+  _TabDef(Icons.person_rounded, Icons.person_outline_rounded, 'Profile',
+      AppColors.primary),
 ];
 
 class _TabDef {
@@ -74,7 +78,8 @@ class _PremiumTabBar extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.surface,
-        border: const Border(top: BorderSide(color: AppColors.border, width: 0.5)),
+        border:
+            const Border(top: BorderSide(color: AppColors.border, width: 0.5)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.4),
@@ -164,8 +169,7 @@ class _SlidingPillState extends State<_SlidingPill>
   @override
   void didUpdateWidget(_SlidingPill old) {
     super.didUpdateWidget(old);
-    if (old.currentIndex != widget.currentIndex ||
-        old.color != widget.color) {
+    if (old.currentIndex != widget.currentIndex || old.color != widget.color) {
       _fromIndex = _position.value;
       _position = Tween<double>(
         begin: _fromIndex,
@@ -195,8 +199,8 @@ class _SlidingPillState extends State<_SlidingPill>
     return AnimatedBuilder(
       animation: _ctrl,
       builder: (context, _) {
-        final left = _position.value * widget.tabWidth +
-            (widget.tabWidth - pillW) / 2;
+        final left =
+            _position.value * widget.tabWidth + (widget.tabWidth - pillW) / 2;
         final c = _color.value ?? widget.color;
         return Positioned(
           top: (64 - pillH) / 2,

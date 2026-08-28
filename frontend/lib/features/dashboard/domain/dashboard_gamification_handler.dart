@@ -20,7 +20,8 @@ class DashboardGamificationHandler {
         );
 
       case GameEventType.xpLost:
-        final amount = (event.payload['amount'] as int).clamp(0, state.currentXP);
+        final amount =
+            (event.payload['amount'] as int).clamp(0, state.currentXP);
         return state.copyWith(
           currentXP: state.currentXP - amount,
         );

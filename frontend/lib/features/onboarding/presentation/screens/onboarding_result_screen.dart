@@ -21,8 +21,7 @@ class OnboardingResultScreen extends ConsumerStatefulWidget {
       _OnboardingResultScreenState();
 }
 
-class _OnboardingResultScreenState
-    extends ConsumerState<OnboardingResultScreen>
+class _OnboardingResultScreenState extends ConsumerState<OnboardingResultScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _revealController;
   late Animation<double> _opacity;
@@ -86,17 +85,17 @@ class _OnboardingResultScreenState
 
   @override
   Widget build(BuildContext context) {
-    final isCorrect = ref.watch(
-            onboardingNotifierProvider.select((s) => s.isCorrect)) ??
-        false;
-    final xpEarned = ref
-        .watch(onboardingNotifierProvider.select((s) => s.xpEarned));
-    final currentStreak = ref
-        .watch(onboardingNotifierProvider.select((s) => s.currentStreak));
-    final showXpFloat = ref
-        .watch(onboardingNotifierProvider.select((s) => s.showXpFloat));
-    final streakPulse = ref
-        .watch(onboardingNotifierProvider.select((s) => s.streakPulse));
+    final isCorrect =
+        ref.watch(onboardingNotifierProvider.select((s) => s.isCorrect)) ??
+            false;
+    final xpEarned =
+        ref.watch(onboardingNotifierProvider.select((s) => s.xpEarned));
+    final currentStreak =
+        ref.watch(onboardingNotifierProvider.select((s) => s.currentStreak));
+    final showXpFloat =
+        ref.watch(onboardingNotifierProvider.select((s) => s.showXpFloat));
+    final streakPulse =
+        ref.watch(onboardingNotifierProvider.select((s) => s.streakPulse));
     final dispatcher = ref.read(onboardingDispatcherProvider);
 
     final mentorMessage = isCorrect
@@ -198,7 +197,8 @@ class _ResultHeader extends StatelessWidget {
         ? 'You made the smart financial decision.'
         : 'Every decision is a learning opportunity.';
 
-    final gradientEnd = isCorrect ? AppColors.successLight : AppColors.cyanLight;
+    final gradientEnd =
+        isCorrect ? AppColors.successLight : AppColors.cyanLight;
 
     return Column(
       children: [
@@ -288,8 +288,8 @@ class _XpEarnedCard extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: AppColors.xpGold.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12),
@@ -333,14 +333,13 @@ class _XpEarnedCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.success.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                    color: AppColors.success.withValues(alpha: 0.2)),
+                border:
+                    Border.all(color: AppColors.success.withValues(alpha: 0.2)),
               ),
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.stars_rounded,
-                      color: AppColors.success, size: 14),
+                  Icon(Icons.stars_rounded, color: AppColors.success, size: 14),
                   SizedBox(width: 6),
                   Text(
                     'Bonus: Correct Answer +50 XP',

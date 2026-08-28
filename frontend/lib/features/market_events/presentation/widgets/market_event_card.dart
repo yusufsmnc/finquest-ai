@@ -66,182 +66,183 @@ class _MarketEventCardState extends State<MarketEventCard>
             Transform.scale(scale: _scale.value, child: child),
         child: Builder(builder: (context) {
           final card = Container(
-          width: 272,
-          decoration: BoxDecoration(
-            color: resolved ? AppColors.surfaceUp : AppColors.surface,
-            borderRadius: BorderRadius.circular(20),
-            border: resolved ? Border.all(color: AppColors.border) : null,
-            boxShadow: resolved
-                ? null
-                : [
-                    BoxShadow(
-                      color: impact.color.withValues(alpha: 0.12),
-                      blurRadius: 16,
-                      offset: const Offset(0, 4),
-                    ),
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(19),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(width: 4, color: accentColor),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(14),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 3),
-                              decoration: BoxDecoration(
-                                color: resolved
-                                    ? AppColors.surfaceHigh
-                                    : impact.color.withValues(alpha: 0.12),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    resolved
-                                        ? Icons.check_circle_rounded
-                                        : impact.icon,
-                                    size: 10,
-                                    color: resolved
-                                        ? const Color(0xFF94A3B8)
-                                        : impact.color,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    resolved ? 'Resolved' : impact.label,
-                                    style: TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w600,
+            width: 272,
+            decoration: BoxDecoration(
+              color: resolved ? AppColors.surfaceUp : AppColors.surface,
+              borderRadius: BorderRadius.circular(20),
+              border: resolved ? Border.all(color: AppColors.border) : null,
+              boxShadow: resolved
+                  ? null
+                  : [
+                      BoxShadow(
+                        color: impact.color.withValues(alpha: 0.12),
+                        blurRadius: 16,
+                        offset: const Offset(0, 4),
+                      ),
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(19),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(width: 4, color: accentColor),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color: resolved
+                                      ? AppColors.surfaceHigh
+                                      : impact.color.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      resolved
+                                          ? Icons.check_circle_rounded
+                                          : impact.icon,
+                                      size: 10,
                                       color: resolved
                                           ? const Color(0xFF94A3B8)
                                           : impact.color,
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const Spacer(),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 7, vertical: 3),
-                              decoration: BoxDecoration(
-                                color: AppColors.surfaceHigh,
-                                borderRadius: BorderRadius.circular(6),
-                                border: Border.all(color: AppColors.border),
-                              ),
-                              child: Text(
-                                e.category,
-                                style: const TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.textSecondary,
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      resolved ? 'Resolved' : impact.label,
+                                      style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w600,
+                                        color: resolved
+                                            ? const Color(0xFF94A3B8)
+                                            : impact.color,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          e.title,
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 13,
-                            fontWeight: FontWeight.w700,
-                            color: resolved
-                                ? AppColors.textMuted
-                                : AppColors.textPrimary,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          e.headline,
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 11,
-                            color: resolved
-                                ? AppColors.textMuted
-                                : AppColors.textSecondary,
-                            height: 1.5,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 12),
-                        if (!resolved)
-                          GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: widget.onActNow,
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              decoration: BoxDecoration(
-                                color: impact.color,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.bolt_rounded,
-                                      color: Colors.white, size: 13),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    'Act Now',
-                                    style: TextStyle(
-                                      fontFamily: 'Inter',
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.white,
-                                    ),
+                              const Spacer(),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 7, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color: AppColors.surfaceHigh,
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(color: AppColors.border),
+                                ),
+                                child: Text(
+                                  e.category,
+                                  style: const TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.textSecondary,
                                   ),
-                                ],
-                              ),
-                            ),
-                          )
-                        else
-                          const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.check_rounded,
-                                  color: Color(0xFF94A3B8), size: 13),
-                              SizedBox(width: 4),
-                              Text(
-                                'Decision made',
-                                style: TextStyle(
-                                  fontFamily: 'Inter',
-                                  fontSize: 11,
-                                  color: Color(0xFF94A3B8),
                                 ),
                               ),
                             ],
                           ),
-                      ],
+                          const SizedBox(height: 10),
+                          Text(
+                            e.title,
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: resolved
+                                  ? AppColors.textMuted
+                                  : AppColors.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            e.headline,
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 11,
+                              color: resolved
+                                  ? AppColors.textMuted
+                                  : AppColors.textSecondary,
+                              height: 1.5,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const SizedBox(height: 12),
+                          if (!resolved)
+                            GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: widget.onActNow,
+                              child: Container(
+                                width: double.infinity,
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: impact.color,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.bolt_rounded,
+                                        color: Colors.white, size: 13),
+                                    SizedBox(width: 4),
+                                    Text(
+                                      'Act Now',
+                                      style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          else
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.check_rounded,
+                                    color: Color(0xFF94A3B8), size: 13),
+                                SizedBox(width: 4),
+                                Text(
+                                  'Decision made',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 11,
+                                    color: Color(0xFF94A3B8),
+                                  ),
+                                ),
+                              ],
+                            ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),    // Row
-          ),      // ClipRRect
-        );        // card Container
+                ],
+              ), // Row
+            ), // ClipRRect
+          ); // card Container
           return resolved ? card : AnimatedGradientBorder(child: card);
-        }),   // Builder
-      ),      // AnimatedBuilder
-    );        // GestureDetector
+        }), // Builder
+      ), // AnimatedBuilder
+    ); // GestureDetector
   }
 }

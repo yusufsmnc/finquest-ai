@@ -71,8 +71,9 @@ class ScenarioState {
   }) {
     return ScenarioState(
       scenarios: scenarios ?? this.scenarios,
-      activeScenarioId:
-          clearActiveScenario ? null : activeScenarioId ?? this.activeScenarioId,
+      activeScenarioId: clearActiveScenario
+          ? null
+          : activeScenarioId ?? this.activeScenarioId,
       completedIds: completedIds ?? this.completedIds,
       phase: phase ?? this.phase,
       selectedOptionId: clearSelectedOption

@@ -35,13 +35,15 @@ class OnboardingNavigator extends ConsumerWidget {
                     begin: const Offset(0, 0.1),
                     end: Offset.zero,
                   ).animate(
-                    CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+                    CurvedAnimation(
+                        parent: animation, curve: Curves.easeOutCubic),
                   )
                 : Tween<Offset>(
                     begin: const Offset(0, -0.1),
                     end: Offset.zero,
                   ).animate(
-                    CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+                    CurvedAnimation(
+                        parent: animation, curve: Curves.easeOutCubic),
                   );
 
             return FadeTransition(

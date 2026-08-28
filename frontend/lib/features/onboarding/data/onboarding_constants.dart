@@ -18,7 +18,8 @@ class OnboardingConstants {
   static const bool optionAIsCorrect = true;
 
   static const String optionBId = 'B';
-  static const String optionBText = 'Sell everything immediately to avoid losses';
+  static const String optionBText =
+      'Sell everything immediately to avoid losses';
   static const bool optionBIsCorrect = false;
 
   // Mentor feedback

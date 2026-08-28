@@ -1,4 +1,4 @@
-﻿import 'dart:math' show pi;
+import 'dart:math' show pi;
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 
@@ -120,4 +120,3 @@ class _GradientBorderPainter extends CustomPainter {
   @override
   bool shouldRepaint(_GradientBorderPainter old) => old.angle != angle;
 }
-

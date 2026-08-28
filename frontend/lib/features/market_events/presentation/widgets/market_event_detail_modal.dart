@@ -77,8 +77,7 @@ class MarketEventDetailModal extends StatelessWidget {
                           color: impact.color.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(14),
                         ),
-                        child: Icon(impact.icon,
-                            color: impact.color, size: 24),
+                        child: Icon(impact.icon, color: impact.color, size: 24),
                       ),
                       const SizedBox(width: 14),
                       Expanded(
@@ -101,8 +100,7 @@ class MarketEventDetailModal extends StatelessWidget {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 7, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: impact.color
-                                        .withValues(alpha: 0.12),
+                                    color: impact.color.withValues(alpha: 0.12),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
@@ -270,8 +268,7 @@ class _AnalysisSection extends StatelessWidget {
         children: [
           const Row(
             children: [
-              Icon(Icons.psychology_rounded,
-                  color: AppColors.purple, size: 16),
+              Icon(Icons.psychology_rounded, color: AppColors.purple, size: 16),
               SizedBox(width: 6),
               Text(
                 'Why This Matters',

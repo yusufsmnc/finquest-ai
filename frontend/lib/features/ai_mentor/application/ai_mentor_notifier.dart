@@ -89,23 +89,22 @@ class AiMentorNotifier extends Notifier<AiMentorState> {
 
     state = state.copyWith(isMentorLoading: true);
     try {
-      final response =
-          await ref.read(mentorApiRepositoryProvider).fetchMessage(
-                MentorRequestDto(
-                  context: context.wireName,
-                  xp: xp,
-                  level: level,
-                  streak: streak,
-                  messageIndex: state.messageSelectIndex,
-                  recentDecisions: [
-                    MentorDecisionDto(
-                      scenarioId: scenarioId,
-                      isCorrect: isCorrect,
-                      category: category,
-                    ),
-                  ],
+      final response = await ref.read(mentorApiRepositoryProvider).fetchMessage(
+            MentorRequestDto(
+              context: context.wireName,
+              xp: xp,
+              level: level,
+              streak: streak,
+              messageIndex: state.messageSelectIndex,
+              recentDecisions: [
+                MentorDecisionDto(
+                  scenarioId: scenarioId,
+                  isCorrect: isCorrect,
+                  category: category,
                 ),
-              );
+              ],
+            ),
+          );
       _replaceCurrentMessage(response.message, context);
     } catch (_) {
       // Backend unreachable — keep the local placeholder. Nothing to surface:
@@ -134,7 +133,8 @@ class AiMentorNotifier extends Notifier<AiMentorState> {
   /// personalised guidance, so they are not worth an LLM call.
   void setCategoryGuidance(String category) {
     final context = MentorContextExt.fromCategory(category);
-    final text = MentorRepository.pickMessage(context, state.messageSelectIndex);
+    final text =
+        MentorRepository.pickMessage(context, state.messageSelectIndex);
     state = state.copyWith(
       categoryGuidanceText: text,
       messageSelectIndex: state.messageSelectIndex + 1,
@@ -153,7 +153,8 @@ class AiMentorNotifier extends Notifier<AiMentorState> {
 
   /// Instant, offline-safe placeholder from the bundled pool.
   void _showLocalMessage(MentorContext context, MentorMood mood) {
-    final text = MentorRepository.pickMessage(context, state.messageSelectIndex);
+    final text =
+        MentorRepository.pickMessage(context, state.messageSelectIndex);
     _publish(
       MentorMessage(
         id: '${context.name}_${state.messageSelectIndex}',

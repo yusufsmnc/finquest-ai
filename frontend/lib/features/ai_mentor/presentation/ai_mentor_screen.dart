@@ -74,7 +74,8 @@ class _AiMentorScreenState extends ConsumerState<AiMentorScreen>
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 24)),
             if (history.isNotEmpty) ...[
-              const SliverToBoxAdapter(child: _SectionHeader(title: 'Recent Insights')),
+              const SliverToBoxAdapter(
+                  child: _SectionHeader(title: 'Recent Insights')),
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                 sliver: SliverList(
@@ -89,7 +90,8 @@ class _AiMentorScreenState extends ConsumerState<AiMentorScreen>
               ),
               const SliverToBoxAdapter(child: SizedBox(height: 24)),
             ],
-            const SliverToBoxAdapter(child: _SectionHeader(title: 'Next Steps')),
+            const SliverToBoxAdapter(
+                child: _SectionHeader(title: 'Next Steps')),
             const SliverPadding(
               padding: EdgeInsets.fromLTRB(20, 8, 20, 40),
               sliver: SliverToBoxAdapter(child: MentorNextStepCard()),
@@ -237,14 +239,30 @@ class _CategoryInsightsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final categories = [
-      (MentorContext.categoryInvesting, AppColors.primary,
-          Icons.trending_up_rounded, 'Investing'),
-      (MentorContext.categoryBudgeting, AppColors.success,
-          Icons.account_balance_wallet_rounded, 'Budgeting'),
-      (MentorContext.categorySavings, AppColors.cyan,
-          Icons.savings_rounded, 'Savings'),
-      (MentorContext.categoryRisk, AppColors.xpGold,
-          Icons.shield_rounded, 'Risk'),
+      (
+        MentorContext.categoryInvesting,
+        AppColors.primary,
+        Icons.trending_up_rounded,
+        'Investing'
+      ),
+      (
+        MentorContext.categoryBudgeting,
+        AppColors.success,
+        Icons.account_balance_wallet_rounded,
+        'Budgeting'
+      ),
+      (
+        MentorContext.categorySavings,
+        AppColors.cyan,
+        Icons.savings_rounded,
+        'Savings'
+      ),
+      (
+        MentorContext.categoryRisk,
+        AppColors.xpGold,
+        Icons.shield_rounded,
+        'Risk'
+      ),
     ];
 
     return Column(
@@ -271,8 +289,7 @@ class _CategoryInsightsSection extends StatelessWidget {
             itemCount: categories.length,
             itemBuilder: (context, i) {
               final (ctx, color, icon, label) = categories[i];
-              final text =
-                  MentorRepository.pickMessage(ctx, selectIndex + i);
+              final text = MentorRepository.pickMessage(ctx, selectIndex + i);
               return _CategoryInsightCard(
                 color: color,
                 icon: icon,
