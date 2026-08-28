@@ -58,8 +58,9 @@ class _ScenarioXpSummaryState extends State<ScenarioXpSummary>
   }
 
   String get _streakMessage {
-    if (widget.streak >= 5)
+    if (widget.streak >= 5) {
       return '🔥🔥 ${widget.streak} in a row — Unstoppable!';
+    }
     if (widget.streak >= 3) return '🔥 ${widget.streak} correct — Hot streak!';
     return '🔥 2 in a row — Keep it up!';
   }
