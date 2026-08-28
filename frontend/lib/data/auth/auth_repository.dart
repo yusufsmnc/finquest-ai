@@ -5,7 +5,8 @@ import 'token_storage.dart';
 
 /// Auth network operations. Owns writing/clearing the token in secure storage.
 class AuthRepository {
-  AuthRepository({required ApiClient client, required TokenStorage tokenStorage})
+  AuthRepository(
+      {required ApiClient client, required TokenStorage tokenStorage})
       : _dio = client.dio,
         _tokenStorage = tokenStorage;
 

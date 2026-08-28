@@ -120,14 +120,12 @@ class _XPProgressBarState extends State<XPProgressBar>
                       height: widget.height,
                       decoration: BoxDecoration(
                         color: const Color(0xFFE2E8F0),
-                        borderRadius:
-                            BorderRadius.circular(widget.height / 2),
+                        borderRadius: BorderRadius.circular(widget.height / 2),
                       ),
                     ),
                     // Fill
                     FractionallySizedBox(
-                      widthFactor:
-                          _progressAnimation.value.clamp(0.0, 1.0),
+                      widthFactor: _progressAnimation.value.clamp(0.0, 1.0),
                       child: Container(
                         height: widget.height,
                         decoration: BoxDecoration(
@@ -137,12 +135,12 @@ class _XPProgressBarState extends State<XPProgressBar>
                               Color(0xFFFFBB3B),
                             ],
                           ),
-                          borderRadius: BorderRadius.circular(
-                              widget.height / 2),
+                          borderRadius:
+                              BorderRadius.circular(widget.height / 2),
                           boxShadow: [
                             BoxShadow(
-                              color:
-                                  const Color(0xFFF59E0B).withValues(alpha: 0.4),
+                              color: const Color(0xFFF59E0B)
+                                  .withValues(alpha: 0.4),
                               blurRadius: 6,
                               offset: const Offset(0, 2),
                             ),

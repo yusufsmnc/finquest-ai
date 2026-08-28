@@ -62,7 +62,9 @@ class _StreakFeedbackOverlayState extends State<StreakFeedbackOverlay>
       if (!mounted) return;
       if (MediaQuery.of(context).disableAnimations) {
         _controller.value = 1.0;
-        Future.microtask(() { if (mounted) widget.onDismiss(); });
+        Future.microtask(() {
+          if (mounted) widget.onDismiss();
+        });
         return;
       }
       _controller.forward().then((_) {
@@ -88,98 +90,98 @@ class _StreakFeedbackOverlayState extends State<StreakFeedbackOverlay>
     return Material(
       color: Colors.transparent,
       child: Align(
-      alignment: const Alignment(0, -0.3),
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, child) => Opacity(
-          opacity: _fade.value,
-          child: Transform.scale(scale: _scale.value, child: child),
-        ),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 18),
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: AppColors.streakOrange.withValues(alpha: 0.45),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.streakOrange.withValues(alpha: 0.30),
-                blurRadius: 32,
-                spreadRadius: 2,
-                offset: const Offset(0, 6),
-              ),
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.4),
-                blurRadius: 16,
-                offset: const Offset(0, 4),
-              ),
-            ],
+        alignment: const Alignment(0, -0.3),
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) => Opacity(
+            opacity: _fade.value,
+            child: Transform.scale(scale: _scale.value, child: child),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  color: AppColors.streakOrange.withValues(alpha: 0.12),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.streakOrange.withValues(alpha: 0.3),
-                  ),
-                ),
-                child: const Center(
-                  child: Text('🔥', style: TextStyle(fontSize: 26)),
-                ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 18),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: AppColors.streakOrange.withValues(alpha: 0.45),
               ),
-              const SizedBox(width: 16),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        '${widget.streak}',
-                        style: const TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 28,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.streakOrange,
-                          height: 1.0,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      const Text(
-                        'STREAK',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.streakOrange,
-                          letterSpacing: 1.2,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    _streakLabel(),
-                    style: const TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 13,
-                      color: AppColors.textSecondary,
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.streakOrange.withValues(alpha: 0.30),
+                  blurRadius: 32,
+                  spreadRadius: 2,
+                  offset: const Offset(0, 6),
+                ),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.4),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    color: AppColors.streakOrange.withValues(alpha: 0.12),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: AppColors.streakOrange.withValues(alpha: 0.3),
                     ),
                   ),
-                ],
-              ),
-            ],
+                  child: const Center(
+                    child: Text('🔥', style: TextStyle(fontSize: 26)),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          '${widget.streak}',
+                          style: const TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 28,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.streakOrange,
+                            height: 1.0,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        const Text(
+                          'STREAK',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.streakOrange,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      _streakLabel(),
+                      style: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 13,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    ),
     );
   }
 }

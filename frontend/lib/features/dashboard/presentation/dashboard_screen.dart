@@ -159,7 +159,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen>
       ),
     );
   }
-
 }
 
 class _ChallengesSectionHeader extends ConsumerWidget {
@@ -259,7 +258,8 @@ class _SectionHeader extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.error.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(6),
-                border: Border.all(color: AppColors.error.withValues(alpha: 0.25)),
+                border:
+                    Border.all(color: AppColors.error.withValues(alpha: 0.25)),
               ),
               child: Text(
                 trailing!,

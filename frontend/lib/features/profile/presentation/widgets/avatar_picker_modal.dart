@@ -20,8 +20,7 @@ class AvatarPickerModal extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final rawIndex =
         ref.watch(profileNotifierProvider.select((s) => s.avatarIndex));
-    final selectedIndex =
-        rawIndex.clamp(0, AvatarData.options.length - 1);
+    final selectedIndex = rawIndex.clamp(0, AvatarData.options.length - 1);
     final notifier = ref.read(profileNotifierProvider.notifier);
 
     return Container(
@@ -115,7 +114,8 @@ class AvatarPickerModal extends ConsumerWidget {
                           boxShadow: isSelected
                               ? [
                                   BoxShadow(
-                                    color: avatar.primary.withValues(alpha: 0.4),
+                                    color:
+                                        avatar.primary.withValues(alpha: 0.4),
                                     blurRadius: 12,
                                     spreadRadius: 2,
                                   )
@@ -134,9 +134,8 @@ class AvatarPickerModal extends ConsumerWidget {
                         style: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 10,
-                          fontWeight: isSelected
-                              ? FontWeight.w700
-                              : FontWeight.w500,
+                          fontWeight:
+                              isSelected ? FontWeight.w700 : FontWeight.w500,
                           color: isSelected
                               ? avatar.primary
                               : AppColors.textSecondary,

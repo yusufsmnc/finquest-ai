@@ -14,8 +14,8 @@ class ProfileAchievementsShowcase extends ConsumerWidget {
       achievementsNotifierProvider.select((s) => s.achievements),
     );
     final unlocked = achievements.where((a) => a.unlocked).toList()
-      ..sort((a, b) => (b.unlockedAt ?? DateTime(0))
-          .compareTo(a.unlockedAt ?? DateTime(0)));
+      ..sort((a, b) =>
+          (b.unlockedAt ?? DateTime(0)).compareTo(a.unlockedAt ?? DateTime(0)));
     final unlockedCount = unlocked.length;
     final totalCount = achievements.length;
     final recent = unlocked.take(4).toList();
@@ -39,8 +39,8 @@ class ProfileAchievementsShowcase extends ConsumerWidget {
               const Spacer(),
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: () =>
-                    ref.read(shellTabIndexProvider.notifier).state = ShellTab.achievements,
+                onTap: () => ref.read(shellTabIndexProvider.notifier).state =
+                    ShellTab.achievements,
                 child: const Row(
                   children: [
                     Text(
@@ -75,9 +75,10 @@ class ProfileAchievementsShowcase extends ConsumerWidget {
           else
             Row(
               children: [
-                ...recent.map((a) => _AchievementBubble(achievement: a)).toList(),
-                if (unlockedCount > 4)
-                  _MoreBubble(count: unlockedCount - 4),
+                ...recent
+                    .map((a) => _AchievementBubble(achievement: a))
+                    .toList(),
+                if (unlockedCount > 4) _MoreBubble(count: unlockedCount - 4),
               ],
             ),
         ],

@@ -4,8 +4,7 @@ import '../../../core/events/game_event.dart';
 import '../../../core/theme/app_colors.dart';
 import '../domain/gamification_overlay_state.dart';
 
-class GamificationOverlayNotifier
-    extends Notifier<GamificationOverlayState> {
+class GamificationOverlayNotifier extends Notifier<GamificationOverlayState> {
   @override
   GamificationOverlayState build() => const GamificationOverlayState();
 

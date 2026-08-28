@@ -52,7 +52,13 @@ class ScenarioRiskIndicator extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ...List.generate(3, (i) => _Bar(filled: i < _filledBars, color: _color, height: 10, spacing: 2)),
+            ...List.generate(
+                3,
+                (i) => _Bar(
+                    filled: i < _filledBars,
+                    color: _color,
+                    height: 10,
+                    spacing: 2)),
             const SizedBox(width: 6),
             Text(
               '${riskLevel.label} Risk',

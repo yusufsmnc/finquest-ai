@@ -18,6 +18,6 @@ final dashboardDispatcherProvider = Provider<DashboardEventDispatcher>((ref) {
   final achievementsNotifier = ref.read(achievementsNotifierProvider.notifier);
   final mentorNotifier = ref.read(aiMentorProvider.notifier);
   final marketEventsNotifier = ref.read(marketEventsProvider.notifier);
-  return DashboardEventDispatcher(
-      notifier, overlayNotifier, achievementsNotifier, mentorNotifier, marketEventsNotifier);
+  return DashboardEventDispatcher(notifier, overlayNotifier,
+      achievementsNotifier, mentorNotifier, marketEventsNotifier);
 });

@@ -30,7 +30,8 @@ class ScenarioGamificationHandler {
         );
 
       case GameEventType.xpLost:
-        final amount = (event.payload['amount'] as int).clamp(0, state.xpEarned);
+        final amount =
+            (event.payload['amount'] as int).clamp(0, state.xpEarned);
         return state.copyWith(xpEarned: state.xpEarned - amount);
 
       case GameEventType.streakUpdated:

@@ -50,7 +50,9 @@ class _LevelUpModalState extends State<LevelUpModal>
     );
 
     _overlayFade = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _burstController, curve: const Interval(0.0, 0.4, curve: Curves.easeOut)),
+      CurvedAnimation(
+          parent: _burstController,
+          curve: const Interval(0.0, 0.4, curve: Curves.easeOut)),
     );
 
     _cardScale = Tween<double>(begin: 0.6, end: 1.0).animate(
@@ -132,64 +134,64 @@ class _LevelUpModalState extends State<LevelUpModal>
               ),
             ),
           ),
-            // Pulsing rings behind card
-            Center(
-              child: AnimatedBuilder(
-                animation: _ringController,
-                builder: (context, _) => Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Transform.scale(
-                      scale: _ring1Scale.value,
-                      child: Opacity(
-                        opacity: _ring1Opacity.value,
-                        child: Container(
-                          width: 120,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: AppColors.primary,
-                              width: 2,
-                            ),
+          // Pulsing rings behind card
+          Center(
+            child: AnimatedBuilder(
+              animation: _ringController,
+              builder: (context, _) => Stack(
+                alignment: Alignment.center,
+                children: [
+                  Transform.scale(
+                    scale: _ring1Scale.value,
+                    child: Opacity(
+                      opacity: _ring1Opacity.value,
+                      child: Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppColors.primary,
+                            width: 2,
                           ),
                         ),
                       ),
                     ),
-                    Transform.scale(
-                      scale: _ring2Scale.value,
-                      child: Opacity(
-                        opacity: _ring2Opacity.value,
-                        child: Container(
-                          width: 120,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: AppColors.cyan,
-                              width: 1.5,
-                            ),
+                  ),
+                  Transform.scale(
+                    scale: _ring2Scale.value,
+                    child: Opacity(
+                      opacity: _ring2Opacity.value,
+                      child: Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppColors.cyan,
+                            width: 1.5,
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-            // Card
-            Center(
-              child: AnimatedBuilder(
-                animation: _cardController,
-                builder: (context, child) => Transform.scale(
-                  scale: _cardScale.value,
-                  child: Opacity(opacity: _cardFade.value, child: child),
-                ),
-                child: _buildCard(),
+          ),
+          // Card
+          Center(
+            child: AnimatedBuilder(
+              animation: _cardController,
+              builder: (context, child) => Transform.scale(
+                scale: _cardScale.value,
+                child: Opacity(opacity: _cardFade.value, child: child),
               ),
+              child: _buildCard(),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
     );
   }
 

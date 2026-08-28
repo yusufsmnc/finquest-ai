@@ -92,7 +92,10 @@ class _OnboardingXpRevealScreenState
                           gradient: const LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: [AppColors.xpGoldGlow, AppColors.warningLight],
+                            colors: [
+                              AppColors.xpGoldGlow,
+                              AppColors.warningLight
+                            ],
                           ),
                           shape: BoxShape.circle,
                           boxShadow: [
@@ -103,7 +106,8 @@ class _OnboardingXpRevealScreenState
                               offset: const Offset(0, 8),
                             ),
                             BoxShadow(
-                              color: AppColors.xpGoldGlow.withValues(alpha: 0.25),
+                              color:
+                                  AppColors.xpGoldGlow.withValues(alpha: 0.25),
                               blurRadius: 60,
                               spreadRadius: -4,
                             ),
@@ -191,7 +195,8 @@ class _XpPreviewCard extends StatelessWidget {
             children: [
               const LevelIndicator(level: 1),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppColors.xpGold.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(20),

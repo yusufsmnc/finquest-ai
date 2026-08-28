@@ -12,16 +12,23 @@ class ScenarioFeedbackScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scenario = ref.watch(scenarioNotifierProvider.select((s) => s.activeScenario));
-    final selectedOptionId = ref.watch(scenarioNotifierProvider.select((s) => s.selectedOptionId));
-    final isCorrect = ref.watch(scenarioNotifierProvider.select((s) => s.isCorrect ?? false));
-    final lastXpGained = ref.watch(scenarioNotifierProvider.select((s) => s.lastXpGained));
-    final streak = ref.watch(scenarioNotifierProvider.select((s) => s.currentStreak));
+    final scenario =
+        ref.watch(scenarioNotifierProvider.select((s) => s.activeScenario));
+    final selectedOptionId =
+        ref.watch(scenarioNotifierProvider.select((s) => s.selectedOptionId));
+    final isCorrect =
+        ref.watch(scenarioNotifierProvider.select((s) => s.isCorrect ?? false));
+    final lastXpGained =
+        ref.watch(scenarioNotifierProvider.select((s) => s.lastXpGained));
+    final streak =
+        ref.watch(scenarioNotifierProvider.select((s) => s.currentStreak));
     final dispatcher = ref.read(scenarioDispatcherProvider);
 
-    if (scenario == null || selectedOptionId == null) return const SizedBox.shrink();
+    if (scenario == null || selectedOptionId == null)
+      return const SizedBox.shrink();
 
-    final selectedOption = scenario.options.where((o) => o.id == selectedOptionId).firstOrNull;
+    final selectedOption =
+        scenario.options.where((o) => o.id == selectedOptionId).firstOrNull;
     final correctOption = scenario.correctOption;
 
     return Scaffold(
@@ -224,7 +231,9 @@ class _FeedbackCard extends StatelessWidget {
           Row(
             children: [
               Icon(
-                isBestAnswer ? Icons.lightbulb_rounded : Icons.chat_bubble_outline_rounded,
+                isBestAnswer
+                    ? Icons.lightbulb_rounded
+                    : Icons.chat_bubble_outline_rounded,
                 color: color,
                 size: 15,
               ),

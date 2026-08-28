@@ -31,9 +31,8 @@ class AchievementsNotifier extends Notifier<AchievementsState> {
       // Session boundary: never leak one user's unlocks into another's.
       _sessionUnlocked.clear();
     }
-    _remoteUnlocked =
-        ref.watch(unlockedAchievementCodesProvider).valueOrNull ??
-            const <String>{};
+    _remoteUnlocked = ref.watch(unlockedAchievementCodesProvider).valueOrNull ??
+        const <String>{};
     _progress = ref.watch(progressProvider).valueOrNull ?? ProgressDto.empty;
     return _compose();
   }

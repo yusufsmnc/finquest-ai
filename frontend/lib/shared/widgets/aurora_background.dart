@@ -47,20 +47,23 @@ class _AuroraBackgroundState extends State<AuroraBackground>
       duration: const Duration(seconds: 17),
     )..repeat(reverse: true);
 
-    final c1 = CurvedAnimation(parent: _blob1Controller, curve: Curves.easeInOut);
-    final c2 = CurvedAnimation(parent: _blob2Controller, curve: Curves.easeInOut);
-    final c3 = CurvedAnimation(parent: _blob3Controller, curve: Curves.easeInOut);
+    final c1 =
+        CurvedAnimation(parent: _blob1Controller, curve: Curves.easeInOut);
+    final c2 =
+        CurvedAnimation(parent: _blob2Controller, curve: Curves.easeInOut);
+    final c3 =
+        CurvedAnimation(parent: _blob3Controller, curve: Curves.easeInOut);
 
-    _b1Top     = Tween<double>(begin: -40,  end:   0).animate(c1);
-    _b1Left    = Tween<double>(begin: -60,  end:  40).animate(c1);
+    _b1Top = Tween<double>(begin: -40, end: 0).animate(c1);
+    _b1Left = Tween<double>(begin: -60, end: 40).animate(c1);
     _b1Opacity = Tween<double>(begin: 0.30, end: 0.50).animate(c1);
 
-    _b2Bottom  = Tween<double>(begin: -40,  end:   0).animate(c2);
-    _b2Left    = Tween<double>(begin:  30,  end:  90).animate(c2);
+    _b2Bottom = Tween<double>(begin: -40, end: 0).animate(c2);
+    _b2Left = Tween<double>(begin: 30, end: 90).animate(c2);
     _b2Opacity = Tween<double>(begin: 0.25, end: 0.40).animate(c2);
 
-    _b3Top     = Tween<double>(begin: 100,  end: 180).animate(c3);
-    _b3Right   = Tween<double>(begin: -40,  end:  20).animate(c3);
+    _b3Top = Tween<double>(begin: 100, end: 180).animate(c3);
+    _b3Right = Tween<double>(begin: -40, end: 20).animate(c3);
     _b3Opacity = Tween<double>(begin: 0.20, end: 0.35).animate(c3);
   }
 

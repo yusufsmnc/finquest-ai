@@ -58,7 +58,8 @@ class _ScenarioXpSummaryState extends State<ScenarioXpSummary>
   }
 
   String get _streakMessage {
-    if (widget.streak >= 5) return '🔥🔥 ${widget.streak} in a row — Unstoppable!';
+    if (widget.streak >= 5)
+      return '🔥🔥 ${widget.streak} in a row — Unstoppable!';
     if (widget.streak >= 3) return '🔥 ${widget.streak} correct — Hot streak!';
     return '🔥 2 in a row — Keep it up!';
   }
@@ -101,16 +102,19 @@ class _ScenarioXpSummaryState extends State<ScenarioXpSummary>
             if (widget.isCorrect) ...[
               const SizedBox(height: 12),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
                   color: AppColors.success.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.success.withValues(alpha: 0.2)),
+                  border: Border.all(
+                      color: AppColors.success.withValues(alpha: 0.2)),
                 ),
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.stars_rounded, color: AppColors.success, size: 14),
+                    Icon(Icons.stars_rounded,
+                        color: AppColors.success, size: 14),
                     SizedBox(width: 6),
                     Text(
                       'Correct Decision Bonus +50 XP',
@@ -129,7 +133,8 @@ class _ScenarioXpSummaryState extends State<ScenarioXpSummary>
               const SizedBox(height: 10),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 decoration: BoxDecoration(
                   color: _streakGlowColor.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(12),

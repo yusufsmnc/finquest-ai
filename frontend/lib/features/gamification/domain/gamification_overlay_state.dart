@@ -65,7 +65,8 @@ class GamificationOverlayState {
       xpLostAmount: xpLostAmount ?? this.xpLostAmount,
       showStreakFeedback: showStreakFeedback ?? this.showStreakFeedback,
       streakValue: streakValue ?? this.streakValue,
-      showAchievementUnlock: showAchievementUnlock ?? this.showAchievementUnlock,
+      showAchievementUnlock:
+          showAchievementUnlock ?? this.showAchievementUnlock,
       achievementName: achievementName ?? this.achievementName,
       toastQueue: toastQueue ?? this.toastQueue,
       trackedXp: trackedXp ?? this.trackedXp,

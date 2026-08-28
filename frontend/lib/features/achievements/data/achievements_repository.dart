@@ -12,7 +12,8 @@ class AchievementsRepository {
           category: AchievementCategory.streak,
           icon: Icons.local_fire_department_rounded,
           requiredValue: 1,
-          rewardDescription: 'The journey of a thousand miles begins with a single step.',
+          rewardDescription:
+              'The journey of a thousand miles begins with a single step.',
         ),
         const Achievement(
           id: 'streak_3',
@@ -22,7 +23,8 @@ class AchievementsRepository {
           category: AchievementCategory.streak,
           icon: Icons.whatshot_rounded,
           requiredValue: 3,
-          rewardDescription: 'You\'re building momentum. Keep the streak going!',
+          rewardDescription:
+              'You\'re building momentum. Keep the streak going!',
         ),
         const Achievement(
           id: 'streak_5',
@@ -32,7 +34,8 @@ class AchievementsRepository {
           category: AchievementCategory.streak,
           icon: Icons.bolt_rounded,
           requiredValue: 5,
-          rewardDescription: 'You are making great financial decisions consistently.',
+          rewardDescription:
+              'You are making great financial decisions consistently.',
         ),
         const Achievement(
           id: 'streak_10',
@@ -42,7 +45,8 @@ class AchievementsRepository {
           category: AchievementCategory.streak,
           icon: Icons.auto_awesome_rounded,
           requiredValue: 10,
-          rewardDescription: 'A true financial legend. Your instincts are razor sharp.',
+          rewardDescription:
+              'A true financial legend. Your instincts are razor sharp.',
         ),
 
         // --- XP ---
@@ -84,7 +88,8 @@ class AchievementsRepository {
           category: AchievementCategory.xp,
           icon: Icons.workspace_premium_rounded,
           requiredValue: 2000,
-          rewardDescription: 'The pinnacle of XP mastery. Legendary status achieved.',
+          rewardDescription:
+              'The pinnacle of XP mastery. Legendary status achieved.',
         ),
 
         // --- Decisions ---
@@ -106,7 +111,8 @@ class AchievementsRepository {
           category: AchievementCategory.decisions,
           icon: Icons.insights_rounded,
           requiredValue: 25,
-          rewardDescription: 'Your financial intuition is sharpening with every choice.',
+          rewardDescription:
+              'Your financial intuition is sharpening with every choice.',
         ),
         const Achievement(
           id: 'decisions_100',
@@ -116,7 +122,8 @@ class AchievementsRepository {
           category: AchievementCategory.decisions,
           icon: Icons.account_balance_rounded,
           requiredValue: 100,
-          rewardDescription: 'One hundred decisions in. You think like a professional.',
+          rewardDescription:
+              'One hundred decisions in. You think like a professional.',
         ),
 
         // --- Level ---
@@ -148,7 +155,8 @@ class AchievementsRepository {
           category: AchievementCategory.level,
           icon: Icons.diamond_rounded,
           requiredValue: 10,
-          rewardDescription: 'Elite status unlocked. The market holds no fear for you.',
+          rewardDescription:
+              'Elite status unlocked. The market holds no fear for you.',
         ),
       ];
 

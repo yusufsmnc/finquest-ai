@@ -92,7 +92,8 @@ class _AchievementChip extends StatelessWidget {
     );
 
     return unlocked
-        ? AnimatedGradientBorder(borderRadius: 16, borderWidth: 2.0, child: chip)
+        ? AnimatedGradientBorder(
+            borderRadius: 16, borderWidth: 2.0, child: chip)
         : chip;
   }
 }

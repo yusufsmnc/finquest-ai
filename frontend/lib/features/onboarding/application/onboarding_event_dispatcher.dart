@@ -24,7 +24,8 @@ class OnboardingEventDispatcher {
 
   void onDecisionMade(String optionId) {
     final isCorrect = OnboardingGamificationHandler.isDecisionCorrect(optionId);
-    final xpAmount = OnboardingGamificationHandler.xpForDecision(isCorrect: isCorrect);
+    final xpAmount =
+        OnboardingGamificationHandler.xpForDecision(isCorrect: isCorrect);
 
     dispatch(GameEvent.decisionMade(optionId: optionId));
 
@@ -42,7 +43,8 @@ class OnboardingEventDispatcher {
 
   // LEVEL_UP always fires at S4→S5 regardless of decision — tutorial guarantee.
   void onResultContinued() {
-    dispatch(GameEvent.levelUp(newLevel: OnboardingConstants.levelAfterOnboarding));
+    dispatch(
+        GameEvent.levelUp(newLevel: OnboardingConstants.levelAfterOnboarding));
     dispatch(GameEvent.rewardUnlocked(rewardId: OnboardingConstants.rewardId));
     _notifier.advanceStep();
   }

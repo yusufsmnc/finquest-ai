@@ -40,9 +40,8 @@ class AiMentorState {
     bool? isMentorLoading,
   }) {
     return AiMentorState(
-      currentMessage: clearCurrentMessage
-          ? null
-          : currentMessage ?? this.currentMessage,
+      currentMessage:
+          clearCurrentMessage ? null : currentMessage ?? this.currentMessage,
       currentMood: currentMood ?? this.currentMood,
       messageHistory: messageHistory ?? this.messageHistory,
       showNotification: showNotification ?? this.showNotification,

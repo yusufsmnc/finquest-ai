@@ -68,27 +68,27 @@ class _ScenarioFlowState extends ConsumerState<ScenarioFlow> {
     });
 
     return Stack(
-        children: [
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 280),
-            switchInCurve: Curves.easeOutCubic,
-            switchOutCurve: Curves.easeInCubic,
-            transitionBuilder: (child, animation) => FadeTransition(
-              opacity: animation,
-              child: SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(0.04, 0),
-                  end: Offset.zero,
-                ).animate(animation),
-                child: child,
-              ),
+      children: [
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 280),
+          switchInCurve: Curves.easeOutCubic,
+          switchOutCurve: Curves.easeInCubic,
+          transitionBuilder: (child, animation) => FadeTransition(
+            opacity: animation,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0.04, 0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
             ),
-            child: _screenFor(phase),
           ),
-          const ScenarioMoneyOverlay(),
-          const ScenarioXpFloatOverlay(),
-          const ScenarioRewardToastOverlay(),
-        ],
+          child: _screenFor(phase),
+        ),
+        const ScenarioMoneyOverlay(),
+        const ScenarioXpFloatOverlay(),
+        const ScenarioRewardToastOverlay(),
+      ],
     );
   }
 

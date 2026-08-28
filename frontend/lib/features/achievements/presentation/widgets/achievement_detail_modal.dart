@@ -48,7 +48,8 @@ class AchievementDetailModal extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          _HeroSection(achievement: achievement, rarity: rarity, unlocked: unlocked),
+          _HeroSection(
+              achievement: achievement, rarity: rarity, unlocked: unlocked),
           const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -95,8 +96,18 @@ class AchievementDetailModal extends StatelessWidget {
 
   String _formatDate(DateTime dt) {
     final months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
     ];
     return '${months[dt.month - 1]} ${dt.day}, ${dt.year}';
   }
@@ -303,9 +314,8 @@ class _RewardPreview extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: unlocked
-            ? rarity.color.withValues(alpha: 0.08)
-            : AppColors.surface,
+        color:
+            unlocked ? rarity.color.withValues(alpha: 0.08) : AppColors.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: unlocked

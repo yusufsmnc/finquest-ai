@@ -124,11 +124,9 @@ class _CategoryBreakdown extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: categories.map((cat) {
-        final total =
-            achievements.where((a) => a.category == cat).length;
-        final unlocked = achievements
-            .where((a) => a.category == cat && a.unlocked)
-            .length;
+        final total = achievements.where((a) => a.category == cat).length;
+        final unlocked =
+            achievements.where((a) => a.category == cat && a.unlocked).length;
         return Padding(
           padding: const EdgeInsets.only(bottom: 6),
           child: Row(

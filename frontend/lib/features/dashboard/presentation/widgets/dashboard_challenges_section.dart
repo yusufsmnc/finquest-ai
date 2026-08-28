@@ -96,107 +96,107 @@ class _ChallengeCardState extends State<_ChallengeCard>
             Transform.scale(scale: _scale.value, child: child),
         child: AnimatedGradientBorder(
           child: Container(
-          width: 200,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: c.isComplete
-                    ? AppColors.successGlow(0.1)
-                    : c.color.withValues(alpha: 0.12),
-                blurRadius: 16,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: c.color.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: c.color.withValues(alpha: 0.2),
-                      ),
-                    ),
-                    child: Icon(c.icon, color: c.color, size: 18),
-                  ),
-                  const Spacer(),
-                  if (c.isComplete)
+            width: 200,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: c.isComplete
+                      ? AppColors.successGlow(0.1)
+                      : c.color.withValues(alpha: 0.12),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
+                      width: 36,
+                      height: 36,
                       decoration: BoxDecoration(
-                        color: AppColors.success.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(8),
+                        color: c.color.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(10),
                         border: Border.all(
-                          color: AppColors.success.withValues(alpha: 0.3),
+                          color: c.color.withValues(alpha: 0.2),
                         ),
                       ),
-                      child: const Text(
-                        'Done',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.success,
-                        ),
-                      ),
-                    )
-                  else
-                    Text(
-                      '+${c.xpReward} XP',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: c.color,
-                      ),
+                      child: Icon(c.icon, color: c.color, size: 18),
                     ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Text(
-                c.title,
-                style: const TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
+                    const Spacer(),
+                    if (c.isComplete)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: AppColors.success.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppColors.success.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: const Text(
+                          'Done',
+                          style: TextStyle(
+                            fontFamily: 'Inter',
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.success,
+                          ),
+                        ),
+                      )
+                    else
+                      Text(
+                        '+${c.xpReward} XP',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: c.color,
+                        ),
+                      ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                c.subtitle,
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 11,
-                  color: AppColors.textSecondary,
+                const SizedBox(height: 10),
+                Text(
+                  c.title,
+                  style: const TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
-              ),
-              const Spacer(),
-              _GlowProgressBar(progress: c.progressFraction, color: c.color),
-              const SizedBox(height: 4),
-              Text(
-                '${c.progress} / ${c.target}',
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 10,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textMuted,
+                const SizedBox(height: 2),
+                Text(
+                  c.subtitle,
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 11,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
-              ),
-            ],
+                const Spacer(),
+                _GlowProgressBar(progress: c.progressFraction, color: c.color),
+                const SizedBox(height: 4),
+                Text(
+                  '${c.progress} / ${c.target}',
+                  style: const TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textMuted,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        ),  // AnimatedGradientBorder
+        ), // AnimatedGradientBorder
       ),
     );
   }

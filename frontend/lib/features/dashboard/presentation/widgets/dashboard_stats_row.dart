@@ -9,10 +9,13 @@ class DashboardStatsRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final streak = ref.watch(dashboardNotifierProvider.select((s) => s.currentStreak));
-    final streakPulse = ref.watch(dashboardNotifierProvider.select((s) => s.streakPulse));
+    final streak =
+        ref.watch(dashboardNotifierProvider.select((s) => s.currentStreak));
+    final streakPulse =
+        ref.watch(dashboardNotifierProvider.select((s) => s.streakPulse));
     final xp = ref.watch(dashboardNotifierProvider.select((s) => s.currentXP));
-    final scenarios = ref.watch(dashboardNotifierProvider.select((s) => s.totalScenarios));
+    final scenarios =
+        ref.watch(dashboardNotifierProvider.select((s) => s.totalScenarios));
 
     return Row(
       children: [

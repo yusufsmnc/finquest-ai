@@ -23,98 +23,98 @@ class DashboardPortfolioCard extends ConsumerWidget {
 
     return AnimatedGradientBorder(
       child: CardContainer(
-      glowColor: changeColor,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Simulated Portfolio',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '\$${portfolio.value.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 26,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  color: changeColor.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: changeColor.withValues(alpha: 0.3),
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
+        glowColor: changeColor,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(changeIcon, color: changeColor, size: 14),
-                    const SizedBox(width: 2),
-                    Text(
-                      '$changeSign${portfolio.changePercent.toStringAsFixed(1)}%',
+                    const Text(
+                      'Simulated Portfolio',
                       style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '\$${portfolio.value.toStringAsFixed(2)}',
+                      style: const TextStyle(
                         fontFamily: 'Poppins',
-                        fontSize: 13,
+                        fontSize: 26,
                         fontWeight: FontWeight.w700,
-                        color: changeColor,
+                        color: AppColors.textPrimary,
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: 64,
-            child: CustomPaint(
-              painter: _SparklinePainter(
-                data: portfolio.sparkline,
-                isPositive: portfolio.isPositive,
-              ),
-              size: const Size(double.infinity, 64),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: changeColor.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: changeColor.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(changeIcon, color: changeColor, size: 14),
+                      const SizedBox(width: 2),
+                      Text(
+                        '$changeSign${portfolio.changePercent.toStringAsFixed(1)}%',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: changeColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: AppColors.surfaceUp,
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: AppColors.border),
-            ),
-            child: const Text(
-              'Simulation only — not real money',
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 10,
-                color: AppColors.textMuted,
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 64,
+              child: CustomPaint(
+                painter: _SparklinePainter(
+                  data: portfolio.sparkline,
+                  isPositive: portfolio.isPositive,
+                ),
+                size: const Size(double.infinity, 64),
               ),
             ),
-          ),
-        ],
-      ),
-    ),    // CardContainer
-  );      // AnimatedGradientBorder
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceUp,
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: const Text(
+                'Simulation only — not real money',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 10,
+                  color: AppColors.textMuted,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ), // CardContainer
+    ); // AnimatedGradientBorder
   }
 }
 
@@ -156,7 +156,8 @@ class _SparklinePainter extends CustomPainter {
     final xStep = size.width / (data.length - 1);
 
     double yFor(double v) =>
-        size.height - ((v - minVal) / range) * size.height * 0.85 -
+        size.height -
+        ((v - minVal) / range) * size.height * 0.85 -
         size.height * 0.075;
 
     final linePath = Path();

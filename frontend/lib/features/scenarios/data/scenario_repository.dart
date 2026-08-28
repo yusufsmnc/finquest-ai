@@ -71,8 +71,7 @@ class ScenarioRepository {
         Scenario(
           id: 'sc-003',
           title: 'Credit Card Trap',
-          description:
-              'You carry \$2,000 on a credit card at 22% APR. '
+          description: 'You carry \$2,000 on a credit card at 22% APR. '
               'You also have \$2,500 in a savings account earning 4.5% APY. '
               'Your monthly minimum payment is \$45. What\'s the smart move?',
           category: 'Budgeting',
@@ -103,8 +102,7 @@ class ScenarioRepository {
         Scenario(
           id: 'sc-004',
           title: 'Hot Stock Temptation',
-          description:
-              'A tech company has returned 85% this year. '
+          description: 'A tech company has returned 85% this year. '
               'You have \$8,000 to invest. Every analyst on social media says it\'s a sure thing. '
               'Your plan was to diversify into an index fund. Do you change course?',
           category: 'Investing',

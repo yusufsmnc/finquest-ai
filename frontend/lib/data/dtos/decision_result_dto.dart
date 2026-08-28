@@ -25,8 +25,7 @@ class DecisionResultDto {
       result: json['result'] as String,
       xpDelta: json['xp_delta'] as int,
       events: (json['events'] as List<dynamic>).cast<String>(),
-      progress:
-          ProgressDto.fromJson(json['progress'] as Map<String, dynamic>),
+      progress: ProgressDto.fromJson(json['progress'] as Map<String, dynamic>),
       newAchievements:
           (json['new_achievements'] as List<dynamic>?)?.cast<String>() ??
               const [],
