@@ -30,9 +30,32 @@ ApiClient fakeApiClient() =>
     ApiClient(tokenStorage: TokenStorage(), onUnauthorized: () async {});
 
 /// Always-authenticated session, so auth-gated providers resolve immediately.
+///
+/// Only `build()` is faked: `login`, `logout` and `markUnauthenticated` run the
+/// real implementations, so a test that signs out exercises the code that ships.
 class FakeAuthNotifier extends AuthNotifier {
   @override
   Future<AuthState> build() async => const AuthState.authenticated();
+}
+
+/// In-memory [TokenStorage]. The real one talks to platform secure storage,
+/// which has no implementation under `flutter test`.
+class FakeTokenStorage extends TokenStorage {
+  String? token = 'a-test-token';
+
+  int clearCalls = 0;
+
+  @override
+  Future<String?> read() async => token;
+
+  @override
+  Future<void> write(String value) async => token = value;
+
+  @override
+  Future<void> clear() async {
+    clearCalls++;
+    token = null;
+  }
 }
 
 /// Canned `POST /scenarios/{id}/decision`.
@@ -143,8 +166,10 @@ List<Override> testOverrides({
   FakeProgressRepo? progressRepo,
   FakeScenarioApi? scenarioApi,
   FakeMentorApi? mentorApi,
+  FakeTokenStorage? tokenStorage,
 }) {
   return [
+    tokenStorageProvider.overrideWithValue(tokenStorage ?? FakeTokenStorage()),
     authProvider.overrideWith(FakeAuthNotifier.new),
     progressRepositoryProvider.overrideWithValue(
       progressRepo ??
@@ -170,6 +195,7 @@ ProviderContainer testContainer({
   FakeProgressRepo? progressRepo,
   FakeScenarioApi? scenarioApi,
   FakeMentorApi? mentorApi,
+  FakeTokenStorage? tokenStorage,
 }) {
   return ProviderContainer(
     overrides: testOverrides(
@@ -180,6 +206,7 @@ ProviderContainer testContainer({
       progressRepo: progressRepo,
       scenarioApi: scenarioApi,
       mentorApi: mentorApi,
+      tokenStorage: tokenStorage,
     ),
   );
 }

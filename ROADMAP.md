@@ -294,10 +294,10 @@ güveni de götürür.
 #### 7a — Logout
 Frontend-only: JWT stateless olduğu için backend'de bir şey iptal edilmiyor.
 
-- [ ] Profile'da logout aksiyonu
-- [ ] Secure storage'daki token temizlensin
-- [ ] Provider'lar sıfırlansın (sonraki kullanıcı öncekinin verisini görmesin)
-- [ ] Login ekranına dönülsün
+- [x] Profile'da logout aksiyonu
+- [x] Secure storage'daki token temizlensin
+- [x] Provider'lar sıfırlansın (sonraki kullanıcı öncekinin verisini görmesin)
+- [x] Login ekranına dönülsün
 
 **Bitti:** Logout sonrası korumalı ekranlara erişilemiyor, tekrar login
 gerekiyor.
