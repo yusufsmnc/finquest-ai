@@ -290,6 +290,18 @@ olabilir. O hata aksi halde deploy anında çıkar.
 
 **Bitti:** Bozuk bir Dockerfile merge'den önce yakalanıyor.
 
+#### CI: lib/ format paritesi
+Backend'de `ruff` neyi yapıyorsa frontend'de `dart format` onu yapmalı. Lane
+bugüne kadar sadece `test/`'i kontrol ediyordu, `lib/` hiç biçimlenmemişti — 134
+dosyanın 118'i biçim dışıydı. Tek seferde toparlanıp kapıya kilit takıldı.
+
+- [x] `dart format lib/` — 118 dosya, mekanik (boşluk + bir BOM + EOF newline'ları)
+- [x] Formatın ikiye böldüğü 3 `if` parantezlendi (`curly_braces_in_flow_control_structures`)
+- [x] `frontend-tests`: format adımı artık `lib/ test/`
+
+**Bitti:** `dart format --set-exit-if-changed lib/ test/` temiz geçiyor ve CI
+biçim kaymasını bir daha birikmeden yakalıyor.
+
 ---
 
 ### Faz 7 — Manuel testte çıkan UI & veri bağlama düzeltmeleri
