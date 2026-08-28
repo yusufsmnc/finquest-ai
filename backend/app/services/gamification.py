@@ -38,6 +38,11 @@ def apply_decision(progress: Progress, correct: bool) -> DecisionOutcome:
     if correct:
         progress.xp = max(0, progress.xp + XP_CORRECT)
         progress.streak_count += 1
+        # High-water mark: streak_count resets on a wrong answer, this does not.
+        # `or 0` because a Progress built in the request and not yet flushed has
+        # no column default applied — the attribute is still None at this point.
+        if progress.streak_count > (progress.best_streak or 0):
+            progress.best_streak = progress.streak_count
         events += ["DECISION_CORRECT", "XP_GAINED", "STREAK_UPDATED"]
         result = "DECISION_CORRECT"
     else:

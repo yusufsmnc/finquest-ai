@@ -21,6 +21,9 @@ class Progress(Base):
     xp: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     level: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
     streak_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    # High-water mark. streak_count resets to zero on a wrong answer; this
+    # does not, so the profile can show what the user has actually reached.
+    best_streak: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     last_active: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC)
     )

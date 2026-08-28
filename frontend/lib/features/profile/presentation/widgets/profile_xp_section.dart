@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../../auth/auth_providers.dart';
+import '../../../../data/dtos/progress_dto.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../dashboard/dashboard_providers.dart';
-import '../../../gamification/gamification_providers.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class ProfileXpSection extends ConsumerWidget {
@@ -9,14 +9,17 @@ class ProfileXpSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dashboard = ref.watch(dashboardNotifierProvider);
-    final totalXp =
-        ref.watch(gamificationOverlayProvider.select((s) => s.trackedXp));
+    final backend =
+        ref.watch(progressProvider).valueOrNull ?? ProgressDto.empty;
 
-    final level = dashboard.currentLevel;
-    final currentXp = dashboard.currentXP;
-    final xpToNext = dashboard.xpToNextLevel;
-    final progress = dashboard.xpProgress;
+    final level = backend.level;
+    final currentXp = backend.xp;
+    // Derived from xp on the backend's own curve of 100 XP per level, so the
+    // bar cannot drift away from the number printed above it.
+    final xpToNext = backend.xpToNextLevel;
+    final nextLevelAt = backend.xpForNextLevel;
+    final progress = backend.levelProgress;
+    final totalXp = backend.xpEarnedTotal;
 
     return Container(
       margin: const EdgeInsets.fromLTRB(20, 16, 20, 0),
@@ -54,11 +57,13 @@ class ProfileXpSection extends ConsumerWidget {
               ),
               const Spacer(),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+                  border: Border.all(
+                      color: AppColors.primary.withValues(alpha: 0.2)),
                 ),
                 child: Text(
                   'Level $level',
@@ -144,7 +149,7 @@ class ProfileXpSection extends ConsumerWidget {
               const SizedBox(width: 12),
               _XpStat(
                 label: 'Next Level At',
-                value: '$xpToNext XP',
+                value: '$nextLevelAt XP',
                 icon: Icons.arrow_upward_rounded,
                 color: AppColors.primary,
               ),

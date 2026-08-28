@@ -185,3 +185,129 @@ def test_decision_validates_its_body(client: TestClient, auth, payload):
     response = client.post("/scenarios/x/decision", json=payload, headers=auth)
 
     assert response.status_code == 422
+
+
+# ── Derived profile statistics (Faz 7b) ────────────────────────────────────
+#
+# The Profile screen renders these; it does not recompute them. That is the
+# whole point — a reload must not be able to disagree with the server about how
+# many decisions were made or how many were right.
+
+
+def test_accuracy_over_a_mixed_run(client: TestClient, auth):
+    """Three right out of four."""
+    for _ in range(3):
+        _decide(client, auth, correct=True)
+    _decide(client, auth, correct=False)
+
+    body = client.get("/me/progress", headers=auth).json()
+
+    assert body["decisions_made"] == 4
+    assert body["correct_decisions"] == 3
+    assert body["accuracy"] == pytest.approx(0.75)
+
+
+def test_accuracy_is_zero_before_any_decision(client: TestClient, auth):
+    body = client.get("/me/progress", headers=auth).json()
+
+    assert body["decisions_made"] == 0
+    assert body["correct_decisions"] == 0
+    assert body["accuracy"] == 0.0, "no division by zero, no NaN"
+
+
+def test_accuracy_is_one_when_nothing_was_missed(client: TestClient, auth):
+    for _ in range(3):
+        _decide(client, auth, correct=True)
+
+    assert client.get("/me/progress", headers=auth).json()["accuracy"] == 1.0
+
+
+def test_accuracy_is_zero_when_everything_was_missed(client: TestClient, auth):
+    for _ in range(2):
+        _decide(client, auth, correct=False)
+
+    body = client.get("/me/progress", headers=auth).json()
+
+    assert body["decisions_made"] == 2
+    assert body["correct_decisions"] == 0
+    assert body["accuracy"] == 0.0
+
+
+def test_xp_earned_total_counts_gross_not_net(client: TestClient, auth):
+    """Wrong answers deduct from `xp`; they do not un-earn what was earned."""
+    for _ in range(3):
+        _decide(client, auth, correct=True)  # +60
+    _decide(client, auth, correct=False)  # -10
+
+    body = client.get("/me/progress", headers=auth).json()
+
+    assert body["xp"] == 50, "the net balance"
+    assert body["xp_earned_total"] == 60, "the gross, which is what was earned"
+
+
+def test_xp_earned_total_ignores_a_clamped_loss(client: TestClient, auth):
+    """A wrong answer at zero XP costs nothing, so it adds nothing either."""
+    _decide(client, auth, correct=False)
+
+    body = client.get("/me/progress", headers=auth).json()
+
+    assert body["xp"] == 0
+    assert body["xp_earned_total"] == 0
+
+
+def test_best_streak_follows_the_current_streak_up(client: TestClient, auth):
+    for _ in range(3):
+        _decide(client, auth, correct=True)
+
+    body = client.get("/me/progress", headers=auth).json()
+
+    assert body["streak_count"] == 3
+    assert body["best_streak"] == 3
+
+
+def test_best_streak_survives_the_current_streak_resetting(client: TestClient, auth):
+    """The point of storing it: a wrong answer must not erase the record."""
+    for _ in range(4):
+        _decide(client, auth, correct=True)
+    _decide(client, auth, correct=False)
+
+    body = client.get("/me/progress", headers=auth).json()
+
+    assert body["streak_count"] == 0
+    assert body["best_streak"] == 4
+
+
+def test_best_streak_only_moves_when_the_record_is_beaten(client: TestClient, auth):
+    for _ in range(5):
+        _decide(client, auth, correct=True)
+    _decide(client, auth, correct=False)
+    for _ in range(2):
+        _decide(client, auth, correct=True)
+
+    body = client.get("/me/progress", headers=auth).json()
+
+    assert body["streak_count"] == 2
+    assert body["best_streak"] == 5, "a shorter run must not lower the record"
+
+
+def test_best_streak_is_never_below_the_current_streak(client: TestClient, auth):
+    for _ in range(6):
+        _decide(client, auth, correct=True)
+
+    body = client.get("/me/progress", headers=auth).json()
+
+    assert body["best_streak"] >= body["streak_count"]
+
+
+def test_the_derived_statistics_are_per_user(client: TestClient, register):
+    active, bystander = register(), register()
+    for _ in range(3):
+        _decide(client, active, correct=True)
+    _decide(client, active, correct=False)
+
+    body = client.get("/me/progress", headers=bystander).json()
+
+    assert body["correct_decisions"] == 0
+    assert body["accuracy"] == 0.0
+    assert body["xp_earned_total"] == 0
+    assert body["best_streak"] == 0

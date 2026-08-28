@@ -32,7 +32,7 @@ router = APIRouter(prefix="/me", tags=["me"])
 
 def _get_or_create_progress(db: Session, user: User) -> Progress:
     if user.progress is None:
-        user.progress = Progress(xp=0, level=1, streak_count=0)
+        user.progress = Progress(xp=0, level=1, streak_count=0, best_streak=0)
         db.add(user.progress)
         db.commit()
         db.refresh(user.progress)

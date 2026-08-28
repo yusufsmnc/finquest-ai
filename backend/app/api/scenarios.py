@@ -27,7 +27,7 @@ def make_decision(
 ) -> DecisionResponse:
     progress = user.progress
     if progress is None:
-        progress = Progress(xp=0, level=1, streak_count=0)
+        progress = Progress(xp=0, level=1, streak_count=0, best_streak=0)
         user.progress = progress
         db.add(progress)
 

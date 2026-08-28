@@ -14,9 +14,9 @@ from app.services.gamification import (
 )
 
 
-def _progress(xp: int = 0, level: int = 1, streak: int = 0) -> Progress:
+def _progress(xp: int = 0, level: int = 1, streak: int = 0, best: int = 0) -> Progress:
     """A detached model instance — these rules never touch the session."""
-    return Progress(xp=xp, level=level, streak_count=streak)
+    return Progress(xp=xp, level=level, streak_count=streak, best_streak=best)
 
 
 # ── The level curve ────────────────────────────────────────────────────────

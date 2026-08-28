@@ -305,11 +305,14 @@ gerekiyor.
 #### 7b — Profile istatistikleri backend'e bağlansın
 Üstteki XP/Decisions, "Total XP Earned" ve Accuracy şu an sabit ya da sıfır.
 
-- [ ] Hepsi `progressProvider`'dan okunsun (`GET /me/progress`, +
+- [x] Hepsi `progressProvider`'dan okunsun (`GET /me/progress`, +
       `decisions_made` / `decisions_today`)
-- [ ] Accuracy için backend: `scenario_history`'den doğru karar sayısı ve oran
+- [x] Accuracy için backend: `scenario_history`'den doğru karar sayısı ve oran
       türetilip `/me/progress` yanıtına eklensin
-- [ ] Frontend accuracy'yi hesaplamasın, render etsin
+- [x] `best_streak` kolonu + Alembic migration (mevcut satırlar `streak_count`
+      ile backfill edilir, yoksa "best < current" saçmalığı çıkar)
+- [x] `xp_earned_total`: brüt kazanılan XP (`xp` net bakiye, aynı şey değil)
+- [x] Frontend accuracy'yi hesaplamasın, render etsin
 
 **Bitti:** Yenilemede tüm sayılar backend'le tutarlı; 60 XP ekranın her yerinde
 60.

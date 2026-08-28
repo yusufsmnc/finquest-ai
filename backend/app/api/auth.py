@@ -24,7 +24,7 @@ def register(payload: RegisterRequest, db: Session = Depends(get_db)) -> User:
         )
     user = User(email=payload.email, password_hash=hash_password(payload.password))
     # Every user starts with a zeroed authoritative progress row.
-    user.progress = Progress(xp=0, level=1, streak_count=0)
+    user.progress = Progress(xp=0, level=1, streak_count=0, best_streak=0)
     db.add(user)
     db.commit()
     db.refresh(user)
