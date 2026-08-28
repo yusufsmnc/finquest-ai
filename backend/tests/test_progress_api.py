@@ -22,9 +22,13 @@ def test_progress_starts_zeroed(client: TestClient, auth):
         "xp": 0,
         "level": 1,
         "streak_count": 0,
+        "best_streak": 0,
         "last_active": body["last_active"],
         "decisions_made": 0,
         "decisions_today": 0,
+        "correct_decisions": 0,
+        "accuracy": 0.0,
+        "xp_earned_total": 0,
     }
 
 

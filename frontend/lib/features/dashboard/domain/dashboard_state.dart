@@ -105,10 +105,15 @@ class DashboardState {
   final bool streakPulse;
 
   const DashboardState({
-    this.currentLevel = 2,
-    this.currentXP = 60,
+    // Zeroed on purpose. These used to seed themselves with 2 / 60 / 1, which
+    // rendered as real progress for a user who had none — the Profile screen
+    // showed that fabricated 60 XP next to a header reading 0. Authoritative
+    // values arrive from progressProvider; these only accumulate in-session for
+    // animations.
+    this.currentLevel = 1,
+    this.currentXP = 0,
     this.xpToNextLevel = 100,
-    this.currentStreak = 1,
+    this.currentStreak = 0,
     this.totalScenarios = 1,
     this.completedCount = 0,
     this.totalDecisions = 0,
@@ -130,8 +135,9 @@ class DashboardState {
 
   double get xpProgress => (currentXP / xpToNextLevel).clamp(0.0, 1.0);
   int get xpRemaining => xpToNextLevel - currentXP;
-  double get accuracyRate =>
-      totalDecisions == 0 ? 0.0 : (correctCount / totalDecisions).clamp(0.0, 1.0);
+  double get accuracyRate => totalDecisions == 0
+      ? 0.0
+      : (correctCount / totalDecisions).clamp(0.0, 1.0);
 
   DashboardState copyWith({
     int? currentLevel,

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../../auth/auth_providers.dart';
+import '../../../../data/dtos/progress_dto.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../dashboard/dashboard_providers.dart';
-import '../../../scenarios/scenario_providers.dart';
-import '../../profile_providers.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class ProfileStreakSection extends ConsumerWidget {
@@ -10,14 +9,14 @@ class ProfileStreakSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentStreak =
-        ref.watch(dashboardNotifierProvider.select((s) => s.currentStreak));
-    final bestStreak =
-        ref.watch(profileNotifierProvider.select((s) => s.bestStreak));
-    final accuracyRate =
-        ref.watch(scenarioNotifierProvider.select((s) => s.accuracyRate));
-    final totalDecisions =
-        ref.watch(scenarioNotifierProvider.select((s) => s.totalDecisions));
+    final progress =
+        ref.watch(progressProvider).valueOrNull ?? ProgressDto.empty;
+    final currentStreak = progress.streakCount;
+    // best_streak is a stored column, not a local high-water mark: it has to
+    // survive the app closing, and the previous local one reset to 0 on reload.
+    final bestStreak = progress.bestStreak;
+    final accuracyRate = progress.accuracy;
+    final totalDecisions = progress.decisionsMade;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),

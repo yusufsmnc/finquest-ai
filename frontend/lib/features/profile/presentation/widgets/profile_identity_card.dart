@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import '../../../auth/auth_providers.dart';
+import '../../../../data/dtos/progress_dto.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/avatar_data.dart';
 import '../../profile_providers.dart';
-import '../../../dashboard/dashboard_providers.dart';
-import '../../../gamification/gamification_providers.dart';
 import '../../../achievements/achievements_providers.dart';
-import '../../../scenarios/scenario_providers.dart';
 import '../../../../core/theme/app_colors.dart';
 import 'avatar_picker_modal.dart';
 
@@ -15,18 +14,20 @@ class ProfileIdentityCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = ref.watch(profileNotifierProvider);
-    final dashboard = ref.watch(dashboardNotifierProvider);
+    // Every number below is the backend's. The in-session counters still exist
+    // — they drive the XP float and the streak pulse — but they are animation
+    // state, and reading them here is what made the header say 0 XP next to a
+    // card claiming 60.
+    final progress =
+        ref.watch(progressProvider).valueOrNull ?? ProgressDto.empty;
     final unlockedCount = ref.watch(
       achievementsNotifierProvider.select((s) => s.unlockedCount),
     );
-    final totalDecisions = ref.watch(
-      scenarioNotifierProvider.select((s) => s.totalDecisions),
-    );
+    final totalDecisions = progress.decisionsMade;
 
-    final totalXp =
-        ref.watch(gamificationOverlayProvider.select((s) => s.trackedXp));
+    final totalXp = progress.xp;
     final avatar = AvatarData.options[profile.avatarIndex];
-    final level = dashboard.currentLevel;
+    final level = progress.level;
     final tierLabel = _tierLabel(level);
     final tierColor = _tierColor(level);
 
@@ -53,7 +54,8 @@ class ProfileIdentityCard extends ConsumerWidget {
         children: [
           Row(
             children: [
-              _AvatarBubble(avatar: avatar, onTap: () => AvatarPickerModal.show(context)),
+              _AvatarBubble(
+                  avatar: avatar, onTap: () => AvatarPickerModal.show(context)),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
@@ -61,15 +63,19 @@ class ProfileIdentityCard extends ConsumerWidget {
                   children: [
                     _EditableName(
                       name: profile.displayName,
-                      onSave: (v) => ref.read(profileNotifierProvider.notifier).setDisplayName(v),
+                      onSave: (v) => ref
+                          .read(profileNotifierProvider.notifier)
+                          .setDisplayName(v),
                     ),
                     const SizedBox(height: 4),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
                         color: tierColor.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: tierColor.withValues(alpha: 0.4)),
+                        border:
+                            Border.all(color: tierColor.withValues(alpha: 0.4)),
                       ),
                       child: Text(
                         tierLabel,
@@ -182,7 +188,8 @@ class _AvatarBubble extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.background, width: 2),
               ),
-              child: const Icon(Icons.edit_rounded, color: Colors.white, size: 11),
+              child:
+                  const Icon(Icons.edit_rounded, color: Colors.white, size: 11),
             ),
           ),
         ],
