@@ -276,7 +276,19 @@ autoscaling, GitOps
 credential repo'da düz metin değil.
 
 > Eski listedeki "basit CI" maddesi Faz 5 sonrasında tamamlandı: `backend-tests`,
-> `frontend-tests` ve `k8s-validate` lane'leri merge'e gate oluyor.
+> `frontend-tests`, `k8s-validate` ve `docker-build` lane'leri merge'e gate oluyor.
+
+#### CI: image build
+`docker-build` lane'i: PR'da frontend ve backend image'ları **derleniyor mu**
+diye bakar — push yok, registry yok, cluster yok. Diğer lane'lerin göremediği
+şey: `backend-tests` kodu checkout'tan doğrudan koşuyor, `frontend-tests`
+`flutter test` çalıştırıyor; ikisi de yeşil kalırken bir Dockerfile bozulmuş
+olabilir. O hata aksi halde deploy anında çıkar.
+
+- [x] `docker-build.yml`: `backend-image` + `frontend-image` job'ları
+- [x] Sadece build (`push: false`, `load: false`), buildx + GHA cache
+
+**Bitti:** Bozuk bir Dockerfile merge'den önce yakalanıyor.
 
 ---
 
