@@ -35,8 +35,10 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Verify formatting of test sources
-        run: dart format --output=none --set-exit-if-changed test/
+      # lib/ as well as test/: the app sources were formatted in one pass, and
+      # this is what stops them drifting back out again.
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed lib/ test/
 
       - name: Analyze
         run: flutter analyze --no-fatal-infos
