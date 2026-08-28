@@ -280,6 +280,71 @@ credential repo'da düz metin değil.
 
 ---
 
+### Faz 7 — Manuel testte çıkan UI & veri bağlama düzeltmeleri
+**Hedef:** Ekranda görünen sayıların hepsi backend'den gelsin. Faz 1–6 sistemi
+kurdu ve doğruladı; bu faz canlı uygulamayı gezerken çıkan tutarsızlıkları
+kapatır.
+
+**Bulgu (canlı Profile ekranı):** üstte XP 0 / Decisions 0 yazarken hemen
+altındaki XP Progress kartı 60 XP / Level 2 gösteriyor. Aynı ekranda iki farklı
+sayı, çünkü bazı widget'lar `progressProvider`'a bağlı değil — sabit ya da
+sıfır placeholder render ediyor. Tek bir yanlış sayı, doğru olanlara duyulan
+güveni de götürür.
+
+#### 7a — Logout
+Frontend-only: JWT stateless olduğu için backend'de bir şey iptal edilmiyor.
+
+- [ ] Profile'da logout aksiyonu
+- [ ] Secure storage'daki token temizlensin
+- [ ] Provider'lar sıfırlansın (sonraki kullanıcı öncekinin verisini görmesin)
+- [ ] Login ekranına dönülsün
+
+**Bitti:** Logout sonrası korumalı ekranlara erişilemiyor, tekrar login
+gerekiyor.
+
+#### 7b — Profile istatistikleri backend'e bağlansın
+Üstteki XP/Decisions, "Total XP Earned" ve Accuracy şu an sabit ya da sıfır.
+
+- [ ] Hepsi `progressProvider`'dan okunsun (`GET /me/progress`, +
+      `decisions_made` / `decisions_today`)
+- [ ] Accuracy için backend: `scenario_history`'den doğru karar sayısı ve oran
+      türetilip `/me/progress` yanıtına eklensin
+- [ ] Frontend accuracy'yi hesaplamasın, render etsin
+
+**Bitti:** Yenilemede tüm sayılar backend'le tutarlı; 60 XP ekranın her yerinde
+60.
+
+#### 7c — Görev "completed" durumu kalıcı olsun
+Challenge ilerlemesi lokal geçici state'ten geliyor, sayfa yenilenince sıfırlanıyor.
+
+- [ ] İlerleme ve completed durumu her yüklemede backend sayaçlarından
+      türetilsin (`decisions_today`, `streak_count`, `decisions_made`)
+- [ ] Lokal sayaç tutulmasın
+
+**Bitti:** Görev tamamlanıp sayfa yenilendiğinde hâlâ completed görünüyor.
+
+#### 7d — Learning Progress gerçek veriye bağlansın *(opsiyonel — karar gerekiyor)*
+Budgeting / Investing / Savings / Risk yüzdeleri hardcode. İki yol var ve
+seçim ürün kararı:
+
+- **(A)** Mevcut veriden türetilebilen bir agregata bağla, ya da widget'ı
+  kaldır — yanıltıcı sabit göstermektense hiç gösterme.
+- **(B)** `scenario_history`'ye kategori kolonu ekle (Alembic migration) ve
+  yüzdeleri gerçekten oradan türet. Daha doğru, ama şema değişikliği ve geriye
+  dönük veri sorusu getiriyor.
+
+- [ ] (A) ya da (B) kararı
+- [ ] Seçilen yol uygulansın
+
+**Bitti:** Yüzdeler gerçek veriye dayanıyor ya da ekranda yanıltıcı sabit
+değer kalmıyor.
+
+**Kavramlar:** tek doğruluk kaynağı, türetilmiş state, oturum yaşam döngüsü
+**Bitti kriteri:** Profile ekranındaki hiçbir sayı backend'dekiyle çelişmiyor;
+ekranda kaynağı olmayan sabit değer yok.
+
+---
+
 ## Veri modeli (başlangıç)
 
 ```
